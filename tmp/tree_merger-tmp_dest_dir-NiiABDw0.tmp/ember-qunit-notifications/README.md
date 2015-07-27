@@ -1,0 +1,1 @@
+/Users/kimberly/Documents/Coding/ember/ember-app/tmp/funnel-output_path-ReM2dNNk.tmp/ember-qunit-notifications/README.md

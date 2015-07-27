@@ -1,0 +1,1 @@
+/Users/kimberly/Documents/Coding/ember/ember-app/tmp/class-tmp_cache_dir-XSp553Ek.tmp/assets/vendor.js

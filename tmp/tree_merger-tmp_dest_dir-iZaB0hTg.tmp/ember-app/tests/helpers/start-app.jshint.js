@@ -1,0 +1,1 @@
+/Users/kimberly/Documents/Coding/ember/ember-app/tmp/funnel-output_path-pYjlfBZB.tmp/ember-app/tests/helpers/start-app.jshint.js

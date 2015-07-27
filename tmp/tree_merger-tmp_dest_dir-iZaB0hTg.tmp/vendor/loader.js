@@ -1,0 +1,1 @@
+/Users/kimberly/Documents/Coding/ember/ember-app/bower_components/loader.js
