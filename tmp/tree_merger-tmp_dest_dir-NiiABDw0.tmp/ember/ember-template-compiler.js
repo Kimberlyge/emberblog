@@ -1,1 +1,0 @@
-/Users/kimberly/Documents/Coding/ember/ember-app/tmp/funnel-output_path-N9GId5t8.tmp/ember/ember-template-compiler.js

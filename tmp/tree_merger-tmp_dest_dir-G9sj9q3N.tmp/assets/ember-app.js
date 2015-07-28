@@ -1,1 +1,0 @@
-/Users/kimberly/Documents/Coding/ember/ember-app/tmp/caching-writer-dest-dir_2S40eD.tmp/assets/ember-app.js

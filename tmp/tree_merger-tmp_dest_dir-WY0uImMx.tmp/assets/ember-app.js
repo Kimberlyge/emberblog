@@ -1,1 +1,0 @@
-/Users/kimberly/Documents/Coding/ember/ember-app/tmp/class-tmp_cache_dir-fHi3Tulx.tmp/assets/ember-app.js

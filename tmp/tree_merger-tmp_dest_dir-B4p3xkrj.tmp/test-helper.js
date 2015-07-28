@@ -1,1 +1,0 @@
-/Users/kimberly/Documents/Coding/ember/ember-app/tests/test-helper.js

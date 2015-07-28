@@ -101,7 +101,9 @@ define('ember-app/router', ['exports', 'ember', 'ember-app/config/environment'],
     location: config['default'].locationType
   });
 
-  Router.map(function () {});
+  Router.map(function () {
+    this.route('about');
+  });
 
   exports['default'] = Router;
 
@@ -121,8 +123,8 @@ define('ember-app/templates/application', ['exports'], function (exports) {
             "column": 0
           },
           "end": {
-            "line": 3,
-            "column": 10
+            "line": 5,
+            "column": 0
           }
         },
         "moduleName": "ember-app/templates/application.hbs"
@@ -141,12 +143,13 @@ define('ember-app/templates/application', ['exports'], function (exports) {
         dom.appendChild(el0, el1);
         var el1 = dom.createComment("");
         dom.appendChild(el0, el1);
+        var el1 = dom.createTextNode("\n\n");
+        dom.appendChild(el0, el1);
         return el0;
       },
       buildRenderNodes: function buildRenderNodes(dom, fragment, contextualElement) {
         var morphs = new Array(1);
         morphs[0] = dom.createMorphAt(fragment,2,2,contextualElement);
-        dom.insertBoundary(fragment, null);
         return morphs;
       },
       statements: [

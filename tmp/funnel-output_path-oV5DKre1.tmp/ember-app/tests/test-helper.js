@@ -1,1 +1,0 @@
-/Users/kimberly/Documents/Coding/ember/ember-app/tmp/babel-output_path-g2ojkqAJ.tmp/ember-app/tests/test-helper.js

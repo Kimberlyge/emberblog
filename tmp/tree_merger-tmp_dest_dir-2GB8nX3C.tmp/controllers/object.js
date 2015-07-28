@@ -1,1 +1,0 @@
-/Users/kimberly/Documents/Coding/ember/ember-app/tmp/tree_merger-tmp_dest_dir-16FX2e9M.tmp/controllers/object.js

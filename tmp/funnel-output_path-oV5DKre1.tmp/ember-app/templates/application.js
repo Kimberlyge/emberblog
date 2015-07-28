@@ -1,1 +1,0 @@
-/Users/kimberly/Documents/Coding/ember/ember-app/tmp/tree_merger-tmp_dest_dir-iZaB0hTg.tmp/ember-app/templates/application.js

@@ -1,1 +1,0 @@
-/Users/kimberly/Documents/Coding/ember/ember-app/tmp/funnel-output_path-NtrWlFQq.tmp/ember-cli-content-security-policy.js

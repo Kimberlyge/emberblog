@@ -1,1 +1,0 @@
-/Users/kimberly/Documents/Coding/ember/ember-app/tmp/jshinter-tmp_dest_dir-cG4PhBbf.tmp/helpers/start-app.jshint.js
