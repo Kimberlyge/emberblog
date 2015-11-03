@@ -1,0 +1,30 @@
+{{#link-to 'application' class="Header-title" data-filter='*'}}
+	<h1>just another vegan food blog</h1>
+{{/link-to}}
+
+{{#sticky-container options:options}}
+	<div class="Nav">
+		<a href="#" data-filter='.sweets'>Sweets</a>
+		<a href="#" data-filter='.breakfast'>breakfast</a>
+		<a href="#" data-filter='.salad'>salad</a>
+		<a href="#" data-filter='.main'>main</a>
+		<a href="#" data-filter='.snacks'>snacks</a>
+		<span>/</span>
+		{{#link-to 'about'}}Local Food{{/link-to}}
+		{{#link-to 'about'}}me{{/link-to}}
+	</div>
+	<div class="NavSub is-hidden">
+		<a href="#" data-filter='.cookie'>Cookie</a>
+		<a href="#" data-filter='.pie'>Pie</a>
+		<a href="#" data-filter='.cake'>Cake</a>
+		<a href="#" data-filter='.muffin'>Muffin</a>
+		<a href="#" data-filter='.raw'>Raw</a>
+		<a href="#" data-filter='.dessert'>Dessert</a>
+		<span>/</span>
+		<a href="#" data-filter='.winter'>Winter</a>
+		<a href="#" data-filter='.summer'>summer</a>
+
+	</div>
+{{/sticky-container}}
+
+{{yield}}

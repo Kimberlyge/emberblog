@@ -1,0 +1,24 @@
+/*!
+	PORTFOLIO
+	Kimberly Gessner
+*/
+
+/**
+ * Third party
+ If is only *.css available rename it to *.scss
+ */
+// @import '../../node_modules/flickity/css/flickity';
+
+
+// Utilities (abstract patterns to be reused in components)
+
+// Base
+@import 'base/config';
+@import 'base/base';
+@import 'base/fonts';
+@import 'base/header';
+
+@import 'components/masonry';
+@import 'components/grid';
+@import 'components/detail';
+@import 'components/teaser';

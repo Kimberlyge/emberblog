@@ -1,0 +1,93 @@
+/**
+ * Header
+ */
+
+.Header {
+	//max-width: 90%;
+	margin: auto;
+	text-align: center;
+}
+.Header-title {
+	font-family: 'Amatic SC', cursive;
+	text-decoration: none;
+	font-weight: 400;
+	font-size: 35px;
+
+	h1 {
+		margin-bottom : 0;
+	}
+}
+
+.Nav,
+.NavSub {
+	a {
+		display: inline-block;
+		margin: 0 rem(5);
+		padding: rem(30) 0 rem(5);
+		font-family: Nobel;
+		font-size: 16px;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		text-decoration: none;
+		background: $lightgrey;
+		cursor: pointer;
+		border: 0;
+
+		border-bottom: 2px solid $lightgrey;
+
+		&:hover,
+		&:active,
+		&.is-active {
+			border-bottom: 2px solid;
+		}
+	}
+}
+
+.Nav {
+	margin-bottom: 0.6em;
+}
+
+.NavSub {
+	padding-bottom: 2em;
+	z-index: 9;
+
+	&:before {
+		display: block;
+		content: '';
+		width: 0.4em;
+		margin: auto;
+		margin-bottom: 0.5em;
+		border-top: 1px solid;
+	}
+
+	a {
+		padding: 0;
+		background: none;
+		font-size: 14px;
+		text-transform: lowercase;
+	}
+}
+
+.is-sticky .sticky {
+	z-index: 9;
+	background: $white;
+
+	a {
+		border-bottom: 2px solid $white;
+		&:hover,
+		&:active,
+		&.is-active {
+			border-bottom: 2px solid $black;
+		}
+	}
+
+	.Nav {
+		a {
+			background: $white;
+			padding: rem(20) 0 0;
+		}
+	}
+	.NavSub {
+		padding-bottom: 1em;
+	}
+}

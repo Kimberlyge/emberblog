@@ -177,9 +177,11 @@ define('ember-test-helpers/build-registry', ['exports'], function (exports) {
     ];
 
     function exposeRegistryMethod(container, method) {
-      container[method] = function() {
-        return container._registry[method].apply(container._registry, arguments);
-      };
+      if (method in container) {
+        container[method] = function() {
+          return container._registry[method].apply(container._registry, arguments);
+        };
+      }
     }
 
     for (var i = 0, l = methods.length; i < l; i++) {
@@ -215,8 +217,18 @@ define('ember-test-helpers/build-registry', ['exports'], function (exports) {
 
     // Ember 1.10.0 did not properly add `view:toplevel` or `view:default`
     // to the registry in Ember.Application.buildRegistry :(
-    register('view:toplevel', Ember.View.extend());
-    register('view:default', Ember._MetamorphView);
+    //
+    // Ember 2.0.0 removed Ember.View as public API, so only do this when
+    // Ember.View is present
+    if (Ember.View) {
+      register('view:toplevel', Ember.View.extend());
+    }
+
+    // Ember 2.0.0 removed Ember._MetamorphView from the Ember global, so only
+    // do this when present
+    if (Ember._MetamorphView) {
+      register('view:default', Ember._MetamorphView);
+    }
 
     var globalContext = typeof global === 'object' && global || self;
     if (globalContext.DS) {
@@ -252,6 +264,7 @@ define('ember-test-helpers/test-context', ['exports'], function (exports) {
 
   exports.setContext = setContext;
   exports.getContext = getContext;
+  exports.unsetContext = unsetContext;
 
   var __test_context__;
 
@@ -261,6 +274,10 @@ define('ember-test-helpers/test-context', ['exports'], function (exports) {
 
   function getContext() {
     return __test_context__;
+  }
+
+  function unsetContext() {
+    __test_context__ = undefined;
   }
 
 });
@@ -308,37 +325,55 @@ define('ember-test-helpers/test-module-for-component', ['exports', 'ember-test-h
         this.setupSteps.push(this.setupComponentIntegrationTest);
         this.teardownSteps.push(this.teardownComponent);
       }
+
+      if (Ember['default'].View && Ember['default'].View.views) {
+        this.setupSteps.push(this._aliasViewRegistry);
+        this.teardownSteps.push(this._resetViewRegistry);
+      }
+    },
+
+    _aliasViewRegistry: function() {
+      this._originalGlobalViewRegistry = Ember['default'].View.views;
+      var viewRegistry = this.container.lookup('-view-registry:main');
+
+      if (viewRegistry) {
+        Ember['default'].View.views = viewRegistry;
+      }
+    },
+
+    _resetViewRegistry: function() {
+      Ember['default'].View.views = this._originalGlobalViewRegistry;
     },
 
     setupComponentUnitTest: function() {
       var _this = this;
       var resolver = test_resolver.getResolver();
-      var container = this.container;
       var context = this.context;
 
       var layoutName = 'template:components/' + this.componentName;
 
       var layout = resolver.resolve(layoutName);
 
+      var thingToRegisterWith = this.registry || this.container;
       if (layout) {
-        container.register(layoutName, layout);
-        container.injection(this.subjectName, 'layout', layoutName);
+        thingToRegisterWith.register(layoutName, layout);
+        thingToRegisterWith.injection(this.subjectName, 'layout', layoutName);
       }
 
-      context.dispatcher = Ember['default'].EventDispatcher.create();
+      context.dispatcher = this.container.lookup('event_dispatcher:main') || Ember['default'].EventDispatcher.create();
       context.dispatcher.setup({}, '#ember-testing');
 
       this.callbacks.render = function() {
-        var containerView = Ember['default'].ContainerView.create({container: container});
+        var subject;
+
         Ember['default'].run(function(){
-          var subject = context.subject();
-          containerView.pushObject(subject);
-          containerView.appendTo('#ember-testing');
+          subject = context.subject();
+          subject.appendTo('#ember-testing');
         });
 
         _this.teardownSteps.unshift(function() {
           Ember['default'].run(function() {
-            Ember['default'].tryInvoke(containerView, 'destroy');
+            Ember['default'].tryInvoke(subject, 'destroy');
           });
         });
       };
@@ -359,9 +394,14 @@ define('ember-test-helpers/test-module-for-component', ['exports', 'ember-test-h
     setupComponentIntegrationTest: function() {
       var module = this;
       var context = this.context;
-      context.dispatcher = Ember['default'].EventDispatcher.create();
-      context.dispatcher.setup({}, '#ember-testing');
+
       this.actionHooks = {};
+
+      context.dispatcher = this.container.lookup('event_dispatcher:main') || Ember['default'].EventDispatcher.create();
+      context.dispatcher.setup({}, '#ember-testing');
+      context.actions = module.actionHooks;
+
+      (this.registry || this.container).register('component:-test-holder', Ember['default'].Component.extend());
 
       context.render = function(template) {
         if (!template) {
@@ -373,10 +413,10 @@ define('ember-test-helpers/test-module-for-component', ['exports', 'ember-test-h
         if (typeof template === 'string') {
           template = Ember['default'].Handlebars.compile(template);
         }
-        module.component = Ember['default'].Component.create({
-          layout: template,
-          container: module.container
+        module.component = module.container.lookupFactory('component:-test-holder').create({
+          layout: template
         });
+
         module.component.set('context' ,context);
         module.component.set('controller', module);
 
@@ -395,8 +435,19 @@ define('ember-test-helpers/test-module-for-component', ['exports', 'ember-test-h
         });
       };
 
+      context.setProperties = function(hash) {
+        Ember['default'].run(function() {
+          Ember['default'].setProperties(context, hash);
+        });
+      };
+
       context.get = function(key) {
         return Ember['default'].get(context, key);
+      };
+
+      context.getProperties = function() {
+        var args = Array.prototype.slice.call(arguments);
+        return Ember['default'].getProperties(context, args);
       };
 
       context.on = function(actionName, handler) {
@@ -407,11 +458,17 @@ define('ember-test-helpers/test-module-for-component', ['exports', 'ember-test-h
 
     setupContext: function() {
       this._super.call(this);
+
+      // only setup the injection if we are running against a version
+      // of Ember that has `-view-registry:main` (Ember >= 1.12)
+      if (this.container.lookupFactory('-view-registry:main')) {
+        (this.registry || this.container).injection('component', '_viewRegistry', '-view-registry:main');
+      }
+
       if (!this.isUnitTest) {
         this.context.factory = function() {};
       }
     },
-
 
     send: function(actionName) {
       var hook = this.actionHooks[actionName];
@@ -429,8 +486,6 @@ define('ember-test-helpers/test-module-for-component', ['exports', 'ember-test-h
         });
       }
     }
-
-
   });
 
 });
@@ -455,7 +510,10 @@ define('ember-test-helpers/test-module-for-model', ['exports', 'ember-test-helpe
 
       var adapterFactory = container.lookupFactory('adapter:application');
       if (!adapterFactory) {
-        container.register('adapter:application', DS.FixtureAdapter);
+        adapterFactory = DS.JSONAPIAdapter || DS.FixtureAdapter;
+
+        var thingToRegisterWith = this.registry || this.container;
+        thingToRegisterWith.register('adapter:application', adapterFactory);
       }
 
       callbacks.store = function(){
@@ -647,7 +705,10 @@ define('ember-test-helpers/test-module', ['exports', 'ember', 'ember-test-helper
 
     teardownContext: function() {
       var context = this.context;
-      if (context.dispatcher) {
+      this.context = undefined;
+      test_context.unsetContext();
+
+      if (context.dispatcher && !context.dispatcher.isDestroyed) {
         Ember['default'].run(function() {
           context.dispatcher.destroy();
         });
@@ -656,7 +717,12 @@ define('ember-test-helpers/test-module', ['exports', 'ember', 'ember-test-helper
 
     teardownTestElements: function() {
       Ember['default'].$('#ember-testing').empty();
-      Ember['default'].View.views = {};
+
+      // Ember 2.0.0 removed Ember.View as public API, so only do this when
+      // Ember.View is present
+      if (Ember['default'].View && Ember['default'].View.views) {
+        Ember['default'].View.views = {};
+      }
     },
 
     defaultSubject: function(options, factory) {
@@ -699,6 +765,7 @@ define('ember-test-helpers/test-module', ['exports', 'ember', 'ember-test-helper
 
       this.container = items.container;
       this.registry = items.registry;
+
 
       var thingToRegisterWith = this.registry || this.container;
       var router = resolver.resolve('router:main');

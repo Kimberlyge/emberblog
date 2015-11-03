@@ -1,0 +1,31 @@
+/**
+ * Base
+ */
+
+body {
+	font-family: Helvetica;
+	letter-spacing: 0.1em;
+	background-color: $lightgrey;
+}
+
+img {
+	width: 100%;
+}
+
+a {
+	color: $black;
+	transition: color $easing2 .3s;
+
+	&:hover,
+	&:active,
+	&.is-active {
+	//	border-bottom: 2px solid !important;
+	}
+
+	&:focus,
+	&:active {
+		outline: 0;
+		box-shadow: none;
+		-webkit-box-shadow: none;
+	}
+}
