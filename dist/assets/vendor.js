@@ -69687,7 +69687,7 @@ define("ember/load-initializers",
 ;(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"./browserify_stubs.js":[function(require,module,exports){
 define('npm:imagesLoaded', function(){ return { 'default': require('imagesLoaded')};})
 define('npm:isotope-layout', function(){ return { 'default': require('isotope-layout')};})
-},{"imagesLoaded":"/Users/kimberly/Documents/Coding/ember/blog/node_modules/imagesLoaded/imagesloaded.js","isotope-layout":"/Users/kimberly/Documents/Coding/ember/blog/node_modules/isotope-layout/js/isotope.js"}],"/Users/kimberly/Documents/Coding/ember/blog/node_modules/desandro-get-style-property/get-style-property.js":[function(require,module,exports){
+},{"imagesLoaded":"/Users/kimberly/Documents/Coding/emberblog/node_modules/imagesLoaded/imagesloaded.js","isotope-layout":"/Users/kimberly/Documents/Coding/emberblog/node_modules/isotope-layout/js/isotope.js"}],"/Users/kimberly/Documents/Coding/emberblog/node_modules/desandro-get-style-property/get-style-property.js":[function(require,module,exports){
 /*!
  * getStyleProperty v1.0.4
  * original by kangax
@@ -69744,7 +69744,7 @@ if ( typeof define === 'function' && define.amd ) {
 
 })( window );
 
-},{}],"/Users/kimberly/Documents/Coding/ember/blog/node_modules/desandro-matches-selector/matches-selector.js":[function(require,module,exports){
+},{}],"/Users/kimberly/Documents/Coding/emberblog/node_modules/desandro-matches-selector/matches-selector.js":[function(require,module,exports){
 /**
  * matchesSelector v1.0.3
  * matchesSelector( element, '.selector' )
@@ -69853,7 +69853,7 @@ if ( typeof define === 'function' && define.amd ) {
 
 })( Element.prototype );
 
-},{}],"/Users/kimberly/Documents/Coding/ember/blog/node_modules/doc-ready/doc-ready.js":[function(require,module,exports){
+},{}],"/Users/kimberly/Documents/Coding/emberblog/node_modules/doc-ready/doc-ready.js":[function(require,module,exports){
 /*!
  * docReady v1.0.3
  * Cross browser DOMContentLoaded event emitter
@@ -69927,7 +69927,7 @@ if ( typeof define === 'function' && define.amd ) {
 
 })( window );
 
-},{"eventie":"/Users/kimberly/Documents/Coding/ember/blog/node_modules/eventie/eventie.js"}],"/Users/kimberly/Documents/Coding/ember/blog/node_modules/eventie/eventie.js":[function(require,module,exports){
+},{"eventie":"/Users/kimberly/Documents/Coding/emberblog/node_modules/eventie/eventie.js"}],"/Users/kimberly/Documents/Coding/emberblog/node_modules/eventie/eventie.js":[function(require,module,exports){
 /*!
  * eventie v1.0.6
  * event binding helper
@@ -70011,7 +70011,7 @@ if ( typeof define === 'function' && define.amd ) {
 
 })( window );
 
-},{}],"/Users/kimberly/Documents/Coding/ember/blog/node_modules/fizzy-ui-utils/utils.js":[function(require,module,exports){
+},{}],"/Users/kimberly/Documents/Coding/emberblog/node_modules/fizzy-ui-utils/utils.js":[function(require,module,exports){
 /**
  * Fizzy UI utils v1.0.1
  * MIT license
@@ -70283,7 +70283,7 @@ return utils;
 
 }));
 
-},{"desandro-matches-selector":"/Users/kimberly/Documents/Coding/ember/blog/node_modules/desandro-matches-selector/matches-selector.js","doc-ready":"/Users/kimberly/Documents/Coding/ember/blog/node_modules/doc-ready/doc-ready.js"}],"/Users/kimberly/Documents/Coding/ember/blog/node_modules/get-size/get-size.js":[function(require,module,exports){
+},{"desandro-matches-selector":"/Users/kimberly/Documents/Coding/emberblog/node_modules/desandro-matches-selector/matches-selector.js","doc-ready":"/Users/kimberly/Documents/Coding/emberblog/node_modules/doc-ready/doc-ready.js"}],"/Users/kimberly/Documents/Coding/emberblog/node_modules/get-size/get-size.js":[function(require,module,exports){
 /*!
  * getSize v1.2.2
  * measure size of elements
@@ -70535,7 +70535,7 @@ if ( typeof define === 'function' && define.amd ) {
 
 })( window );
 
-},{"desandro-get-style-property":"/Users/kimberly/Documents/Coding/ember/blog/node_modules/desandro-get-style-property/get-style-property.js"}],"/Users/kimberly/Documents/Coding/ember/blog/node_modules/imagesLoaded/imagesloaded.js":[function(require,module,exports){
+},{"desandro-get-style-property":"/Users/kimberly/Documents/Coding/emberblog/node_modules/desandro-get-style-property/get-style-property.js"}],"/Users/kimberly/Documents/Coding/emberblog/node_modules/imagesLoaded/imagesloaded.js":[function(require,module,exports){
 /*!
  * imagesLoaded v3.2.0
  * JavaScript is all like "You images are done yet or what?"
@@ -70921,7 +70921,7 @@ function makeArray( obj ) {
 
 });
 
-},{"eventie":"/Users/kimberly/Documents/Coding/ember/blog/node_modules/eventie/eventie.js","wolfy87-eventemitter":"/Users/kimberly/Documents/Coding/ember/blog/node_modules/wolfy87-eventemitter/EventEmitter.js"}],"/Users/kimberly/Documents/Coding/ember/blog/node_modules/isotope-layout/js/isotope.js":[function(require,module,exports){
+},{"eventie":"/Users/kimberly/Documents/Coding/emberblog/node_modules/eventie/eventie.js","wolfy87-eventemitter":"/Users/kimberly/Documents/Coding/emberblog/node_modules/wolfy87-eventemitter/EventEmitter.js"}],"/Users/kimberly/Documents/Coding/emberblog/node_modules/isotope-layout/js/isotope.js":[function(require,module,exports){
 /*!
  * Isotope v2.2.2
  *
@@ -71551,7 +71551,7 @@ var getText = docElem.textContent ?
 
 }));
 
-},{"./item":"/Users/kimberly/Documents/Coding/ember/blog/node_modules/isotope-layout/js/item.js","./layout-mode":"/Users/kimberly/Documents/Coding/ember/blog/node_modules/isotope-layout/js/layout-mode.js","./layout-modes/fit-rows":"/Users/kimberly/Documents/Coding/ember/blog/node_modules/isotope-layout/js/layout-modes/fit-rows.js","./layout-modes/masonry":"/Users/kimberly/Documents/Coding/ember/blog/node_modules/isotope-layout/js/layout-modes/masonry.js","./layout-modes/vertical":"/Users/kimberly/Documents/Coding/ember/blog/node_modules/isotope-layout/js/layout-modes/vertical.js","desandro-matches-selector":"/Users/kimberly/Documents/Coding/ember/blog/node_modules/desandro-matches-selector/matches-selector.js","fizzy-ui-utils":"/Users/kimberly/Documents/Coding/ember/blog/node_modules/fizzy-ui-utils/utils.js","get-size":"/Users/kimberly/Documents/Coding/ember/blog/node_modules/get-size/get-size.js","outlayer":"/Users/kimberly/Documents/Coding/ember/blog/node_modules/outlayer/outlayer.js"}],"/Users/kimberly/Documents/Coding/ember/blog/node_modules/isotope-layout/js/item.js":[function(require,module,exports){
+},{"./item":"/Users/kimberly/Documents/Coding/emberblog/node_modules/isotope-layout/js/item.js","./layout-mode":"/Users/kimberly/Documents/Coding/emberblog/node_modules/isotope-layout/js/layout-mode.js","./layout-modes/fit-rows":"/Users/kimberly/Documents/Coding/emberblog/node_modules/isotope-layout/js/layout-modes/fit-rows.js","./layout-modes/masonry":"/Users/kimberly/Documents/Coding/emberblog/node_modules/isotope-layout/js/layout-modes/masonry.js","./layout-modes/vertical":"/Users/kimberly/Documents/Coding/emberblog/node_modules/isotope-layout/js/layout-modes/vertical.js","desandro-matches-selector":"/Users/kimberly/Documents/Coding/emberblog/node_modules/desandro-matches-selector/matches-selector.js","fizzy-ui-utils":"/Users/kimberly/Documents/Coding/emberblog/node_modules/fizzy-ui-utils/utils.js","get-size":"/Users/kimberly/Documents/Coding/emberblog/node_modules/get-size/get-size.js","outlayer":"/Users/kimberly/Documents/Coding/emberblog/node_modules/outlayer/outlayer.js"}],"/Users/kimberly/Documents/Coding/emberblog/node_modules/isotope-layout/js/item.js":[function(require,module,exports){
 /**
  * Isotope Item
 **/
@@ -71629,7 +71629,7 @@ return Item;
 
 }));
 
-},{"outlayer":"/Users/kimberly/Documents/Coding/ember/blog/node_modules/outlayer/outlayer.js"}],"/Users/kimberly/Documents/Coding/ember/blog/node_modules/isotope-layout/js/layout-mode.js":[function(require,module,exports){
+},{"outlayer":"/Users/kimberly/Documents/Coding/emberblog/node_modules/outlayer/outlayer.js"}],"/Users/kimberly/Documents/Coding/emberblog/node_modules/isotope-layout/js/layout-mode.js":[function(require,module,exports){
 /**
  * Isotope LayoutMode
  */
@@ -71792,7 +71792,7 @@ return Item;
 
 }));
 
-},{"get-size":"/Users/kimberly/Documents/Coding/ember/blog/node_modules/get-size/get-size.js","outlayer":"/Users/kimberly/Documents/Coding/ember/blog/node_modules/outlayer/outlayer.js"}],"/Users/kimberly/Documents/Coding/ember/blog/node_modules/isotope-layout/js/layout-modes/fit-rows.js":[function(require,module,exports){
+},{"get-size":"/Users/kimberly/Documents/Coding/emberblog/node_modules/get-size/get-size.js","outlayer":"/Users/kimberly/Documents/Coding/emberblog/node_modules/outlayer/outlayer.js"}],"/Users/kimberly/Documents/Coding/emberblog/node_modules/isotope-layout/js/layout-modes/fit-rows.js":[function(require,module,exports){
 /**
  * fitRows layout mode
  */
@@ -71860,7 +71860,7 @@ return FitRows;
 
 }));
 
-},{"../layout-mode":"/Users/kimberly/Documents/Coding/ember/blog/node_modules/isotope-layout/js/layout-mode.js"}],"/Users/kimberly/Documents/Coding/ember/blog/node_modules/isotope-layout/js/layout-modes/masonry.js":[function(require,module,exports){
+},{"../layout-mode":"/Users/kimberly/Documents/Coding/emberblog/node_modules/isotope-layout/js/layout-mode.js"}],"/Users/kimberly/Documents/Coding/emberblog/node_modules/isotope-layout/js/layout-modes/masonry.js":[function(require,module,exports){
 /*!
  * Masonry layout mode
  * sub-classes Masonry
@@ -71941,7 +71941,7 @@ function extend( a, b ) {
 
 }));
 
-},{"../layout-mode":"/Users/kimberly/Documents/Coding/ember/blog/node_modules/isotope-layout/js/layout-mode.js","masonry-layout":"/Users/kimberly/Documents/Coding/ember/blog/node_modules/masonry-layout/masonry.js"}],"/Users/kimberly/Documents/Coding/ember/blog/node_modules/isotope-layout/js/layout-modes/vertical.js":[function(require,module,exports){
+},{"../layout-mode":"/Users/kimberly/Documents/Coding/emberblog/node_modules/isotope-layout/js/layout-mode.js","masonry-layout":"/Users/kimberly/Documents/Coding/emberblog/node_modules/masonry-layout/masonry.js"}],"/Users/kimberly/Documents/Coding/emberblog/node_modules/isotope-layout/js/layout-modes/vertical.js":[function(require,module,exports){
 /**
  * vertical layout mode
  */
@@ -71995,7 +71995,7 @@ return Vertical;
 
 }));
 
-},{"../layout-mode":"/Users/kimberly/Documents/Coding/ember/blog/node_modules/isotope-layout/js/layout-mode.js"}],"/Users/kimberly/Documents/Coding/ember/blog/node_modules/masonry-layout/masonry.js":[function(require,module,exports){
+},{"../layout-mode":"/Users/kimberly/Documents/Coding/emberblog/node_modules/isotope-layout/js/layout-mode.js"}],"/Users/kimberly/Documents/Coding/emberblog/node_modules/masonry-layout/masonry.js":[function(require,module,exports){
 /*!
  * Masonry v3.3.2
  * Cascading grid layout library
@@ -72200,7 +72200,7 @@ return Vertical;
 
 }));
 
-},{"fizzy-ui-utils":"/Users/kimberly/Documents/Coding/ember/blog/node_modules/fizzy-ui-utils/utils.js","get-size":"/Users/kimberly/Documents/Coding/ember/blog/node_modules/get-size/get-size.js","outlayer":"/Users/kimberly/Documents/Coding/ember/blog/node_modules/outlayer/outlayer.js"}],"/Users/kimberly/Documents/Coding/ember/blog/node_modules/outlayer/item.js":[function(require,module,exports){
+},{"fizzy-ui-utils":"/Users/kimberly/Documents/Coding/emberblog/node_modules/fizzy-ui-utils/utils.js","get-size":"/Users/kimberly/Documents/Coding/emberblog/node_modules/get-size/get-size.js","outlayer":"/Users/kimberly/Documents/Coding/emberblog/node_modules/outlayer/outlayer.js"}],"/Users/kimberly/Documents/Coding/emberblog/node_modules/outlayer/item.js":[function(require,module,exports){
 /**
  * Outlayer Item
  */
@@ -72786,7 +72786,7 @@ return Item;
 
 }));
 
-},{"desandro-get-style-property":"/Users/kimberly/Documents/Coding/ember/blog/node_modules/desandro-get-style-property/get-style-property.js","fizzy-ui-utils":"/Users/kimberly/Documents/Coding/ember/blog/node_modules/fizzy-ui-utils/utils.js","get-size":"/Users/kimberly/Documents/Coding/ember/blog/node_modules/get-size/get-size.js","wolfy87-eventemitter":"/Users/kimberly/Documents/Coding/ember/blog/node_modules/wolfy87-eventemitter/EventEmitter.js"}],"/Users/kimberly/Documents/Coding/ember/blog/node_modules/outlayer/outlayer.js":[function(require,module,exports){
+},{"desandro-get-style-property":"/Users/kimberly/Documents/Coding/emberblog/node_modules/desandro-get-style-property/get-style-property.js","fizzy-ui-utils":"/Users/kimberly/Documents/Coding/emberblog/node_modules/fizzy-ui-utils/utils.js","get-size":"/Users/kimberly/Documents/Coding/emberblog/node_modules/get-size/get-size.js","wolfy87-eventemitter":"/Users/kimberly/Documents/Coding/emberblog/node_modules/wolfy87-eventemitter/EventEmitter.js"}],"/Users/kimberly/Documents/Coding/emberblog/node_modules/outlayer/outlayer.js":[function(require,module,exports){
 /*!
  * Outlayer v1.4.2
  * the brains and guts of a layout library
@@ -73714,7 +73714,7 @@ return Outlayer;
 }));
 
 
-},{"./item":"/Users/kimberly/Documents/Coding/ember/blog/node_modules/outlayer/item.js","eventie":"/Users/kimberly/Documents/Coding/ember/blog/node_modules/eventie/eventie.js","fizzy-ui-utils":"/Users/kimberly/Documents/Coding/ember/blog/node_modules/fizzy-ui-utils/utils.js","get-size":"/Users/kimberly/Documents/Coding/ember/blog/node_modules/get-size/get-size.js","wolfy87-eventemitter":"/Users/kimberly/Documents/Coding/ember/blog/node_modules/wolfy87-eventemitter/EventEmitter.js"}],"/Users/kimberly/Documents/Coding/ember/blog/node_modules/wolfy87-eventemitter/EventEmitter.js":[function(require,module,exports){
+},{"./item":"/Users/kimberly/Documents/Coding/emberblog/node_modules/outlayer/item.js","eventie":"/Users/kimberly/Documents/Coding/emberblog/node_modules/eventie/eventie.js","fizzy-ui-utils":"/Users/kimberly/Documents/Coding/emberblog/node_modules/fizzy-ui-utils/utils.js","get-size":"/Users/kimberly/Documents/Coding/emberblog/node_modules/get-size/get-size.js","wolfy87-eventemitter":"/Users/kimberly/Documents/Coding/emberblog/node_modules/wolfy87-eventemitter/EventEmitter.js"}],"/Users/kimberly/Documents/Coding/emberblog/node_modules/wolfy87-eventemitter/EventEmitter.js":[function(require,module,exports){
 /*!
  * EventEmitter v4.2.11 - git.io/ee
  * Unlicense - http://unlicense.org/
