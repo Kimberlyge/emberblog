@@ -15,10 +15,4 @@ App = Ember.Application.extend({
 
 loadInitializers(App, config.modulePrefix);
 
-// Change the class Ember adds to active elements
-Ember.LinkComponent.reopen({
-	activeClass: 'is-active'
-});
-
-
 export default App;

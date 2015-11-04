@@ -201,7 +201,7 @@ var runningTests = false;
 })();
 
 ;/*!
- * jQuery JavaScript Library v2.1.4
+ * jQuery JavaScript Library v1.11.3
  * http://jquery.com/
  *
  * Includes Sizzle.js
@@ -211,19 +211,19 @@ var runningTests = false;
  * Released under the MIT license
  * http://jquery.org/license
  *
- * Date: 2015-04-28T16:01Z
+ * Date: 2015-04-28T16:19Z
  */
 
 (function( global, factory ) {
 
 	if ( typeof module === "object" && typeof module.exports === "object" ) {
-		// For CommonJS and CommonJS-like environments where a proper `window`
-		// is present, execute the factory and get jQuery.
-		// For environments that do not have a `window` with a `document`
-		// (such as Node.js), expose a factory as module.exports.
-		// This accentuates the need for the creation of a real `window`.
+		// For CommonJS and CommonJS-like environments where a proper window is present,
+		// execute the factory and get jQuery
+		// For environments that do not inherently posses a window with a document
+		// (such as Node.js), expose a jQuery-making factory as module.exports
+		// This accentuates the need for the creation of a real window
 		// e.g. var jQuery = require("jquery")(window);
-		// See ticket #14549 for more info.
+		// See ticket #14549 for more info
 		module.exports = global.document ?
 			factory( global, true ) :
 			function( w ) {
@@ -239,21 +239,21 @@ var runningTests = false;
 // Pass this if window is not defined yet
 }(typeof window !== "undefined" ? window : this, function( window, noGlobal ) {
 
-// Support: Firefox 18+
-// Can't be in strict mode, several libs including ASP.NET trace
+// Can't do this because several apps including ASP.NET trace
 // the stack via arguments.caller.callee and Firefox dies if
 // you try to trace through "use strict" call chains. (#13335)
+// Support: Firefox 18+
 //
 
-var arr = [];
+var deletedIds = [];
 
-var slice = arr.slice;
+var slice = deletedIds.slice;
 
-var concat = arr.concat;
+var concat = deletedIds.concat;
 
-var push = arr.push;
+var push = deletedIds.push;
 
-var indexOf = arr.indexOf;
+var indexOf = deletedIds.indexOf;
 
 var class2type = {};
 
@@ -266,10 +266,7 @@ var support = {};
 
 
 var
-	// Use the correct document accordingly with window argument (sandbox)
-	document = window.document,
-
-	version = "2.1.4",
+	version = "1.11.3",
 
 	// Define a local copy of jQuery
 	jQuery = function( selector, context ) {
@@ -278,7 +275,7 @@ var
 		return new jQuery.fn.init( selector, context );
 	},
 
-	// Support: Android<4.1
+	// Support: Android<4.1, IE<9
 	// Make sure we trim BOM and NBSP
 	rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g,
 
@@ -372,12 +369,12 @@ jQuery.fn = jQuery.prototype = {
 	// For internal use only.
 	// Behaves like an Array's method, not like a jQuery method.
 	push: push,
-	sort: arr.sort,
-	splice: arr.splice
+	sort: deletedIds.sort,
+	splice: deletedIds.splice
 };
 
 jQuery.extend = jQuery.fn.extend = function() {
-	var options, name, src, copy, copyIsArray, clone,
+	var src, copyIsArray, copy, name, options, clone,
 		target = arguments[0] || {},
 		i = 1,
 		length = arguments.length,
@@ -387,7 +384,7 @@ jQuery.extend = jQuery.fn.extend = function() {
 	if ( typeof target === "boolean" ) {
 		deep = target;
 
-		// Skip the boolean and the target
+		// skip the boolean and the target
 		target = arguments[ i ] || {};
 		i++;
 	}
@@ -397,7 +394,7 @@ jQuery.extend = jQuery.fn.extend = function() {
 		target = {};
 	}
 
-	// Extend jQuery itself if only one argument is passed
+	// extend jQuery itself if only one argument is passed
 	if ( i === length ) {
 		target = this;
 		i--;
@@ -454,14 +451,20 @@ jQuery.extend({
 
 	noop: function() {},
 
+	// See test/unit/core.js for details concerning isFunction.
+	// Since version 1.3, DOM methods and functions like alert
+	// aren't supported. They return false on IE (#2968).
 	isFunction: function( obj ) {
 		return jQuery.type(obj) === "function";
 	},
 
-	isArray: Array.isArray,
+	isArray: Array.isArray || function( obj ) {
+		return jQuery.type(obj) === "array";
+	},
 
 	isWindow: function( obj ) {
-		return obj != null && obj === obj.window;
+		/* jshint eqeqeq: false */
+		return obj != null && obj == obj.window;
 	},
 
 	isNumeric: function( obj ) {
@@ -472,25 +475,6 @@ jQuery.extend({
 		return !jQuery.isArray( obj ) && (obj - parseFloat( obj ) + 1) >= 0;
 	},
 
-	isPlainObject: function( obj ) {
-		// Not plain objects:
-		// - Any object or value whose internal [[Class]] property is not "[object Object]"
-		// - DOM nodes
-		// - window
-		if ( jQuery.type( obj ) !== "object" || obj.nodeType || jQuery.isWindow( obj ) ) {
-			return false;
-		}
-
-		if ( obj.constructor &&
-				!hasOwn.call( obj.constructor.prototype, "isPrototypeOf" ) ) {
-			return false;
-		}
-
-		// If the function hasn't returned already, we're confident that
-		// |obj| is a plain object, created by {} or constructed with new Object
-		return true;
-	},
-
 	isEmptyObject: function( obj ) {
 		var name;
 		for ( name in obj ) {
@@ -499,41 +483,67 @@ jQuery.extend({
 		return true;
 	},
 
+	isPlainObject: function( obj ) {
+		var key;
+
+		// Must be an Object.
+		// Because of IE, we also have to check the presence of the constructor property.
+		// Make sure that DOM nodes and window objects don't pass through, as well
+		if ( !obj || jQuery.type(obj) !== "object" || obj.nodeType || jQuery.isWindow( obj ) ) {
+			return false;
+		}
+
+		try {
+			// Not own constructor property must be Object
+			if ( obj.constructor &&
+				!hasOwn.call(obj, "constructor") &&
+				!hasOwn.call(obj.constructor.prototype, "isPrototypeOf") ) {
+				return false;
+			}
+		} catch ( e ) {
+			// IE8,9 Will throw exceptions on certain host objects #9897
+			return false;
+		}
+
+		// Support: IE<9
+		// Handle iteration over inherited properties before own properties.
+		if ( support.ownLast ) {
+			for ( key in obj ) {
+				return hasOwn.call( obj, key );
+			}
+		}
+
+		// Own properties are enumerated firstly, so to speed up,
+		// if last one is own, then all properties are own.
+		for ( key in obj ) {}
+
+		return key === undefined || hasOwn.call( obj, key );
+	},
+
 	type: function( obj ) {
 		if ( obj == null ) {
 			return obj + "";
 		}
-		// Support: Android<4.0, iOS<6 (functionish RegExp)
 		return typeof obj === "object" || typeof obj === "function" ?
 			class2type[ toString.call(obj) ] || "object" :
 			typeof obj;
 	},
 
 	// Evaluates a script in a global context
-	globalEval: function( code ) {
-		var script,
-			indirect = eval;
-
-		code = jQuery.trim( code );
-
-		if ( code ) {
-			// If the code includes a valid, prologue position
-			// strict mode pragma, execute code by injecting a
-			// script tag into the document.
-			if ( code.indexOf("use strict") === 1 ) {
-				script = document.createElement("script");
-				script.text = code;
-				document.head.appendChild( script ).parentNode.removeChild( script );
-			} else {
-			// Otherwise, avoid the DOM node creation, insertion
-			// and removal by using an indirect global eval
-				indirect( code );
-			}
+	// Workarounds based on findings by Jim Driscoll
+	// http://weblogs.java.net/blog/driscoll/archive/2009/09/08/eval-javascript-global-context
+	globalEval: function( data ) {
+		if ( data && jQuery.trim( data ) ) {
+			// We use execScript on Internet Explorer
+			// We use an anonymous function so that context is window
+			// rather than jQuery in Firefox
+			( window.execScript || function( data ) {
+				window[ "eval" ].call( window, data );
+			} )( data );
 		}
 	},
 
 	// Convert dashed to camelCase; used by the css and data modules
-	// Support: IE9-11+
 	// Microsoft forgot to hump their vendor prefix (#9572)
 	camelCase: function( string ) {
 		return string.replace( rmsPrefix, "ms-" ).replace( rdashAlpha, fcamelCase );
@@ -593,7 +603,7 @@ jQuery.extend({
 		return obj;
 	},
 
-	// Support: Android<4.1
+	// Support: Android<4.1, IE<9
 	trim: function( text ) {
 		return text == null ?
 			"" :
@@ -619,7 +629,25 @@ jQuery.extend({
 	},
 
 	inArray: function( elem, arr, i ) {
-		return arr == null ? -1 : indexOf.call( arr, elem, i );
+		var len;
+
+		if ( arr ) {
+			if ( indexOf ) {
+				return indexOf.call( arr, elem, i );
+			}
+
+			len = arr.length;
+			i = i ? i < 0 ? Math.max( 0, len + i ) : i : 0;
+
+			for ( ; i < len; i++ ) {
+				// Skip accessing in sparse arrays
+				if ( i in arr && arr[ i ] === elem ) {
+					return i;
+				}
+			}
+		}
+
+		return -1;
 	},
 
 	merge: function( first, second ) {
@@ -627,8 +655,16 @@ jQuery.extend({
 			j = 0,
 			i = first.length;
 
-		for ( ; j < len; j++ ) {
-			first[ i++ ] = second[ j ];
+		while ( j < len ) {
+			first[ i++ ] = second[ j++ ];
+		}
+
+		// Support: IE<9
+		// Workaround casting of .length to NaN on otherwise arraylike objects (e.g., NodeLists)
+		if ( len !== len ) {
+			while ( second[j] !== undefined ) {
+				first[ i++ ] = second[ j++ ];
+			}
 		}
 
 		first.length = i;
@@ -694,7 +730,7 @@ jQuery.extend({
 	// Bind a function to a context, optionally partially applying any
 	// arguments.
 	proxy: function( fn, context ) {
-		var tmp, args, proxy;
+		var args, proxy, tmp;
 
 		if ( typeof context === "string" ) {
 			tmp = fn[ context ];
@@ -720,7 +756,9 @@ jQuery.extend({
 		return proxy;
 	},
 
-	now: Date.now,
+	now: function() {
+		return +( new Date() );
+	},
 
 	// jQuery.support is not used in Core but other projects attach their
 	// properties to it so it needs to exist.
@@ -2858,7 +2896,7 @@ function winnow( elements, qualifier, not ) {
 	}
 
 	return jQuery.grep( elements, function( elem ) {
-		return ( indexOf.call( qualifier, elem ) >= 0 ) !== not;
+		return ( jQuery.inArray( elem, qualifier ) >= 0 ) !== not;
 	});
 }
 
@@ -2879,9 +2917,9 @@ jQuery.filter = function( expr, elems, not ) {
 jQuery.fn.extend({
 	find: function( selector ) {
 		var i,
-			len = this.length,
 			ret = [],
-			self = this;
+			self = this,
+			len = self.length;
 
 		if ( typeof selector !== "string" ) {
 			return this.pushStack( jQuery( selector ).filter(function() {
@@ -2929,6 +2967,9 @@ jQuery.fn.extend({
 // A central reference to the root jQuery(document)
 var rootjQuery,
 
+	// Use the correct document accordingly with window argument (sandbox)
+	document = window.document,
+
 	// A simple way to check for HTML strings
 	// Prioritize #id over <tag> to avoid XSS via location.hash (#9521)
 	// Strict HTML recognition (#11290: must start with <)
@@ -2944,7 +2985,7 @@ var rootjQuery,
 
 		// Handle HTML strings
 		if ( typeof selector === "string" ) {
-			if ( selector[0] === "<" && selector[ selector.length - 1 ] === ">" && selector.length >= 3 ) {
+			if ( selector.charAt(0) === "<" && selector.charAt( selector.length - 1 ) === ">" && selector.length >= 3 ) {
 				// Assume that strings that start and end with <> are HTML and skip the regex check
 				match = [ null, selector, null ];
 
@@ -2959,7 +3000,7 @@ var rootjQuery,
 				if ( match[1] ) {
 					context = context instanceof jQuery ? context[0] : context;
 
-					// Option to run scripts is true for back-compat
+					// scripts is true for back-compat
 					// Intentionally let the error be thrown if parseHTML is not present
 					jQuery.merge( this, jQuery.parseHTML(
 						match[1],
@@ -2987,10 +3028,16 @@ var rootjQuery,
 				} else {
 					elem = document.getElementById( match[2] );
 
-					// Support: Blackberry 4.6
-					// gEBID returns nodes no longer in the document (#6963)
+					// Check parentNode to catch when Blackberry 4.6 returns
+					// nodes that are no longer in the document #6963
 					if ( elem && elem.parentNode ) {
-						// Inject the element directly into the jQuery object
+						// Handle the case where IE and Opera return items
+						// by name instead of ID
+						if ( elem.id !== match[2] ) {
+							return rootjQuery.find( selector );
+						}
+
+						// Otherwise, we inject the element directly into the jQuery object
 						this.length = 1;
 						this[0] = elem;
 					}
@@ -3041,7 +3088,7 @@ rootjQuery = jQuery( document );
 
 
 var rparentsprev = /^(?:parents|prev(?:Until|All))/,
-	// Methods guaranteed to produce a unique set when starting from a unique set
+	// methods guaranteed to produce a unique set when starting from a unique set
 	guaranteedUnique = {
 		children: true,
 		contents: true,
@@ -3052,40 +3099,38 @@ var rparentsprev = /^(?:parents|prev(?:Until|All))/,
 jQuery.extend({
 	dir: function( elem, dir, until ) {
 		var matched = [],
-			truncate = until !== undefined;
+			cur = elem[ dir ];
 
-		while ( (elem = elem[ dir ]) && elem.nodeType !== 9 ) {
-			if ( elem.nodeType === 1 ) {
-				if ( truncate && jQuery( elem ).is( until ) ) {
-					break;
-				}
-				matched.push( elem );
+		while ( cur && cur.nodeType !== 9 && (until === undefined || cur.nodeType !== 1 || !jQuery( cur ).is( until )) ) {
+			if ( cur.nodeType === 1 ) {
+				matched.push( cur );
 			}
+			cur = cur[dir];
 		}
 		return matched;
 	},
 
 	sibling: function( n, elem ) {
-		var matched = [];
+		var r = [];
 
 		for ( ; n; n = n.nextSibling ) {
 			if ( n.nodeType === 1 && n !== elem ) {
-				matched.push( n );
+				r.push( n );
 			}
 		}
 
-		return matched;
+		return r;
 	}
 });
 
 jQuery.fn.extend({
 	has: function( target ) {
-		var targets = jQuery( target, this ),
-			l = targets.length;
+		var i,
+			targets = jQuery( target, this ),
+			len = targets.length;
 
 		return this.filter(function() {
-			var i = 0;
-			for ( ; i < l; i++ ) {
+			for ( i = 0; i < len; i++ ) {
 				if ( jQuery.contains( this, targets[i] ) ) {
 					return true;
 				}
@@ -3121,25 +3166,24 @@ jQuery.fn.extend({
 		return this.pushStack( matched.length > 1 ? jQuery.unique( matched ) : matched );
 	},
 
-	// Determine the position of an element within the set
+	// Determine the position of an element within
+	// the matched set of elements
 	index: function( elem ) {
 
 		// No argument, return index in parent
 		if ( !elem ) {
-			return ( this[ 0 ] && this[ 0 ].parentNode ) ? this.first().prevAll().length : -1;
+			return ( this[0] && this[0].parentNode ) ? this.first().prevAll().length : -1;
 		}
 
-		// Index in selector
+		// index in selector
 		if ( typeof elem === "string" ) {
-			return indexOf.call( jQuery( elem ), this[ 0 ] );
+			return jQuery.inArray( this[0], jQuery( elem ) );
 		}
 
 		// Locate the position of the desired element
-		return indexOf.call( this,
-
+		return jQuery.inArray(
 			// If it receives a jQuery object, the first element is used
-			elem.jquery ? elem[ 0 ] : elem
-		);
+			elem.jquery ? elem[0] : elem, this );
 	},
 
 	add: function( selector, context ) {
@@ -3158,7 +3202,10 @@ jQuery.fn.extend({
 });
 
 function sibling( cur, dir ) {
-	while ( (cur = cur[dir]) && cur.nodeType !== 1 ) {}
+	do {
+		cur = cur[ dir ];
+	} while ( cur && cur.nodeType !== 1 );
+
 	return cur;
 }
 
@@ -3198,33 +3245,35 @@ jQuery.each({
 		return jQuery.sibling( elem.firstChild );
 	},
 	contents: function( elem ) {
-		return elem.contentDocument || jQuery.merge( [], elem.childNodes );
+		return jQuery.nodeName( elem, "iframe" ) ?
+			elem.contentDocument || elem.contentWindow.document :
+			jQuery.merge( [], elem.childNodes );
 	}
 }, function( name, fn ) {
 	jQuery.fn[ name ] = function( until, selector ) {
-		var matched = jQuery.map( this, fn, until );
+		var ret = jQuery.map( this, fn, until );
 
 		if ( name.slice( -5 ) !== "Until" ) {
 			selector = until;
 		}
 
 		if ( selector && typeof selector === "string" ) {
-			matched = jQuery.filter( selector, matched );
+			ret = jQuery.filter( selector, ret );
 		}
 
 		if ( this.length > 1 ) {
 			// Remove duplicates
 			if ( !guaranteedUnique[ name ] ) {
-				jQuery.unique( matched );
+				ret = jQuery.unique( ret );
 			}
 
 			// Reverse order for parents* and prev-derivatives
 			if ( rparentsprev.test( name ) ) {
-				matched.reverse();
+				ret = ret.reverse();
 			}
 		}
 
-		return this.pushStack( matched );
+		return this.pushStack( ret );
 	};
 });
 var rnotwhite = (/\S+/g);
@@ -3273,18 +3322,18 @@ jQuery.Callbacks = function( options ) {
 		( optionsCache[ options ] || createOptions( options ) ) :
 		jQuery.extend( {}, options );
 
-	var // Last fire value (for non-forgettable lists)
+	var // Flag to know if list is currently firing
+		firing,
+		// Last fire value (for non-forgettable lists)
 		memory,
 		// Flag to know if list was already fired
 		fired,
-		// Flag to know if list is currently firing
-		firing,
-		// First callback to fire (used internally by add and fireWith)
-		firingStart,
 		// End of the loop when firing
 		firingLength,
 		// Index of currently firing callback (modified by remove if needed)
 		firingIndex,
+		// First callback to fire (used internally by add and fireWith)
+		firingStart,
 		// Actual callback list
 		list = [],
 		// Stack of fire calls for repeatable lists
@@ -3537,7 +3586,8 @@ jQuery.extend({
 					values[ i ] = arguments.length > 1 ? slice.call( arguments ) : value;
 					if ( values === progressValues ) {
 						deferred.notifyWith( contexts, values );
-					} else if ( !( --remaining ) ) {
+
+					} else if ( !(--remaining) ) {
 						deferred.resolveWith( contexts, values );
 					}
 				};
@@ -3545,7 +3595,7 @@ jQuery.extend({
 
 			progressValues, progressContexts, resolveContexts;
 
-		// Add listeners to Deferred subordinates; treat others as resolved
+		// add listeners to Deferred subordinates; treat others as resolved
 		if ( length > 1 ) {
 			progressValues = new Array( length );
 			progressContexts = new Array( length );
@@ -3562,7 +3612,7 @@ jQuery.extend({
 			}
 		}
 
-		// If we're not waiting on anything, resolve the master
+		// if we're not waiting on anything, resolve the master
 		if ( !remaining ) {
 			deferred.resolveWith( resolveContexts, resolveValues );
 		}
@@ -3607,6 +3657,11 @@ jQuery.extend({
 			return;
 		}
 
+		// Make sure body exists, at least, in case IE gets a little overzealous (ticket #5443).
+		if ( !document.body ) {
+			return setTimeout( jQuery.ready );
+		}
+
 		// Remember that the DOM is ready
 		jQuery.isReady = true;
 
@@ -3627,12 +3682,28 @@ jQuery.extend({
 });
 
 /**
+ * Clean-up method for dom ready events
+ */
+function detach() {
+	if ( document.addEventListener ) {
+		document.removeEventListener( "DOMContentLoaded", completed, false );
+		window.removeEventListener( "load", completed, false );
+
+	} else {
+		document.detachEvent( "onreadystatechange", completed );
+		window.detachEvent( "onload", completed );
+	}
+}
+
+/**
  * The ready event handler and self cleanup method
  */
 function completed() {
-	document.removeEventListener( "DOMContentLoaded", completed, false );
-	window.removeEventListener( "load", completed, false );
-	jQuery.ready();
+	// readyState === "complete" is good enough for us to call the dom ready in oldIE
+	if ( document.addEventListener || event.type === "load" || document.readyState === "complete" ) {
+		detach();
+		jQuery.ready();
+	}
 }
 
 jQuery.ready.promise = function( obj ) {
@@ -3641,297 +3712,162 @@ jQuery.ready.promise = function( obj ) {
 		readyList = jQuery.Deferred();
 
 		// Catch cases where $(document).ready() is called after the browser event has already occurred.
-		// We once tried to use readyState "interactive" here, but it caused issues like the one
+		// we once tried to use readyState "interactive" here, but it caused issues like the one
 		// discovered by ChrisS here: http://bugs.jquery.com/ticket/12282#comment:15
 		if ( document.readyState === "complete" ) {
 			// Handle it asynchronously to allow scripts the opportunity to delay ready
 			setTimeout( jQuery.ready );
 
-		} else {
-
+		// Standards-based browsers support DOMContentLoaded
+		} else if ( document.addEventListener ) {
 			// Use the handy event callback
 			document.addEventListener( "DOMContentLoaded", completed, false );
 
 			// A fallback to window.onload, that will always work
 			window.addEventListener( "load", completed, false );
+
+		// If IE event model is used
+		} else {
+			// Ensure firing before onload, maybe late but safe also for iframes
+			document.attachEvent( "onreadystatechange", completed );
+
+			// A fallback to window.onload, that will always work
+			window.attachEvent( "onload", completed );
+
+			// If IE and not a frame
+			// continually check to see if the document is ready
+			var top = false;
+
+			try {
+				top = window.frameElement == null && document.documentElement;
+			} catch(e) {}
+
+			if ( top && top.doScroll ) {
+				(function doScrollCheck() {
+					if ( !jQuery.isReady ) {
+
+						try {
+							// Use the trick by Diego Perini
+							// http://javascript.nwbox.com/IEContentLoaded/
+							top.doScroll("left");
+						} catch(e) {
+							return setTimeout( doScrollCheck, 50 );
+						}
+
+						// detach all dom ready events
+						detach();
+
+						// and execute any waiting functions
+						jQuery.ready();
+					}
+				})();
+			}
 		}
 	}
 	return readyList.promise( obj );
 };
 
-// Kick off the DOM ready check even if the user does not
-jQuery.ready.promise();
+
+var strundefined = typeof undefined;
 
 
 
+// Support: IE<9
+// Iteration over object's inherited properties before its own
+var i;
+for ( i in jQuery( support ) ) {
+	break;
+}
+support.ownLast = i !== "0";
 
-// Multifunctional method to get and set values of a collection
-// The value/s can optionally be executed if it's a function
-var access = jQuery.access = function( elems, fn, key, value, chainable, emptyGet, raw ) {
-	var i = 0,
-		len = elems.length,
-		bulk = key == null;
+// Note: most support tests are defined in their respective modules.
+// false until the test is run
+support.inlineBlockNeedsLayout = false;
 
-	// Sets many values
-	if ( jQuery.type( key ) === "object" ) {
-		chainable = true;
-		for ( i in key ) {
-			jQuery.access( elems, fn, i, key[i], true, emptyGet, raw );
-		}
+// Execute ASAP in case we need to set body.style.zoom
+jQuery(function() {
+	// Minified: var a,b,c,d
+	var val, div, body, container;
 
-	// Sets one value
-	} else if ( value !== undefined ) {
-		chainable = true;
+	body = document.getElementsByTagName( "body" )[ 0 ];
+	if ( !body || !body.style ) {
+		// Return for frameset docs that don't have a body
+		return;
+	}
 
-		if ( !jQuery.isFunction( value ) ) {
-			raw = true;
-		}
+	// Setup
+	div = document.createElement( "div" );
+	container = document.createElement( "div" );
+	container.style.cssText = "position:absolute;border:0;width:0;height:0;top:0;left:-9999px";
+	body.appendChild( container ).appendChild( div );
 
-		if ( bulk ) {
-			// Bulk operations run against the entire set
-			if ( raw ) {
-				fn.call( elems, value );
-				fn = null;
+	if ( typeof div.style.zoom !== strundefined ) {
+		// Support: IE<8
+		// Check if natively block-level elements act like inline-block
+		// elements when setting their display to 'inline' and giving
+		// them layout
+		div.style.cssText = "display:inline;margin:0;border:0;padding:1px;width:1px;zoom:1";
 
-			// ...except when executing function values
-			} else {
-				bulk = fn;
-				fn = function( elem, key, value ) {
-					return bulk.call( jQuery( elem ), value );
-				};
-			}
-		}
-
-		if ( fn ) {
-			for ( ; i < len; i++ ) {
-				fn( elems[i], key, raw ? value : value.call( elems[i], i, fn( elems[i], key ) ) );
-			}
+		support.inlineBlockNeedsLayout = val = div.offsetWidth === 3;
+		if ( val ) {
+			// Prevent IE 6 from affecting layout for positioned elements #11048
+			// Prevent IE from shrinking the body in IE 7 mode #12869
+			// Support: IE<8
+			body.style.zoom = 1;
 		}
 	}
 
-	return chainable ?
-		elems :
+	body.removeChild( container );
+});
 
-		// Gets
-		bulk ?
-			fn.call( elems ) :
-			len ? fn( elems[0], key ) : emptyGet;
-};
+
+
+
+(function() {
+	var div = document.createElement( "div" );
+
+	// Execute the test only if not already executed in another module.
+	if (support.deleteExpando == null) {
+		// Support: IE<9
+		support.deleteExpando = true;
+		try {
+			delete div.test;
+		} catch( e ) {
+			support.deleteExpando = false;
+		}
+	}
+
+	// Null elements to avoid leaks in IE.
+	div = null;
+})();
 
 
 /**
  * Determines whether an object can have data
  */
-jQuery.acceptData = function( owner ) {
-	// Accepts only:
-	//  - Node
-	//    - Node.ELEMENT_NODE
-	//    - Node.DOCUMENT_NODE
-	//  - Object
-	//    - Any
-	/* jshint -W018 */
-	return owner.nodeType === 1 || owner.nodeType === 9 || !( +owner.nodeType );
+jQuery.acceptData = function( elem ) {
+	var noData = jQuery.noData[ (elem.nodeName + " ").toLowerCase() ],
+		nodeType = +elem.nodeType || 1;
+
+	// Do not set data on non-element DOM nodes because it will not be cleared (#8335).
+	return nodeType !== 1 && nodeType !== 9 ?
+		false :
+
+		// Nodes accept data unless otherwise specified; rejection can be conditional
+		!noData || noData !== true && elem.getAttribute("classid") === noData;
 };
 
-
-function Data() {
-	// Support: Android<4,
-	// Old WebKit does not have Object.preventExtensions/freeze method,
-	// return new empty object instead with no [[set]] accessor
-	Object.defineProperty( this.cache = {}, 0, {
-		get: function() {
-			return {};
-		}
-	});
-
-	this.expando = jQuery.expando + Data.uid++;
-}
-
-Data.uid = 1;
-Data.accepts = jQuery.acceptData;
-
-Data.prototype = {
-	key: function( owner ) {
-		// We can accept data for non-element nodes in modern browsers,
-		// but we should not, see #8335.
-		// Always return the key for a frozen object.
-		if ( !Data.accepts( owner ) ) {
-			return 0;
-		}
-
-		var descriptor = {},
-			// Check if the owner object already has a cache key
-			unlock = owner[ this.expando ];
-
-		// If not, create one
-		if ( !unlock ) {
-			unlock = Data.uid++;
-
-			// Secure it in a non-enumerable, non-writable property
-			try {
-				descriptor[ this.expando ] = { value: unlock };
-				Object.defineProperties( owner, descriptor );
-
-			// Support: Android<4
-			// Fallback to a less secure definition
-			} catch ( e ) {
-				descriptor[ this.expando ] = unlock;
-				jQuery.extend( owner, descriptor );
-			}
-		}
-
-		// Ensure the cache object
-		if ( !this.cache[ unlock ] ) {
-			this.cache[ unlock ] = {};
-		}
-
-		return unlock;
-	},
-	set: function( owner, data, value ) {
-		var prop,
-			// There may be an unlock assigned to this node,
-			// if there is no entry for this "owner", create one inline
-			// and set the unlock as though an owner entry had always existed
-			unlock = this.key( owner ),
-			cache = this.cache[ unlock ];
-
-		// Handle: [ owner, key, value ] args
-		if ( typeof data === "string" ) {
-			cache[ data ] = value;
-
-		// Handle: [ owner, { properties } ] args
-		} else {
-			// Fresh assignments by object are shallow copied
-			if ( jQuery.isEmptyObject( cache ) ) {
-				jQuery.extend( this.cache[ unlock ], data );
-			// Otherwise, copy the properties one-by-one to the cache object
-			} else {
-				for ( prop in data ) {
-					cache[ prop ] = data[ prop ];
-				}
-			}
-		}
-		return cache;
-	},
-	get: function( owner, key ) {
-		// Either a valid cache is found, or will be created.
-		// New caches will be created and the unlock returned,
-		// allowing direct access to the newly created
-		// empty data object. A valid owner object must be provided.
-		var cache = this.cache[ this.key( owner ) ];
-
-		return key === undefined ?
-			cache : cache[ key ];
-	},
-	access: function( owner, key, value ) {
-		var stored;
-		// In cases where either:
-		//
-		//   1. No key was specified
-		//   2. A string key was specified, but no value provided
-		//
-		// Take the "read" path and allow the get method to determine
-		// which value to return, respectively either:
-		//
-		//   1. The entire cache object
-		//   2. The data stored at the key
-		//
-		if ( key === undefined ||
-				((key && typeof key === "string") && value === undefined) ) {
-
-			stored = this.get( owner, key );
-
-			return stored !== undefined ?
-				stored : this.get( owner, jQuery.camelCase(key) );
-		}
-
-		// [*]When the key is not a string, or both a key and value
-		// are specified, set or extend (existing objects) with either:
-		//
-		//   1. An object of properties
-		//   2. A key and value
-		//
-		this.set( owner, key, value );
-
-		// Since the "set" path can have two possible entry points
-		// return the expected data based on which path was taken[*]
-		return value !== undefined ? value : key;
-	},
-	remove: function( owner, key ) {
-		var i, name, camel,
-			unlock = this.key( owner ),
-			cache = this.cache[ unlock ];
-
-		if ( key === undefined ) {
-			this.cache[ unlock ] = {};
-
-		} else {
-			// Support array or space separated string of keys
-			if ( jQuery.isArray( key ) ) {
-				// If "name" is an array of keys...
-				// When data is initially created, via ("key", "val") signature,
-				// keys will be converted to camelCase.
-				// Since there is no way to tell _how_ a key was added, remove
-				// both plain key and camelCase key. #12786
-				// This will only penalize the array argument path.
-				name = key.concat( key.map( jQuery.camelCase ) );
-			} else {
-				camel = jQuery.camelCase( key );
-				// Try the string as a key before any manipulation
-				if ( key in cache ) {
-					name = [ key, camel ];
-				} else {
-					// If a key with the spaces exists, use it.
-					// Otherwise, create an array by matching non-whitespace
-					name = camel;
-					name = name in cache ?
-						[ name ] : ( name.match( rnotwhite ) || [] );
-				}
-			}
-
-			i = name.length;
-			while ( i-- ) {
-				delete cache[ name[ i ] ];
-			}
-		}
-	},
-	hasData: function( owner ) {
-		return !jQuery.isEmptyObject(
-			this.cache[ owner[ this.expando ] ] || {}
-		);
-	},
-	discard: function( owner ) {
-		if ( owner[ this.expando ] ) {
-			delete this.cache[ owner[ this.expando ] ];
-		}
-	}
-};
-var data_priv = new Data();
-
-var data_user = new Data();
-
-
-
-//	Implementation Summary
-//
-//	1. Enforce API surface and semantic compatibility with 1.9.x branch
-//	2. Improve the module's maintainability by reducing the storage
-//		paths to a single mechanism.
-//	3. Use the same single mechanism to support "private" and "user" data.
-//	4. _Never_ expose "private" data to user code (TODO: Drop _data, _removeData)
-//	5. Avoid exposing implementation details on user objects (eg. expando properties)
-//	6. Provide a clear path for implementation upgrade to WeakMap in 2014
 
 var rbrace = /^(?:\{[\w\W]*\}|\[[\w\W]*\])$/,
 	rmultiDash = /([A-Z])/g;
 
 function dataAttr( elem, key, data ) {
-	var name;
-
 	// If nothing was found internally, try to fetch any
 	// data from the HTML5 data-* attribute
 	if ( data === undefined && elem.nodeType === 1 ) {
-		name = "data-" + key.replace( rmultiDash, "-$1" ).toLowerCase();
+
+		var name = "data-" + key.replace( rmultiDash, "-$1" ).toLowerCase();
+
 		data = elem.getAttribute( name );
 
 		if ( typeof data === "string" ) {
@@ -3946,50 +3882,262 @@ function dataAttr( elem, key, data ) {
 			} catch( e ) {}
 
 			// Make sure we set the data so it isn't changed later
-			data_user.set( elem, key, data );
+			jQuery.data( elem, key, data );
+
 		} else {
 			data = undefined;
 		}
 	}
+
 	return data;
 }
 
+// checks a cache object for emptiness
+function isEmptyDataObject( obj ) {
+	var name;
+	for ( name in obj ) {
+
+		// if the public data object is empty, the private is still empty
+		if ( name === "data" && jQuery.isEmptyObject( obj[name] ) ) {
+			continue;
+		}
+		if ( name !== "toJSON" ) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+function internalData( elem, name, data, pvt /* Internal Use Only */ ) {
+	if ( !jQuery.acceptData( elem ) ) {
+		return;
+	}
+
+	var ret, thisCache,
+		internalKey = jQuery.expando,
+
+		// We have to handle DOM nodes and JS objects differently because IE6-7
+		// can't GC object references properly across the DOM-JS boundary
+		isNode = elem.nodeType,
+
+		// Only DOM nodes need the global jQuery cache; JS object data is
+		// attached directly to the object so GC can occur automatically
+		cache = isNode ? jQuery.cache : elem,
+
+		// Only defining an ID for JS objects if its cache already exists allows
+		// the code to shortcut on the same path as a DOM node with no cache
+		id = isNode ? elem[ internalKey ] : elem[ internalKey ] && internalKey;
+
+	// Avoid doing any more work than we need to when trying to get data on an
+	// object that has no data at all
+	if ( (!id || !cache[id] || (!pvt && !cache[id].data)) && data === undefined && typeof name === "string" ) {
+		return;
+	}
+
+	if ( !id ) {
+		// Only DOM nodes need a new unique ID for each element since their data
+		// ends up in the global cache
+		if ( isNode ) {
+			id = elem[ internalKey ] = deletedIds.pop() || jQuery.guid++;
+		} else {
+			id = internalKey;
+		}
+	}
+
+	if ( !cache[ id ] ) {
+		// Avoid exposing jQuery metadata on plain JS objects when the object
+		// is serialized using JSON.stringify
+		cache[ id ] = isNode ? {} : { toJSON: jQuery.noop };
+	}
+
+	// An object can be passed to jQuery.data instead of a key/value pair; this gets
+	// shallow copied over onto the existing cache
+	if ( typeof name === "object" || typeof name === "function" ) {
+		if ( pvt ) {
+			cache[ id ] = jQuery.extend( cache[ id ], name );
+		} else {
+			cache[ id ].data = jQuery.extend( cache[ id ].data, name );
+		}
+	}
+
+	thisCache = cache[ id ];
+
+	// jQuery data() is stored in a separate object inside the object's internal data
+	// cache in order to avoid key collisions between internal data and user-defined
+	// data.
+	if ( !pvt ) {
+		if ( !thisCache.data ) {
+			thisCache.data = {};
+		}
+
+		thisCache = thisCache.data;
+	}
+
+	if ( data !== undefined ) {
+		thisCache[ jQuery.camelCase( name ) ] = data;
+	}
+
+	// Check for both converted-to-camel and non-converted data property names
+	// If a data property was specified
+	if ( typeof name === "string" ) {
+
+		// First Try to find as-is property data
+		ret = thisCache[ name ];
+
+		// Test for null|undefined property data
+		if ( ret == null ) {
+
+			// Try to find the camelCased property
+			ret = thisCache[ jQuery.camelCase( name ) ];
+		}
+	} else {
+		ret = thisCache;
+	}
+
+	return ret;
+}
+
+function internalRemoveData( elem, name, pvt ) {
+	if ( !jQuery.acceptData( elem ) ) {
+		return;
+	}
+
+	var thisCache, i,
+		isNode = elem.nodeType,
+
+		// See jQuery.data for more information
+		cache = isNode ? jQuery.cache : elem,
+		id = isNode ? elem[ jQuery.expando ] : jQuery.expando;
+
+	// If there is already no cache entry for this object, there is no
+	// purpose in continuing
+	if ( !cache[ id ] ) {
+		return;
+	}
+
+	if ( name ) {
+
+		thisCache = pvt ? cache[ id ] : cache[ id ].data;
+
+		if ( thisCache ) {
+
+			// Support array or space separated string names for data keys
+			if ( !jQuery.isArray( name ) ) {
+
+				// try the string as a key before any manipulation
+				if ( name in thisCache ) {
+					name = [ name ];
+				} else {
+
+					// split the camel cased version by spaces unless a key with the spaces exists
+					name = jQuery.camelCase( name );
+					if ( name in thisCache ) {
+						name = [ name ];
+					} else {
+						name = name.split(" ");
+					}
+				}
+			} else {
+				// If "name" is an array of keys...
+				// When data is initially created, via ("key", "val") signature,
+				// keys will be converted to camelCase.
+				// Since there is no way to tell _how_ a key was added, remove
+				// both plain key and camelCase key. #12786
+				// This will only penalize the array argument path.
+				name = name.concat( jQuery.map( name, jQuery.camelCase ) );
+			}
+
+			i = name.length;
+			while ( i-- ) {
+				delete thisCache[ name[i] ];
+			}
+
+			// If there is no data left in the cache, we want to continue
+			// and let the cache object itself get destroyed
+			if ( pvt ? !isEmptyDataObject(thisCache) : !jQuery.isEmptyObject(thisCache) ) {
+				return;
+			}
+		}
+	}
+
+	// See jQuery.data for more information
+	if ( !pvt ) {
+		delete cache[ id ].data;
+
+		// Don't destroy the parent cache unless the internal data object
+		// had been the only thing left in it
+		if ( !isEmptyDataObject( cache[ id ] ) ) {
+			return;
+		}
+	}
+
+	// Destroy the cache
+	if ( isNode ) {
+		jQuery.cleanData( [ elem ], true );
+
+	// Use delete when supported for expandos or `cache` is not a window per isWindow (#10080)
+	/* jshint eqeqeq: false */
+	} else if ( support.deleteExpando || cache != cache.window ) {
+		/* jshint eqeqeq: true */
+		delete cache[ id ];
+
+	// When all else fails, null
+	} else {
+		cache[ id ] = null;
+	}
+}
+
 jQuery.extend({
+	cache: {},
+
+	// The following elements (space-suffixed to avoid Object.prototype collisions)
+	// throw uncatchable exceptions if you attempt to set expando properties
+	noData: {
+		"applet ": true,
+		"embed ": true,
+		// ...but Flash objects (which have this classid) *can* handle expandos
+		"object ": "clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"
+	},
+
 	hasData: function( elem ) {
-		return data_user.hasData( elem ) || data_priv.hasData( elem );
+		elem = elem.nodeType ? jQuery.cache[ elem[jQuery.expando] ] : elem[ jQuery.expando ];
+		return !!elem && !isEmptyDataObject( elem );
 	},
 
 	data: function( elem, name, data ) {
-		return data_user.access( elem, name, data );
+		return internalData( elem, name, data );
 	},
 
 	removeData: function( elem, name ) {
-		data_user.remove( elem, name );
+		return internalRemoveData( elem, name );
 	},
 
-	// TODO: Now that all calls to _data and _removeData have been replaced
-	// with direct calls to data_priv methods, these can be deprecated.
+	// For internal use only.
 	_data: function( elem, name, data ) {
-		return data_priv.access( elem, name, data );
+		return internalData( elem, name, data, true );
 	},
 
 	_removeData: function( elem, name ) {
-		data_priv.remove( elem, name );
+		return internalRemoveData( elem, name, true );
 	}
 });
 
 jQuery.fn.extend({
 	data: function( key, value ) {
 		var i, name, data,
-			elem = this[ 0 ],
+			elem = this[0],
 			attrs = elem && elem.attributes;
+
+		// Special expections of .data basically thwart jQuery.access,
+		// so implement the relevant behavior ourselves
 
 		// Gets all values
 		if ( key === undefined ) {
 			if ( this.length ) {
-				data = data_user.get( elem );
+				data = jQuery.data( elem );
 
-				if ( elem.nodeType === 1 && !data_priv.get( elem, "hasDataAttrs" ) ) {
+				if ( elem.nodeType === 1 && !jQuery._data( elem, "parsedAttrs" ) ) {
 					i = attrs.length;
 					while ( i-- ) {
 
@@ -4003,7 +4151,7 @@ jQuery.fn.extend({
 							}
 						}
 					}
-					data_priv.set( elem, "hasDataAttrs", true );
+					jQuery._data( elem, "parsedAttrs", true );
 				}
 			}
 
@@ -4013,69 +4161,25 @@ jQuery.fn.extend({
 		// Sets multiple values
 		if ( typeof key === "object" ) {
 			return this.each(function() {
-				data_user.set( this, key );
+				jQuery.data( this, key );
 			});
 		}
 
-		return access( this, function( value ) {
-			var data,
-				camelKey = jQuery.camelCase( key );
+		return arguments.length > 1 ?
 
-			// The calling jQuery object (element matches) is not empty
-			// (and therefore has an element appears at this[ 0 ]) and the
-			// `value` parameter was not undefined. An empty jQuery object
-			// will result in `undefined` for elem = this[ 0 ] which will
-			// throw an exception if an attempt to read a data cache is made.
-			if ( elem && value === undefined ) {
-				// Attempt to get data from the cache
-				// with the key as-is
-				data = data_user.get( elem, key );
-				if ( data !== undefined ) {
-					return data;
-				}
-
-				// Attempt to get data from the cache
-				// with the key camelized
-				data = data_user.get( elem, camelKey );
-				if ( data !== undefined ) {
-					return data;
-				}
-
-				// Attempt to "discover" the data in
-				// HTML5 custom data-* attrs
-				data = dataAttr( elem, camelKey, undefined );
-				if ( data !== undefined ) {
-					return data;
-				}
-
-				// We tried really hard, but the data doesn't exist.
-				return;
-			}
-
-			// Set the data...
+			// Sets one value
 			this.each(function() {
-				// First, attempt to store a copy or reference of any
-				// data that might've been store with a camelCased key.
-				var data = data_user.get( this, camelKey );
+				jQuery.data( this, key, value );
+			}) :
 
-				// For HTML5 data-* attribute interop, we have to
-				// store property names with dashes in a camelCase form.
-				// This might not apply to all properties...*
-				data_user.set( this, camelKey, value );
-
-				// *... In the case of properties that might _actually_
-				// have dashes, we need to also store a copy of that
-				// unchanged property.
-				if ( key.indexOf("-") !== -1 && data !== undefined ) {
-					data_user.set( this, key, value );
-				}
-			});
-		}, null, value, arguments.length > 1, null, true );
+			// Gets one value
+			// Try to fetch any internally stored data first
+			elem ? dataAttr( elem, key, jQuery.data( elem, key ) ) : undefined;
 	},
 
 	removeData: function( key ) {
 		return this.each(function() {
-			data_user.remove( this, key );
+			jQuery.removeData( this, key );
 		});
 	}
 });
@@ -4087,12 +4191,12 @@ jQuery.extend({
 
 		if ( elem ) {
 			type = ( type || "fx" ) + "queue";
-			queue = data_priv.get( elem, type );
+			queue = jQuery._data( elem, type );
 
 			// Speed up dequeue by getting out quickly if this is just a lookup
 			if ( data ) {
-				if ( !queue || jQuery.isArray( data ) ) {
-					queue = data_priv.access( elem, type, jQuery.makeArray(data) );
+				if ( !queue || jQuery.isArray(data) ) {
+					queue = jQuery._data( elem, type, jQuery.makeArray(data) );
 				} else {
 					queue.push( data );
 				}
@@ -4126,7 +4230,7 @@ jQuery.extend({
 				queue.unshift( "inprogress" );
 			}
 
-			// Clear up the last queue stop function
+			// clear up the last queue stop function
 			delete hooks.stop;
 			fn.call( elem, next, hooks );
 		}
@@ -4136,12 +4240,13 @@ jQuery.extend({
 		}
 	},
 
-	// Not public - generate a queueHooks object, or return the current one
+	// not intended for public consumption - generates a queueHooks object, or returns the current one
 	_queueHooks: function( elem, type ) {
 		var key = type + "queueHooks";
-		return data_priv.get( elem, key ) || data_priv.access( elem, key, {
+		return jQuery._data( elem, key ) || jQuery._data( elem, key, {
 			empty: jQuery.Callbacks("once memory").add(function() {
-				data_priv.remove( elem, [ type + "queue", key ] );
+				jQuery._removeData( elem, type + "queue" );
+				jQuery._removeData( elem, key );
 			})
 		});
 	}
@@ -4166,7 +4271,7 @@ jQuery.fn.extend({
 			this.each(function() {
 				var queue = jQuery.queue( this, type, data );
 
-				// Ensure a hooks for this queue
+				// ensure a hooks for this queue
 				jQuery._queueHooks( this, type );
 
 				if ( type === "fx" && queue[0] !== "inprogress" ) {
@@ -4203,7 +4308,7 @@ jQuery.fn.extend({
 		type = type || "fx";
 
 		while ( i-- ) {
-			tmp = data_priv.get( elements[ i ], type + "queueHooks" );
+			tmp = jQuery._data( elements[ i ], type + "queueHooks" );
 			if ( tmp && tmp.empty ) {
 				count++;
 				tmp.empty.add( resolve );
@@ -4224,42 +4329,155 @@ var isHidden = function( elem, el ) {
 		return jQuery.css( elem, "display" ) === "none" || !jQuery.contains( elem.ownerDocument, elem );
 	};
 
+
+
+// Multifunctional method to get and set values of a collection
+// The value/s can optionally be executed if it's a function
+var access = jQuery.access = function( elems, fn, key, value, chainable, emptyGet, raw ) {
+	var i = 0,
+		length = elems.length,
+		bulk = key == null;
+
+	// Sets many values
+	if ( jQuery.type( key ) === "object" ) {
+		chainable = true;
+		for ( i in key ) {
+			jQuery.access( elems, fn, i, key[i], true, emptyGet, raw );
+		}
+
+	// Sets one value
+	} else if ( value !== undefined ) {
+		chainable = true;
+
+		if ( !jQuery.isFunction( value ) ) {
+			raw = true;
+		}
+
+		if ( bulk ) {
+			// Bulk operations run against the entire set
+			if ( raw ) {
+				fn.call( elems, value );
+				fn = null;
+
+			// ...except when executing function values
+			} else {
+				bulk = fn;
+				fn = function( elem, key, value ) {
+					return bulk.call( jQuery( elem ), value );
+				};
+			}
+		}
+
+		if ( fn ) {
+			for ( ; i < length; i++ ) {
+				fn( elems[i], key, raw ? value : value.call( elems[i], i, fn( elems[i], key ) ) );
+			}
+		}
+	}
+
+	return chainable ?
+		elems :
+
+		// Gets
+		bulk ?
+			fn.call( elems ) :
+			length ? fn( elems[0], key ) : emptyGet;
+};
 var rcheckableType = (/^(?:checkbox|radio)$/i);
 
 
 
 (function() {
-	var fragment = document.createDocumentFragment(),
-		div = fragment.appendChild( document.createElement( "div" ) ),
-		input = document.createElement( "input" );
+	// Minified: var a,b,c
+	var input = document.createElement( "input" ),
+		div = document.createElement( "div" ),
+		fragment = document.createDocumentFragment();
 
-	// Support: Safari<=5.1
-	// Check state lost if the name is set (#11217)
-	// Support: Windows Web Apps (WWA)
-	// `name` and `type` must use .setAttribute for WWA (#14901)
-	input.setAttribute( "type", "radio" );
-	input.setAttribute( "checked", "checked" );
-	input.setAttribute( "name", "t" );
+	// Setup
+	div.innerHTML = "  <link/><table></table><a href='/a'>a</a><input type='checkbox'/>";
 
-	div.appendChild( input );
+	// IE strips leading whitespace when .innerHTML is used
+	support.leadingWhitespace = div.firstChild.nodeType === 3;
 
-	// Support: Safari<=5.1, Android<4.2
-	// Older WebKit doesn't clone checked state correctly in fragments
-	support.checkClone = div.cloneNode( true ).cloneNode( true ).lastChild.checked;
+	// Make sure that tbody elements aren't automatically inserted
+	// IE will insert them into empty tables
+	support.tbody = !div.getElementsByTagName( "tbody" ).length;
 
-	// Support: IE<=11+
+	// Make sure that link elements get serialized correctly by innerHTML
+	// This requires a wrapper element in IE
+	support.htmlSerialize = !!div.getElementsByTagName( "link" ).length;
+
+	// Makes sure cloning an html5 element does not cause problems
+	// Where outerHTML is undefined, this still works
+	support.html5Clone =
+		document.createElement( "nav" ).cloneNode( true ).outerHTML !== "<:nav></:nav>";
+
+	// Check if a disconnected checkbox will retain its checked
+	// value of true after appended to the DOM (IE6/7)
+	input.type = "checkbox";
+	input.checked = true;
+	fragment.appendChild( input );
+	support.appendChecked = input.checked;
+
 	// Make sure textarea (and checkbox) defaultValue is properly cloned
+	// Support: IE6-IE11+
 	div.innerHTML = "<textarea>x</textarea>";
 	support.noCloneChecked = !!div.cloneNode( true ).lastChild.defaultValue;
+
+	// #11217 - WebKit loses check when the name is after the checked attribute
+	fragment.appendChild( div );
+	div.innerHTML = "<input type='radio' checked='checked' name='t'/>";
+
+	// Support: Safari 5.1, iOS 5.1, Android 4.x, Android 2.3
+	// old WebKit doesn't clone checked state correctly in fragments
+	support.checkClone = div.cloneNode( true ).cloneNode( true ).lastChild.checked;
+
+	// Support: IE<9
+	// Opera does not clone events (and typeof div.attachEvent === undefined).
+	// IE9-10 clones events bound via attachEvent, but they don't trigger with .click()
+	support.noCloneEvent = true;
+	if ( div.attachEvent ) {
+		div.attachEvent( "onclick", function() {
+			support.noCloneEvent = false;
+		});
+
+		div.cloneNode( true ).click();
+	}
+
+	// Execute the test only if not already executed in another module.
+	if (support.deleteExpando == null) {
+		// Support: IE<9
+		support.deleteExpando = true;
+		try {
+			delete div.test;
+		} catch( e ) {
+			support.deleteExpando = false;
+		}
+	}
 })();
-var strundefined = typeof undefined;
 
 
+(function() {
+	var i, eventName,
+		div = document.createElement( "div" );
 
-support.focusinBubbles = "onfocusin" in window;
+	// Support: IE<9 (lack submit/change bubble), Firefox 23+ (lack focusin event)
+	for ( i in { submit: true, change: true, focusin: true }) {
+		eventName = "on" + i;
+
+		if ( !(support[ i + "Bubbles" ] = eventName in window) ) {
+			// Beware of CSP restrictions (https://developer.mozilla.org/en/Security/CSP)
+			div.setAttribute( eventName, "t" );
+			support[ i + "Bubbles" ] = div.attributes[ eventName ].expando === false;
+		}
+	}
+
+	// Null elements to avoid leaks in IE.
+	div = null;
+})();
 
 
-var
+var rformElems = /^(?:input|select|textarea)$/i,
 	rkeyEvent = /^key/,
 	rmouseEvent = /^(?:mouse|pointer|contextmenu)|click/,
 	rfocusMorph = /^(?:focusinfocus|focusoutblur)$/,
@@ -4288,11 +4506,10 @@ jQuery.event = {
 	global: {},
 
 	add: function( elem, types, handler, data, selector ) {
-
-		var handleObjIn, eventHandle, tmp,
-			events, t, handleObj,
-			special, handlers, type, namespaces, origType,
-			elemData = data_priv.get( elem );
+		var tmp, events, t, handleObjIn,
+			special, eventHandle, handleObj,
+			handlers, type, namespaces, origType,
+			elemData = jQuery._data( elem );
 
 		// Don't attach events to noData or text/comment nodes (but allow plain objects)
 		if ( !elemData ) {
@@ -4319,9 +4536,12 @@ jQuery.event = {
 			eventHandle = elemData.handle = function( e ) {
 				// Discard the second event of a jQuery.event.trigger() and
 				// when an event is called after a page has unloaded
-				return typeof jQuery !== strundefined && jQuery.event.triggered !== e.type ?
-					jQuery.event.dispatch.apply( elem, arguments ) : undefined;
+				return typeof jQuery !== strundefined && (!e || jQuery.event.triggered !== e.type) ?
+					jQuery.event.dispatch.apply( eventHandle.elem, arguments ) :
+					undefined;
 			};
+			// Add elem as a property of the handle fn to prevent a memory leak with IE non-native events
+			eventHandle.elem = elem;
 		}
 
 		// Handle multiple events separated by a space
@@ -4363,10 +4583,14 @@ jQuery.event = {
 				handlers = events[ type ] = [];
 				handlers.delegateCount = 0;
 
-				// Only use addEventListener if the special events handler returns false
+				// Only use addEventListener/attachEvent if the special events handler returns false
 				if ( !special.setup || special.setup.call( elem, data, namespaces, eventHandle ) === false ) {
+					// Bind the global event handler to the element
 					if ( elem.addEventListener ) {
 						elem.addEventListener( type, eventHandle, false );
+
+					} else if ( elem.attachEvent ) {
+						elem.attachEvent( "on" + type, eventHandle );
 					}
 				}
 			}
@@ -4390,15 +4614,17 @@ jQuery.event = {
 			jQuery.event.global[ type ] = true;
 		}
 
+		// Nullify elem to prevent memory leaks in IE
+		elem = null;
 	},
 
 	// Detach an event or set of events from an element
 	remove: function( elem, types, handler, selector, mappedTypes ) {
-
-		var j, origCount, tmp,
-			events, t, handleObj,
-			special, handlers, type, namespaces, origType,
-			elemData = data_priv.hasData( elem ) && data_priv.get( elem );
+		var j, handleObj, tmp,
+			origCount, t, events,
+			special, handlers, type,
+			namespaces, origType,
+			elemData = jQuery.hasData( elem ) && jQuery._data( elem );
 
 		if ( !elemData || !(events = elemData.events) ) {
 			return;
@@ -4459,13 +4685,16 @@ jQuery.event = {
 		// Remove the expando if it's no longer used
 		if ( jQuery.isEmptyObject( events ) ) {
 			delete elemData.handle;
-			data_priv.remove( elem, "events" );
+
+			// removeData also checks for emptiness and clears the expando if empty
+			// so use it instead of delete
+			jQuery._removeData( elem, "events" );
 		}
 	},
 
 	trigger: function( event, data, elem, onlyHandlers ) {
-
-		var i, cur, tmp, bubbleType, ontype, handle, special,
+		var handle, ontype, cur,
+			bubbleType, special, tmp, i,
 			eventPath = [ elem || document ],
 			type = hasOwn.call( event, "type" ) ? event.type : event,
 			namespaces = hasOwn.call( event, "namespace" ) ? event.namespace.split(".") : [];
@@ -4547,7 +4776,7 @@ jQuery.event = {
 				special.bindType || type;
 
 			// jQuery handler
-			handle = ( data_priv.get( cur, "events" ) || {} )[ event.type ] && data_priv.get( cur, "handle" );
+			handle = ( jQuery._data( cur, "events" ) || {} )[ event.type ] && jQuery._data( cur, "handle" );
 			if ( handle ) {
 				handle.apply( cur, data );
 			}
@@ -4570,8 +4799,9 @@ jQuery.event = {
 				jQuery.acceptData( elem ) ) {
 
 				// Call a native DOM method on the target with the same name name as the event.
+				// Can't use an .isFunction() check here because IE6/7 fails that test.
 				// Don't do default actions on window, that's where global variables be (#6170)
-				if ( ontype && jQuery.isFunction( elem[ type ] ) && !jQuery.isWindow( elem ) ) {
+				if ( ontype && elem[ type ] && !jQuery.isWindow( elem ) ) {
 
 					// Don't re-trigger an onFOO event when we call its FOO() method
 					tmp = elem[ ontype ];
@@ -4582,7 +4812,12 @@ jQuery.event = {
 
 					// Prevent re-triggering of the same event, since we already bubbled it above
 					jQuery.event.triggered = type;
-					elem[ type ]();
+					try {
+						elem[ type ]();
+					} catch ( e ) {
+						// IE<9 dies on focus/blur to hidden element (#1486,#12518)
+						// only reproducible on winXP IE8 native, not IE9 in IE8 mode
+					}
 					jQuery.event.triggered = undefined;
 
 					if ( tmp ) {
@@ -4600,10 +4835,10 @@ jQuery.event = {
 		// Make a writable jQuery.Event from the native event object
 		event = jQuery.event.fix( event );
 
-		var i, j, ret, matched, handleObj,
+		var i, ret, handleObj, matched, j,
 			handlerQueue = [],
 			args = slice.call( arguments ),
-			handlers = ( data_priv.get( this, "events" ) || {} )[ event.type ] || [],
+			handlers = ( jQuery._data( this, "events" ) || {} )[ event.type ] || [],
 			special = jQuery.event.special[ event.type ] || {};
 
 		// Use the fix-ed jQuery.Event rather than the (read-only) native event
@@ -4626,8 +4861,8 @@ jQuery.event = {
 			j = 0;
 			while ( (handleObj = matched.handlers[ j++ ]) && !event.isImmediatePropagationStopped() ) {
 
-				// Triggered event must either 1) have no namespace, or 2) have namespace(s)
-				// a subset or equal to those in the bound event (both can have no namespace).
+				// Triggered event must either 1) have no namespace, or
+				// 2) have namespace(s) a subset or equal to those in the bound event (both can have no namespace).
 				if ( !event.namespace_re || event.namespace_re.test( handleObj.namespace ) ) {
 
 					event.handleObj = handleObj;
@@ -4655,7 +4890,7 @@ jQuery.event = {
 	},
 
 	handlers: function( event, handlers ) {
-		var i, matches, sel, handleObj,
+		var sel, handleObj, matches, i,
 			handlerQueue = [],
 			delegateCount = handlers.delegateCount,
 			cur = event.target;
@@ -4665,10 +4900,13 @@ jQuery.event = {
 		// Avoid non-left-click bubbling in Firefox (#3861)
 		if ( delegateCount && cur.nodeType && (!event.button || event.type !== "click") ) {
 
-			for ( ; cur !== this; cur = cur.parentNode || this ) {
+			/* jshint eqeqeq: false */
+			for ( ; cur != this; cur = cur.parentNode || this ) {
+				/* jshint eqeqeq: true */
 
+				// Don't check non-elements (#13208)
 				// Don't process clicks on disabled elements (#6911, #8165, #11382, #11764)
-				if ( cur.disabled !== true || event.type !== "click" ) {
+				if ( cur.nodeType === 1 && (cur.disabled !== true || event.type !== "click") ) {
 					matches = [];
 					for ( i = 0; i < delegateCount; i++ ) {
 						handleObj = handlers[ i ];
@@ -4700,50 +4938,6 @@ jQuery.event = {
 		return handlerQueue;
 	},
 
-	// Includes some event props shared by KeyEvent and MouseEvent
-	props: "altKey bubbles cancelable ctrlKey currentTarget eventPhase metaKey relatedTarget shiftKey target timeStamp view which".split(" "),
-
-	fixHooks: {},
-
-	keyHooks: {
-		props: "char charCode key keyCode".split(" "),
-		filter: function( event, original ) {
-
-			// Add which for key events
-			if ( event.which == null ) {
-				event.which = original.charCode != null ? original.charCode : original.keyCode;
-			}
-
-			return event;
-		}
-	},
-
-	mouseHooks: {
-		props: "button buttons clientX clientY offsetX offsetY pageX pageY screenX screenY toElement".split(" "),
-		filter: function( event, original ) {
-			var eventDoc, doc, body,
-				button = original.button;
-
-			// Calculate pageX/Y if missing and clientX/Y available
-			if ( event.pageX == null && original.clientX != null ) {
-				eventDoc = event.target.ownerDocument || document;
-				doc = eventDoc.documentElement;
-				body = eventDoc.body;
-
-				event.pageX = original.clientX + ( doc && doc.scrollLeft || body && body.scrollLeft || 0 ) - ( doc && doc.clientLeft || body && body.clientLeft || 0 );
-				event.pageY = original.clientY + ( doc && doc.scrollTop  || body && body.scrollTop  || 0 ) - ( doc && doc.clientTop  || body && body.clientTop  || 0 );
-			}
-
-			// Add which for click: 1 === left; 2 === middle; 3 === right
-			// Note: button is not normalized, so don't use it
-			if ( !event.which && button !== undefined ) {
-				event.which = ( button & 1 ? 1 : ( button & 2 ? 3 : ( button & 4 ? 2 : 0 ) ) );
-			}
-
-			return event;
-		}
-	},
-
 	fix: function( event ) {
 		if ( event[ jQuery.expando ] ) {
 			return event;
@@ -4771,19 +4965,73 @@ jQuery.event = {
 			event[ prop ] = originalEvent[ prop ];
 		}
 
-		// Support: Cordova 2.5 (WebKit) (#13255)
-		// All events should have a target; Cordova deviceready doesn't
+		// Support: IE<9
+		// Fix target property (#1925)
 		if ( !event.target ) {
-			event.target = document;
+			event.target = originalEvent.srcElement || document;
 		}
 
-		// Support: Safari 6.0+, Chrome<28
+		// Support: Chrome 23+, Safari?
 		// Target should not be a text node (#504, #13143)
 		if ( event.target.nodeType === 3 ) {
 			event.target = event.target.parentNode;
 		}
 
+		// Support: IE<9
+		// For mouse/key events, metaKey==false if it's undefined (#3368, #11328)
+		event.metaKey = !!event.metaKey;
+
 		return fixHook.filter ? fixHook.filter( event, originalEvent ) : event;
+	},
+
+	// Includes some event props shared by KeyEvent and MouseEvent
+	props: "altKey bubbles cancelable ctrlKey currentTarget eventPhase metaKey relatedTarget shiftKey target timeStamp view which".split(" "),
+
+	fixHooks: {},
+
+	keyHooks: {
+		props: "char charCode key keyCode".split(" "),
+		filter: function( event, original ) {
+
+			// Add which for key events
+			if ( event.which == null ) {
+				event.which = original.charCode != null ? original.charCode : original.keyCode;
+			}
+
+			return event;
+		}
+	},
+
+	mouseHooks: {
+		props: "button buttons clientX clientY fromElement offsetX offsetY pageX pageY screenX screenY toElement".split(" "),
+		filter: function( event, original ) {
+			var body, eventDoc, doc,
+				button = original.button,
+				fromElement = original.fromElement;
+
+			// Calculate pageX/Y if missing and clientX/Y available
+			if ( event.pageX == null && original.clientX != null ) {
+				eventDoc = event.target.ownerDocument || document;
+				doc = eventDoc.documentElement;
+				body = eventDoc.body;
+
+				event.pageX = original.clientX + ( doc && doc.scrollLeft || body && body.scrollLeft || 0 ) - ( doc && doc.clientLeft || body && body.clientLeft || 0 );
+				event.pageY = original.clientY + ( doc && doc.scrollTop  || body && body.scrollTop  || 0 ) - ( doc && doc.clientTop  || body && body.clientTop  || 0 );
+			}
+
+			// Add relatedTarget, if necessary
+			if ( !event.relatedTarget && fromElement ) {
+				event.relatedTarget = fromElement === event.target ? original.toElement : fromElement;
+			}
+
+			// Add which for click: 1 === left; 2 === middle; 3 === right
+			// Note: button is not normalized, so don't use it
+			if ( !event.which && button !== undefined ) {
+				event.which = ( button & 1 ? 1 : ( button & 2 ? 3 : ( button & 4 ? 2 : 0 ) ) );
+			}
+
+			return event;
+		}
 	},
 
 	special: {
@@ -4795,8 +5043,14 @@ jQuery.event = {
 			// Fire native event if possible so blur/focus sequence is correct
 			trigger: function() {
 				if ( this !== safeActiveElement() && this.focus ) {
-					this.focus();
-					return false;
+					try {
+						this.focus();
+						return false;
+					} catch ( e ) {
+						// Support: IE<9
+						// If we error on focus to hidden element (#1486, #12518),
+						// let .trigger() run the handlers
+					}
 				}
 			},
 			delegateType: "focusin"
@@ -4813,7 +5067,7 @@ jQuery.event = {
 		click: {
 			// For checkbox, fire native event so checked state will be right
 			trigger: function() {
-				if ( this.type === "checkbox" && this.click && jQuery.nodeName( this, "input" ) ) {
+				if ( jQuery.nodeName( this, "input" ) && this.type === "checkbox" && this.click ) {
 					this.click();
 					return false;
 				}
@@ -4861,11 +5115,26 @@ jQuery.event = {
 	}
 };
 
-jQuery.removeEvent = function( elem, type, handle ) {
-	if ( elem.removeEventListener ) {
-		elem.removeEventListener( type, handle, false );
-	}
-};
+jQuery.removeEvent = document.removeEventListener ?
+	function( elem, type, handle ) {
+		if ( elem.removeEventListener ) {
+			elem.removeEventListener( type, handle, false );
+		}
+	} :
+	function( elem, type, handle ) {
+		var name = "on" + type;
+
+		if ( elem.detachEvent ) {
+
+			// #8545, #7054, preventing memory leaks for custom events in IE6-8
+			// detachEvent needed property on element, by name of that event, to properly expose it to GC
+			if ( typeof elem[ name ] === strundefined ) {
+				elem[ name ] = null;
+			}
+
+			elem.detachEvent( name, handle );
+		}
+	};
 
 jQuery.Event = function( src, props ) {
 	// Allow instantiation without the 'new' keyword
@@ -4882,7 +5151,7 @@ jQuery.Event = function( src, props ) {
 		// by a handler lower down the tree; reflect the correct value.
 		this.isDefaultPrevented = src.defaultPrevented ||
 				src.defaultPrevented === undefined &&
-				// Support: Android<4.0
+				// Support: IE < 9, Android < 4.0
 				src.returnValue === false ?
 			returnTrue :
 			returnFalse;
@@ -4915,19 +5184,35 @@ jQuery.Event.prototype = {
 		var e = this.originalEvent;
 
 		this.isDefaultPrevented = returnTrue;
+		if ( !e ) {
+			return;
+		}
 
-		if ( e && e.preventDefault ) {
+		// If preventDefault exists, run it on the original event
+		if ( e.preventDefault ) {
 			e.preventDefault();
+
+		// Support: IE
+		// Otherwise set the returnValue property of the original event to false
+		} else {
+			e.returnValue = false;
 		}
 	},
 	stopPropagation: function() {
 		var e = this.originalEvent;
 
 		this.isPropagationStopped = returnTrue;
-
-		if ( e && e.stopPropagation ) {
+		if ( !e ) {
+			return;
+		}
+		// If stopPropagation exists, run it on the original event
+		if ( e.stopPropagation ) {
 			e.stopPropagation();
 		}
+
+		// Support: IE
+		// Set the cancelBubble property of the original event to true
+		e.cancelBubble = true;
 	},
 	stopImmediatePropagation: function() {
 		var e = this.originalEvent;
@@ -4943,7 +5228,6 @@ jQuery.Event.prototype = {
 };
 
 // Create mouseenter/leave events using mouseover/out and event-time checks
-// Support: Chrome 15+
 jQuery.each({
 	mouseenter: "mouseover",
 	mouseleave: "mouseout",
@@ -4972,7 +5256,112 @@ jQuery.each({
 	};
 });
 
-// Support: Firefox, Chrome, Safari
+// IE submit delegation
+if ( !support.submitBubbles ) {
+
+	jQuery.event.special.submit = {
+		setup: function() {
+			// Only need this for delegated form submit events
+			if ( jQuery.nodeName( this, "form" ) ) {
+				return false;
+			}
+
+			// Lazy-add a submit handler when a descendant form may potentially be submitted
+			jQuery.event.add( this, "click._submit keypress._submit", function( e ) {
+				// Node name check avoids a VML-related crash in IE (#9807)
+				var elem = e.target,
+					form = jQuery.nodeName( elem, "input" ) || jQuery.nodeName( elem, "button" ) ? elem.form : undefined;
+				if ( form && !jQuery._data( form, "submitBubbles" ) ) {
+					jQuery.event.add( form, "submit._submit", function( event ) {
+						event._submit_bubble = true;
+					});
+					jQuery._data( form, "submitBubbles", true );
+				}
+			});
+			// return undefined since we don't need an event listener
+		},
+
+		postDispatch: function( event ) {
+			// If form was submitted by the user, bubble the event up the tree
+			if ( event._submit_bubble ) {
+				delete event._submit_bubble;
+				if ( this.parentNode && !event.isTrigger ) {
+					jQuery.event.simulate( "submit", this.parentNode, event, true );
+				}
+			}
+		},
+
+		teardown: function() {
+			// Only need this for delegated form submit events
+			if ( jQuery.nodeName( this, "form" ) ) {
+				return false;
+			}
+
+			// Remove delegated handlers; cleanData eventually reaps submit handlers attached above
+			jQuery.event.remove( this, "._submit" );
+		}
+	};
+}
+
+// IE change delegation and checkbox/radio fix
+if ( !support.changeBubbles ) {
+
+	jQuery.event.special.change = {
+
+		setup: function() {
+
+			if ( rformElems.test( this.nodeName ) ) {
+				// IE doesn't fire change on a check/radio until blur; trigger it on click
+				// after a propertychange. Eat the blur-change in special.change.handle.
+				// This still fires onchange a second time for check/radio after blur.
+				if ( this.type === "checkbox" || this.type === "radio" ) {
+					jQuery.event.add( this, "propertychange._change", function( event ) {
+						if ( event.originalEvent.propertyName === "checked" ) {
+							this._just_changed = true;
+						}
+					});
+					jQuery.event.add( this, "click._change", function( event ) {
+						if ( this._just_changed && !event.isTrigger ) {
+							this._just_changed = false;
+						}
+						// Allow triggered, simulated change events (#11500)
+						jQuery.event.simulate( "change", this, event, true );
+					});
+				}
+				return false;
+			}
+			// Delegated event; lazy-add a change handler on descendant inputs
+			jQuery.event.add( this, "beforeactivate._change", function( e ) {
+				var elem = e.target;
+
+				if ( rformElems.test( elem.nodeName ) && !jQuery._data( elem, "changeBubbles" ) ) {
+					jQuery.event.add( elem, "change._change", function( event ) {
+						if ( this.parentNode && !event.isSimulated && !event.isTrigger ) {
+							jQuery.event.simulate( "change", this.parentNode, event, true );
+						}
+					});
+					jQuery._data( elem, "changeBubbles", true );
+				}
+			});
+		},
+
+		handle: function( event ) {
+			var elem = event.target;
+
+			// Swallow native change events from checkbox/radio, we already triggered them above
+			if ( this !== elem || event.isSimulated || event.isTrigger || (elem.type !== "radio" && elem.type !== "checkbox") ) {
+				return event.handleObj.handler.apply( this, arguments );
+			}
+		},
+
+		teardown: function() {
+			jQuery.event.remove( this, "._change" );
+
+			return !rformElems.test( this.nodeName );
+		}
+	};
+}
+
 // Create "bubbling" focus and blur events
 if ( !support.focusinBubbles ) {
 	jQuery.each({ focus: "focusin", blur: "focusout" }, function( orig, fix ) {
@@ -4985,23 +5374,22 @@ if ( !support.focusinBubbles ) {
 		jQuery.event.special[ fix ] = {
 			setup: function() {
 				var doc = this.ownerDocument || this,
-					attaches = data_priv.access( doc, fix );
+					attaches = jQuery._data( doc, fix );
 
 				if ( !attaches ) {
 					doc.addEventListener( orig, handler, true );
 				}
-				data_priv.access( doc, fix, ( attaches || 0 ) + 1 );
+				jQuery._data( doc, fix, ( attaches || 0 ) + 1 );
 			},
 			teardown: function() {
 				var doc = this.ownerDocument || this,
-					attaches = data_priv.access( doc, fix ) - 1;
+					attaches = jQuery._data( doc, fix ) - 1;
 
 				if ( !attaches ) {
 					doc.removeEventListener( orig, handler, true );
-					data_priv.remove( doc, fix );
-
+					jQuery._removeData( doc, fix );
 				} else {
-					data_priv.access( doc, fix, attaches );
+					jQuery._data( doc, fix, attaches );
 				}
 			}
 		};
@@ -5011,7 +5399,7 @@ if ( !support.focusinBubbles ) {
 jQuery.fn.extend({
 
 	on: function( types, selector, data, fn, /*INTERNAL*/ one ) {
-		var origFn, type;
+		var type, origFn;
 
 		// Types can be a map of types/handlers
 		if ( typeof types === "object" ) {
@@ -5112,9 +5500,28 @@ jQuery.fn.extend({
 });
 
 
-var
+function createSafeFragment( document ) {
+	var list = nodeNames.split( "|" ),
+		safeFrag = document.createDocumentFragment();
+
+	if ( safeFrag.createElement ) {
+		while ( list.length ) {
+			safeFrag.createElement(
+				list.pop()
+			);
+		}
+	}
+	return safeFrag;
+}
+
+var nodeNames = "abbr|article|aside|audio|bdi|canvas|data|datalist|details|figcaption|figure|footer|" +
+		"header|hgroup|mark|meter|nav|output|progress|section|summary|time|video",
+	rinlinejQuery = / jQuery\d+="(?:null|\d+)"/g,
+	rnoshimcache = new RegExp("<(?:" + nodeNames + ")[\\s/>]", "i"),
+	rleadingWhitespace = /^\s+/,
 	rxhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>]*)\/>/gi,
 	rtagName = /<([\w:]+)/,
+	rtbody = /<tbody/i,
 	rhtml = /<|&#?\w+;/,
 	rnoInnerhtml = /<(?:script|style|link)/i,
 	// checked="checked" or checked
@@ -5125,25 +5532,56 @@ var
 
 	// We have to close these tags to support XHTML (#13200)
 	wrapMap = {
-
-		// Support: IE9
 		option: [ 1, "<select multiple='multiple'>", "</select>" ],
-
+		legend: [ 1, "<fieldset>", "</fieldset>" ],
+		area: [ 1, "<map>", "</map>" ],
+		param: [ 1, "<object>", "</object>" ],
 		thead: [ 1, "<table>", "</table>" ],
-		col: [ 2, "<table><colgroup>", "</colgroup></table>" ],
 		tr: [ 2, "<table><tbody>", "</tbody></table>" ],
+		col: [ 2, "<table><tbody></tbody><colgroup>", "</colgroup></table>" ],
 		td: [ 3, "<table><tbody><tr>", "</tr></tbody></table>" ],
 
-		_default: [ 0, "", "" ]
-	};
+		// IE6-8 can't serialize link, script, style, or any html5 (NoScope) tags,
+		// unless wrapped in a div with non-breaking characters in front of it.
+		_default: support.htmlSerialize ? [ 0, "", "" ] : [ 1, "X<div>", "</div>"  ]
+	},
+	safeFragment = createSafeFragment( document ),
+	fragmentDiv = safeFragment.appendChild( document.createElement("div") );
 
-// Support: IE9
 wrapMap.optgroup = wrapMap.option;
-
 wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.thead;
 wrapMap.th = wrapMap.td;
 
-// Support: 1.x compatibility
+function getAll( context, tag ) {
+	var elems, elem,
+		i = 0,
+		found = typeof context.getElementsByTagName !== strundefined ? context.getElementsByTagName( tag || "*" ) :
+			typeof context.querySelectorAll !== strundefined ? context.querySelectorAll( tag || "*" ) :
+			undefined;
+
+	if ( !found ) {
+		for ( found = [], elems = context.childNodes || context; (elem = elems[i]) != null; i++ ) {
+			if ( !tag || jQuery.nodeName( elem, tag ) ) {
+				found.push( elem );
+			} else {
+				jQuery.merge( found, getAll( elem, tag ) );
+			}
+		}
+	}
+
+	return tag === undefined || tag && jQuery.nodeName( context, tag ) ?
+		jQuery.merge( [ context ], found ) :
+		found;
+}
+
+// Used in buildFragment, fixes the defaultChecked property
+function fixDefaultChecked( elem ) {
+	if ( rcheckableType.test( elem.type ) ) {
+		elem.defaultChecked = elem.checked;
+	}
+}
+
+// Support: IE<8
 // Manipulating tables requires a tbody
 function manipulationTarget( elem, content ) {
 	return jQuery.nodeName( elem, "table" ) &&
@@ -5156,86 +5594,118 @@ function manipulationTarget( elem, content ) {
 
 // Replace/restore the type attribute of script elements for safe DOM manipulation
 function disableScript( elem ) {
-	elem.type = (elem.getAttribute("type") !== null) + "/" + elem.type;
+	elem.type = (jQuery.find.attr( elem, "type" ) !== null) + "/" + elem.type;
 	return elem;
 }
 function restoreScript( elem ) {
 	var match = rscriptTypeMasked.exec( elem.type );
-
 	if ( match ) {
-		elem.type = match[ 1 ];
+		elem.type = match[1];
 	} else {
 		elem.removeAttribute("type");
 	}
-
 	return elem;
 }
 
 // Mark scripts as having already been evaluated
 function setGlobalEval( elems, refElements ) {
-	var i = 0,
-		l = elems.length;
-
-	for ( ; i < l; i++ ) {
-		data_priv.set(
-			elems[ i ], "globalEval", !refElements || data_priv.get( refElements[ i ], "globalEval" )
-		);
+	var elem,
+		i = 0;
+	for ( ; (elem = elems[i]) != null; i++ ) {
+		jQuery._data( elem, "globalEval", !refElements || jQuery._data( refElements[i], "globalEval" ) );
 	}
 }
 
 function cloneCopyEvent( src, dest ) {
-	var i, l, type, pdataOld, pdataCur, udataOld, udataCur, events;
 
-	if ( dest.nodeType !== 1 ) {
+	if ( dest.nodeType !== 1 || !jQuery.hasData( src ) ) {
 		return;
 	}
 
-	// 1. Copy private data: events, handlers, etc.
-	if ( data_priv.hasData( src ) ) {
-		pdataOld = data_priv.access( src );
-		pdataCur = data_priv.set( dest, pdataOld );
-		events = pdataOld.events;
+	var type, i, l,
+		oldData = jQuery._data( src ),
+		curData = jQuery._data( dest, oldData ),
+		events = oldData.events;
 
-		if ( events ) {
-			delete pdataCur.handle;
-			pdataCur.events = {};
+	if ( events ) {
+		delete curData.handle;
+		curData.events = {};
 
-			for ( type in events ) {
-				for ( i = 0, l = events[ type ].length; i < l; i++ ) {
-					jQuery.event.add( dest, type, events[ type ][ i ] );
-				}
+		for ( type in events ) {
+			for ( i = 0, l = events[ type ].length; i < l; i++ ) {
+				jQuery.event.add( dest, type, events[ type ][ i ] );
 			}
 		}
 	}
 
-	// 2. Copy user data
-	if ( data_user.hasData( src ) ) {
-		udataOld = data_user.access( src );
-		udataCur = jQuery.extend( {}, udataOld );
-
-		data_user.set( dest, udataCur );
+	// make the cloned public data object a copy from the original
+	if ( curData.data ) {
+		curData.data = jQuery.extend( {}, curData.data );
 	}
 }
 
-function getAll( context, tag ) {
-	var ret = context.getElementsByTagName ? context.getElementsByTagName( tag || "*" ) :
-			context.querySelectorAll ? context.querySelectorAll( tag || "*" ) :
-			[];
+function fixCloneNodeIssues( src, dest ) {
+	var nodeName, e, data;
 
-	return tag === undefined || tag && jQuery.nodeName( context, tag ) ?
-		jQuery.merge( [ context ], ret ) :
-		ret;
-}
+	// We do not need to do anything for non-Elements
+	if ( dest.nodeType !== 1 ) {
+		return;
+	}
 
-// Fix IE bugs, see support tests
-function fixInput( src, dest ) {
-	var nodeName = dest.nodeName.toLowerCase();
+	nodeName = dest.nodeName.toLowerCase();
 
-	// Fails to persist the checked state of a cloned checkbox or radio button.
-	if ( nodeName === "input" && rcheckableType.test( src.type ) ) {
-		dest.checked = src.checked;
+	// IE6-8 copies events bound via attachEvent when using cloneNode.
+	if ( !support.noCloneEvent && dest[ jQuery.expando ] ) {
+		data = jQuery._data( dest );
 
-	// Fails to return the selected option to the default selected state when cloning options
+		for ( e in data.events ) {
+			jQuery.removeEvent( dest, e, data.handle );
+		}
+
+		// Event data gets referenced instead of copied if the expando gets copied too
+		dest.removeAttribute( jQuery.expando );
+	}
+
+	// IE blanks contents when cloning scripts, and tries to evaluate newly-set text
+	if ( nodeName === "script" && dest.text !== src.text ) {
+		disableScript( dest ).text = src.text;
+		restoreScript( dest );
+
+	// IE6-10 improperly clones children of object elements using classid.
+	// IE10 throws NoModificationAllowedError if parent is null, #12132.
+	} else if ( nodeName === "object" ) {
+		if ( dest.parentNode ) {
+			dest.outerHTML = src.outerHTML;
+		}
+
+		// This path appears unavoidable for IE9. When cloning an object
+		// element in IE9, the outerHTML strategy above is not sufficient.
+		// If the src has innerHTML and the destination does not,
+		// copy the src.innerHTML into the dest.innerHTML. #10324
+		if ( support.html5Clone && ( src.innerHTML && !jQuery.trim(dest.innerHTML) ) ) {
+			dest.innerHTML = src.innerHTML;
+		}
+
+	} else if ( nodeName === "input" && rcheckableType.test( src.type ) ) {
+		// IE6-8 fails to persist the checked state of a cloned checkbox
+		// or radio button. Worse, IE6-7 fail to give the cloned element
+		// a checked appearance if the defaultChecked value isn't also set
+
+		dest.defaultChecked = dest.checked = src.checked;
+
+		// IE6-7 get confused and end up setting the value of a cloned
+		// checkbox/radio button to an empty string instead of "on"
+		if ( dest.value !== src.value ) {
+			dest.value = src.value;
+		}
+
+	// IE6-8 fails to return the selected option to the default selected
+	// state when cloning options
+	} else if ( nodeName === "option" ) {
+		dest.defaultSelected = dest.selected = src.defaultSelected;
+
+	// IE6-8 fails to set the defaultValue to the correct value when
+	// cloning other types of input fields
 	} else if ( nodeName === "input" || nodeName === "textarea" ) {
 		dest.defaultValue = src.defaultValue;
 	}
@@ -5243,20 +5713,31 @@ function fixInput( src, dest ) {
 
 jQuery.extend({
 	clone: function( elem, dataAndEvents, deepDataAndEvents ) {
-		var i, l, srcElements, destElements,
-			clone = elem.cloneNode( true ),
+		var destElements, node, clone, i, srcElements,
 			inPage = jQuery.contains( elem.ownerDocument, elem );
 
-		// Fix IE cloning issues
-		if ( !support.noCloneChecked && ( elem.nodeType === 1 || elem.nodeType === 11 ) &&
-				!jQuery.isXMLDoc( elem ) ) {
+		if ( support.html5Clone || jQuery.isXMLDoc(elem) || !rnoshimcache.test( "<" + elem.nodeName + ">" ) ) {
+			clone = elem.cloneNode( true );
+
+		// IE<=8 does not properly clone detached, unknown element nodes
+		} else {
+			fragmentDiv.innerHTML = elem.outerHTML;
+			fragmentDiv.removeChild( clone = fragmentDiv.firstChild );
+		}
+
+		if ( (!support.noCloneEvent || !support.noCloneChecked) &&
+				(elem.nodeType === 1 || elem.nodeType === 11) && !jQuery.isXMLDoc(elem) ) {
 
 			// We eschew Sizzle here for performance reasons: http://jsperf.com/getall-vs-sizzle/2
 			destElements = getAll( clone );
 			srcElements = getAll( elem );
 
-			for ( i = 0, l = srcElements.length; i < l; i++ ) {
-				fixInput( srcElements[ i ], destElements[ i ] );
+			// Fix all IE cloning issues
+			for ( i = 0; (node = srcElements[i]) != null; ++i ) {
+				// Ensure that the destination node is not null; Fixes #9587
+				if ( destElements[i] ) {
+					fixCloneNodeIssues( node, destElements[i] );
+				}
 			}
 		}
 
@@ -5266,8 +5747,8 @@ jQuery.extend({
 				srcElements = srcElements || getAll( elem );
 				destElements = destElements || getAll( clone );
 
-				for ( i = 0, l = srcElements.length; i < l; i++ ) {
-					cloneCopyEvent( srcElements[ i ], destElements[ i ] );
+				for ( i = 0; (node = srcElements[i]) != null; i++ ) {
+					cloneCopyEvent( node, destElements[i] );
 				}
 			} else {
 				cloneCopyEvent( elem, clone );
@@ -5280,16 +5761,22 @@ jQuery.extend({
 			setGlobalEval( destElements, !inPage && getAll( elem, "script" ) );
 		}
 
+		destElements = srcElements = node = null;
+
 		// Return the cloned set
 		return clone;
 	},
 
 	buildFragment: function( elems, context, scripts, selection ) {
-		var elem, tmp, tag, wrap, contains, j,
-			fragment = context.createDocumentFragment(),
+		var j, elem, contains,
+			tmp, tag, tbody, wrap,
+			l = elems.length,
+
+			// Ensure a safe fragment
+			safe = createSafeFragment( context ),
+
 			nodes = [],
-			i = 0,
-			l = elems.length;
+			i = 0;
 
 		for ( ; i < l; i++ ) {
 			elem = elems[ i ];
@@ -5298,8 +5785,6 @@ jQuery.extend({
 
 				// Add nodes directly
 				if ( jQuery.type( elem ) === "object" ) {
-					// Support: QtWebKit, PhantomJS
-					// push.apply(_, arraylike) throws on ancient WebKit
 					jQuery.merge( nodes, elem.nodeType ? [ elem ] : elem );
 
 				// Convert non-html into a text node
@@ -5308,34 +5793,71 @@ jQuery.extend({
 
 				// Convert html into DOM nodes
 				} else {
-					tmp = tmp || fragment.appendChild( context.createElement("div") );
+					tmp = tmp || safe.appendChild( context.createElement("div") );
 
 					// Deserialize a standard representation
-					tag = ( rtagName.exec( elem ) || [ "", "" ] )[ 1 ].toLowerCase();
+					tag = (rtagName.exec( elem ) || [ "", "" ])[ 1 ].toLowerCase();
 					wrap = wrapMap[ tag ] || wrapMap._default;
-					tmp.innerHTML = wrap[ 1 ] + elem.replace( rxhtmlTag, "<$1></$2>" ) + wrap[ 2 ];
+
+					tmp.innerHTML = wrap[1] + elem.replace( rxhtmlTag, "<$1></$2>" ) + wrap[2];
 
 					// Descend through wrappers to the right content
-					j = wrap[ 0 ];
+					j = wrap[0];
 					while ( j-- ) {
 						tmp = tmp.lastChild;
 					}
 
-					// Support: QtWebKit, PhantomJS
-					// push.apply(_, arraylike) throws on ancient WebKit
+					// Manually add leading whitespace removed by IE
+					if ( !support.leadingWhitespace && rleadingWhitespace.test( elem ) ) {
+						nodes.push( context.createTextNode( rleadingWhitespace.exec( elem )[0] ) );
+					}
+
+					// Remove IE's autoinserted <tbody> from table fragments
+					if ( !support.tbody ) {
+
+						// String was a <table>, *may* have spurious <tbody>
+						elem = tag === "table" && !rtbody.test( elem ) ?
+							tmp.firstChild :
+
+							// String was a bare <thead> or <tfoot>
+							wrap[1] === "<table>" && !rtbody.test( elem ) ?
+								tmp :
+								0;
+
+						j = elem && elem.childNodes.length;
+						while ( j-- ) {
+							if ( jQuery.nodeName( (tbody = elem.childNodes[j]), "tbody" ) && !tbody.childNodes.length ) {
+								elem.removeChild( tbody );
+							}
+						}
+					}
+
 					jQuery.merge( nodes, tmp.childNodes );
 
-					// Remember the top-level container
-					tmp = fragment.firstChild;
-
-					// Ensure the created nodes are orphaned (#12392)
+					// Fix #12392 for WebKit and IE > 9
 					tmp.textContent = "";
+
+					// Fix #12392 for oldIE
+					while ( tmp.firstChild ) {
+						tmp.removeChild( tmp.firstChild );
+					}
+
+					// Remember the top-level container for proper cleanup
+					tmp = safe.lastChild;
 				}
 			}
 		}
 
-		// Remove wrapper from fragment
-		fragment.textContent = "";
+		// Fix #11356: Clear elements from fragment
+		if ( tmp ) {
+			safe.removeChild( tmp );
+		}
+
+		// Reset defaultChecked for any radios and checkboxes
+		// about to be appended to the DOM in IE 6/7 (#8060)
+		if ( !support.appendChecked ) {
+			jQuery.grep( getAll( nodes, "input" ), fixDefaultChecked );
+		}
 
 		i = 0;
 		while ( (elem = nodes[ i++ ]) ) {
@@ -5349,7 +5871,7 @@ jQuery.extend({
 			contains = jQuery.contains( elem.ownerDocument, elem );
 
 			// Append to fragment
-			tmp = getAll( fragment.appendChild( elem ), "script" );
+			tmp = getAll( safe.appendChild( elem ), "script" );
 
 			// Preserve script evaluation history
 			if ( contains ) {
@@ -5367,19 +5889,26 @@ jQuery.extend({
 			}
 		}
 
-		return fragment;
+		tmp = null;
+
+		return safe;
 	},
 
-	cleanData: function( elems ) {
-		var data, elem, type, key,
-			special = jQuery.event.special,
-			i = 0;
+	cleanData: function( elems, /* internal */ acceptData ) {
+		var elem, type, id, data,
+			i = 0,
+			internalKey = jQuery.expando,
+			cache = jQuery.cache,
+			deleteExpando = support.deleteExpando,
+			special = jQuery.event.special;
 
-		for ( ; (elem = elems[ i ]) !== undefined; i++ ) {
-			if ( jQuery.acceptData( elem ) ) {
-				key = elem[ data_priv.expando ];
+		for ( ; (elem = elems[i]) != null; i++ ) {
+			if ( acceptData || jQuery.acceptData( elem ) ) {
 
-				if ( key && (data = data_priv.cache[ key ]) ) {
+				id = elem[ internalKey ];
+				data = id && cache[ id ];
+
+				if ( data ) {
 					if ( data.events ) {
 						for ( type in data.events ) {
 							if ( special[ type ] ) {
@@ -5391,14 +5920,29 @@ jQuery.extend({
 							}
 						}
 					}
-					if ( data_priv.cache[ key ] ) {
-						// Discard any remaining `private` data
-						delete data_priv.cache[ key ];
+
+					// Remove cache only if it was not already removed by jQuery.event.remove
+					if ( cache[ id ] ) {
+
+						delete cache[ id ];
+
+						// IE does not allow us to delete expando properties from nodes,
+						// nor does it have a removeAttribute function on Document nodes;
+						// we must handle all of these cases
+						if ( deleteExpando ) {
+							delete elem[ internalKey ];
+
+						} else if ( typeof elem.removeAttribute !== strundefined ) {
+							elem.removeAttribute( internalKey );
+
+						} else {
+							elem[ internalKey ] = null;
+						}
+
+						deletedIds.push( id );
 					}
 				}
 			}
-			// Discard any remaining `user` data
-			delete data_user.cache[ elem[ data_user.expando ] ];
 		}
 	}
 });
@@ -5408,11 +5952,7 @@ jQuery.fn.extend({
 		return access( this, function( value ) {
 			return value === undefined ?
 				jQuery.text( this ) :
-				this.empty().each(function() {
-					if ( this.nodeType === 1 || this.nodeType === 11 || this.nodeType === 9 ) {
-						this.textContent = value;
-					}
-				});
+				this.empty().append( ( this[0] && this[0].ownerDocument || document ).createTextNode( value ) );
 		}, null, value, arguments.length );
 	},
 
@@ -5456,6 +5996,7 @@ jQuery.fn.extend({
 			i = 0;
 
 		for ( ; (elem = elems[i]) != null; i++ ) {
+
 			if ( !keepData && elem.nodeType === 1 ) {
 				jQuery.cleanData( getAll( elem ) );
 			}
@@ -5476,13 +6017,20 @@ jQuery.fn.extend({
 			i = 0;
 
 		for ( ; (elem = this[i]) != null; i++ ) {
+			// Remove element nodes and prevent memory leaks
 			if ( elem.nodeType === 1 ) {
-
-				// Prevent memory leaks
 				jQuery.cleanData( getAll( elem, false ) );
+			}
 
-				// Remove any remaining nodes
-				elem.textContent = "";
+			// Remove any remaining nodes
+			while ( elem.firstChild ) {
+				elem.removeChild( elem.firstChild );
+			}
+
+			// If this is a select, ensure that it displays empty (#12336)
+			// Support: IE<9
+			if ( elem.options && jQuery.nodeName( elem, "select" ) ) {
+				elem.options.length = 0;
 			}
 		}
 
@@ -5504,21 +6052,24 @@ jQuery.fn.extend({
 				i = 0,
 				l = this.length;
 
-			if ( value === undefined && elem.nodeType === 1 ) {
-				return elem.innerHTML;
+			if ( value === undefined ) {
+				return elem.nodeType === 1 ?
+					elem.innerHTML.replace( rinlinejQuery, "" ) :
+					undefined;
 			}
 
 			// See if we can take a shortcut and just use innerHTML
 			if ( typeof value === "string" && !rnoInnerhtml.test( value ) &&
-				!wrapMap[ ( rtagName.exec( value ) || [ "", "" ] )[ 1 ].toLowerCase() ] ) {
+				( support.htmlSerialize || !rnoshimcache.test( value )  ) &&
+				( support.leadingWhitespace || !rleadingWhitespace.test( value ) ) &&
+				!wrapMap[ (rtagName.exec( value ) || [ "", "" ])[ 1 ].toLowerCase() ] ) {
 
 				value = value.replace( rxhtmlTag, "<$1></$2>" );
 
 				try {
-					for ( ; i < l; i++ ) {
-						elem = this[ i ] || {};
-
+					for (; i < l; i++ ) {
 						// Remove element nodes and prevent memory leaks
+						elem = this[i] || {};
 						if ( elem.nodeType === 1 ) {
 							jQuery.cleanData( getAll( elem, false ) );
 							elem.innerHTML = value;
@@ -5528,7 +6079,7 @@ jQuery.fn.extend({
 					elem = 0;
 
 				// If using innerHTML throws an exception, use the fallback method
-				} catch( e ) {}
+				} catch(e) {}
 			}
 
 			if ( elem ) {
@@ -5564,12 +6115,13 @@ jQuery.fn.extend({
 		// Flatten any nested arrays
 		args = concat.apply( [], args );
 
-		var fragment, first, scripts, hasScripts, node, doc,
+		var first, node, hasScripts,
+			scripts, doc, fragment,
 			i = 0,
 			l = this.length,
 			set = this,
 			iNoClone = l - 1,
-			value = args[ 0 ],
+			value = args[0],
 			isFunction = jQuery.isFunction( value );
 
 		// We can't cloneNode fragments that contain checked, in WebKit
@@ -5579,7 +6131,7 @@ jQuery.fn.extend({
 			return this.each(function( index ) {
 				var self = set.eq( index );
 				if ( isFunction ) {
-					args[ 0 ] = value.call( this, index, self.html() );
+					args[0] = value.call( this, index, self.html() );
 				}
 				self.domManip( args, callback );
 			});
@@ -5607,13 +6159,11 @@ jQuery.fn.extend({
 
 						// Keep references to cloned scripts for later restoration
 						if ( hasScripts ) {
-							// Support: QtWebKit
-							// jQuery.merge because push.apply(_, arraylike) throws
 							jQuery.merge( scripts, getAll( node, "script" ) );
 						}
 					}
 
-					callback.call( this[ i ], node, i );
+					callback.call( this[i], node, i );
 				}
 
 				if ( hasScripts ) {
@@ -5626,7 +6176,7 @@ jQuery.fn.extend({
 					for ( i = 0; i < hasScripts; i++ ) {
 						node = scripts[ i ];
 						if ( rscriptType.test( node.type || "" ) &&
-							!data_priv.access( node, "globalEval" ) && jQuery.contains( doc, node ) ) {
+							!jQuery._data( node, "globalEval" ) && jQuery.contains( doc, node ) ) {
 
 							if ( node.src ) {
 								// Optional AJAX dependency, but won't run scripts if not present
@@ -5634,11 +6184,14 @@ jQuery.fn.extend({
 									jQuery._evalUrl( node.src );
 								}
 							} else {
-								jQuery.globalEval( node.textContent.replace( rcleanScript, "" ) );
+								jQuery.globalEval( ( node.text || node.textContent || node.innerHTML || "" ).replace( rcleanScript, "" ) );
 							}
 						}
 					}
 				}
+
+				// Fix #11809: Avoid leaking memory
+				fragment = first = null;
 			}
 		}
 
@@ -5655,17 +6208,16 @@ jQuery.each({
 }, function( name, original ) {
 	jQuery.fn[ name ] = function( selector ) {
 		var elems,
+			i = 0,
 			ret = [],
 			insert = jQuery( selector ),
-			last = insert.length - 1,
-			i = 0;
+			last = insert.length - 1;
 
 		for ( ; i <= last; i++ ) {
-			elems = i === last ? this : this.clone( true );
-			jQuery( insert[ i ] )[ original ]( elems );
+			elems = i === last ? this : this.clone(true);
+			jQuery( insert[i] )[ original ]( elems );
 
-			// Support: QtWebKit
-			// .get() because push.apply(_, arraylike) throws
+			// Modern browsers can apply jQuery collections as arrays, but oldIE needs a .get()
 			push.apply( ret, elems.get() );
 		}
 
@@ -5690,7 +6242,7 @@ function actualDisplay( name, doc ) {
 		// getDefaultComputedStyle might be reliably used only on attached element
 		display = window.getDefaultComputedStyle && ( style = window.getDefaultComputedStyle( elem[ 0 ] ) ) ?
 
-			// Use of this method is a temporary fix (more like optimization) until something better comes along,
+			// Use of this method is a temporary fix (more like optmization) until something better comes along,
 			// since it was removed from specification and supported only in FF
 			style.display : jQuery.css( elem[ 0 ], "display" );
 
@@ -5719,7 +6271,7 @@ function defaultDisplay( nodeName ) {
 			iframe = (iframe || jQuery( "<iframe frameborder='0' width='0' height='0'/>" )).appendTo( doc.documentElement );
 
 			// Always write a new HTML skeleton so Webkit and Firefox don't choke on reuse
-			doc = iframe[ 0 ].contentDocument;
+			doc = ( iframe[ 0 ].contentWindow || iframe[ 0 ].contentDocument ).document;
 
 			// Support: IE
 			doc.write();
@@ -5735,11 +6287,65 @@ function defaultDisplay( nodeName ) {
 
 	return display;
 }
+
+
+(function() {
+	var shrinkWrapBlocksVal;
+
+	support.shrinkWrapBlocks = function() {
+		if ( shrinkWrapBlocksVal != null ) {
+			return shrinkWrapBlocksVal;
+		}
+
+		// Will be changed later if needed.
+		shrinkWrapBlocksVal = false;
+
+		// Minified: var b,c,d
+		var div, body, container;
+
+		body = document.getElementsByTagName( "body" )[ 0 ];
+		if ( !body || !body.style ) {
+			// Test fired too early or in an unsupported environment, exit.
+			return;
+		}
+
+		// Setup
+		div = document.createElement( "div" );
+		container = document.createElement( "div" );
+		container.style.cssText = "position:absolute;border:0;width:0;height:0;top:0;left:-9999px";
+		body.appendChild( container ).appendChild( div );
+
+		// Support: IE6
+		// Check if elements with layout shrink-wrap their children
+		if ( typeof div.style.zoom !== strundefined ) {
+			// Reset CSS: box-sizing; display; margin; border
+			div.style.cssText =
+				// Support: Firefox<29, Android 2.3
+				// Vendor-prefix box-sizing
+				"-webkit-box-sizing:content-box;-moz-box-sizing:content-box;" +
+				"box-sizing:content-box;display:block;margin:0;border:0;" +
+				"padding:1px;width:1px;zoom:1";
+			div.appendChild( document.createElement( "div" ) ).style.width = "5px";
+			shrinkWrapBlocksVal = div.offsetWidth !== 3;
+		}
+
+		body.removeChild( container );
+
+		return shrinkWrapBlocksVal;
+	};
+
+})();
 var rmargin = (/^margin/);
 
 var rnumnonpx = new RegExp( "^(" + pnum + ")(?!px)[a-z%]+$", "i" );
 
-var getStyles = function( elem ) {
+
+
+var getStyles, curCSS,
+	rposition = /^(top|right|bottom|left)$/;
+
+if ( window.getComputedStyle ) {
+	getStyles = function( elem ) {
 		// Support: IE<=11+, Firefox<=30+ (#15098, #14150)
 		// IE throws on elements created in popups
 		// FF meanwhile throws on frame elements through "defaultView.getComputedStyle"
@@ -5750,68 +6356,128 @@ var getStyles = function( elem ) {
 		return window.getComputedStyle( elem, null );
 	};
 
+	curCSS = function( elem, name, computed ) {
+		var width, minWidth, maxWidth, ret,
+			style = elem.style;
 
+		computed = computed || getStyles( elem );
 
-function curCSS( elem, name, computed ) {
-	var width, minWidth, maxWidth, ret,
-		style = elem.style;
+		// getPropertyValue is only needed for .css('filter') in IE9, see #12537
+		ret = computed ? computed.getPropertyValue( name ) || computed[ name ] : undefined;
 
-	computed = computed || getStyles( elem );
+		if ( computed ) {
 
-	// Support: IE9
-	// getPropertyValue is only needed for .css('filter') (#12537)
-	if ( computed ) {
-		ret = computed.getPropertyValue( name ) || computed[ name ];
-	}
+			if ( ret === "" && !jQuery.contains( elem.ownerDocument, elem ) ) {
+				ret = jQuery.style( elem, name );
+			}
 
-	if ( computed ) {
+			// A tribute to the "awesome hack by Dean Edwards"
+			// Chrome < 17 and Safari 5.0 uses "computed value" instead of "used value" for margin-right
+			// Safari 5.1.7 (at least) returns percentage for a larger set of values, but width seems to be reliably pixels
+			// this is against the CSSOM draft spec: http://dev.w3.org/csswg/cssom/#resolved-values
+			if ( rnumnonpx.test( ret ) && rmargin.test( name ) ) {
 
-		if ( ret === "" && !jQuery.contains( elem.ownerDocument, elem ) ) {
-			ret = jQuery.style( elem, name );
+				// Remember the original values
+				width = style.width;
+				minWidth = style.minWidth;
+				maxWidth = style.maxWidth;
+
+				// Put in the new values to get a computed value out
+				style.minWidth = style.maxWidth = style.width = ret;
+				ret = computed.width;
+
+				// Revert the changed values
+				style.width = width;
+				style.minWidth = minWidth;
+				style.maxWidth = maxWidth;
+			}
 		}
 
-		// Support: iOS < 6
-		// A tribute to the "awesome hack by Dean Edwards"
-		// iOS < 6 (at least) returns percentage for a larger set of values, but width seems to be reliably pixels
-		// this is against the CSSOM draft spec: http://dev.w3.org/csswg/cssom/#resolved-values
-		if ( rnumnonpx.test( ret ) && rmargin.test( name ) ) {
-
-			// Remember the original values
-			width = style.width;
-			minWidth = style.minWidth;
-			maxWidth = style.maxWidth;
-
-			// Put in the new values to get a computed value out
-			style.minWidth = style.maxWidth = style.width = ret;
-			ret = computed.width;
-
-			// Revert the changed values
-			style.width = width;
-			style.minWidth = minWidth;
-			style.maxWidth = maxWidth;
-		}
-	}
-
-	return ret !== undefined ?
 		// Support: IE
 		// IE returns zIndex value as an integer.
-		ret + "" :
-		ret;
+		return ret === undefined ?
+			ret :
+			ret + "";
+	};
+} else if ( document.documentElement.currentStyle ) {
+	getStyles = function( elem ) {
+		return elem.currentStyle;
+	};
+
+	curCSS = function( elem, name, computed ) {
+		var left, rs, rsLeft, ret,
+			style = elem.style;
+
+		computed = computed || getStyles( elem );
+		ret = computed ? computed[ name ] : undefined;
+
+		// Avoid setting ret to empty string here
+		// so we don't default to auto
+		if ( ret == null && style && style[ name ] ) {
+			ret = style[ name ];
+		}
+
+		// From the awesome hack by Dean Edwards
+		// http://erik.eae.net/archives/2007/07/27/18.54.15/#comment-102291
+
+		// If we're not dealing with a regular pixel number
+		// but a number that has a weird ending, we need to convert it to pixels
+		// but not position css attributes, as those are proportional to the parent element instead
+		// and we can't measure the parent instead because it might trigger a "stacking dolls" problem
+		if ( rnumnonpx.test( ret ) && !rposition.test( name ) ) {
+
+			// Remember the original values
+			left = style.left;
+			rs = elem.runtimeStyle;
+			rsLeft = rs && rs.left;
+
+			// Put in the new values to get a computed value out
+			if ( rsLeft ) {
+				rs.left = elem.currentStyle.left;
+			}
+			style.left = name === "fontSize" ? "1em" : ret;
+			ret = style.pixelLeft + "px";
+
+			// Revert the changed values
+			style.left = left;
+			if ( rsLeft ) {
+				rs.left = rsLeft;
+			}
+		}
+
+		// Support: IE
+		// IE returns zIndex value as an integer.
+		return ret === undefined ?
+			ret :
+			ret + "" || "auto";
+	};
 }
+
+
 
 
 function addGetHookIf( conditionFn, hookFn ) {
 	// Define the hook, we'll check on the first run if it's really needed.
 	return {
 		get: function() {
-			if ( conditionFn() ) {
-				// Hook not needed (or it's not possible to use it due
-				// to missing dependency), remove it.
+			var condition = conditionFn();
+
+			if ( condition == null ) {
+				// The test was not ready at this point; screw the hook this time
+				// but check again when needed next time.
+				return;
+			}
+
+			if ( condition ) {
+				// Hook not needed (or it's not possible to use it due to missing dependency),
+				// remove it.
+				// Since there are no other hooks for marginRight, remove the whole object.
 				delete this.get;
 				return;
 			}
 
 			// Hook needed; redefine it so that the support test is not executed again.
+
 			return (this.get = hookFn).apply( this, arguments );
 		}
 	};
@@ -5819,91 +6485,146 @@ function addGetHookIf( conditionFn, hookFn ) {
 
 
 (function() {
-	var pixelPositionVal, boxSizingReliableVal,
-		docElem = document.documentElement,
-		container = document.createElement( "div" ),
-		div = document.createElement( "div" );
+	// Minified: var b,c,d,e,f,g, h,i
+	var div, style, a, pixelPositionVal, boxSizingReliableVal,
+		reliableHiddenOffsetsVal, reliableMarginRightVal;
 
-	if ( !div.style ) {
+	// Setup
+	div = document.createElement( "div" );
+	div.innerHTML = "  <link/><table></table><a href='/a'>a</a><input type='checkbox'/>";
+	a = div.getElementsByTagName( "a" )[ 0 ];
+	style = a && a.style;
+
+	// Finish early in limited (non-browser) environments
+	if ( !style ) {
 		return;
 	}
 
-	// Support: IE9-11+
-	// Style of cloned element affects source element cloned (#8908)
+	style.cssText = "float:left;opacity:.5";
+
+	// Support: IE<9
+	// Make sure that element opacity exists (as opposed to filter)
+	support.opacity = style.opacity === "0.5";
+
+	// Verify style float existence
+	// (IE uses styleFloat instead of cssFloat)
+	support.cssFloat = !!style.cssFloat;
+
 	div.style.backgroundClip = "content-box";
 	div.cloneNode( true ).style.backgroundClip = "";
 	support.clearCloneStyle = div.style.backgroundClip === "content-box";
 
-	container.style.cssText = "border:0;width:0;height:0;top:0;left:-9999px;margin-top:1px;" +
-		"position:absolute";
-	container.appendChild( div );
+	// Support: Firefox<29, Android 2.3
+	// Vendor-prefix box-sizing
+	support.boxSizing = style.boxSizing === "" || style.MozBoxSizing === "" ||
+		style.WebkitBoxSizing === "";
 
-	// Executing both pixelPosition & boxSizingReliable tests require only one layout
-	// so they're executed at the same time to save the second computation.
-	function computePixelPositionAndBoxSizingReliable() {
+	jQuery.extend(support, {
+		reliableHiddenOffsets: function() {
+			if ( reliableHiddenOffsetsVal == null ) {
+				computeStyleTests();
+			}
+			return reliableHiddenOffsetsVal;
+		},
+
+		boxSizingReliable: function() {
+			if ( boxSizingReliableVal == null ) {
+				computeStyleTests();
+			}
+			return boxSizingReliableVal;
+		},
+
+		pixelPosition: function() {
+			if ( pixelPositionVal == null ) {
+				computeStyleTests();
+			}
+			return pixelPositionVal;
+		},
+
+		// Support: Android 2.3
+		reliableMarginRight: function() {
+			if ( reliableMarginRightVal == null ) {
+				computeStyleTests();
+			}
+			return reliableMarginRightVal;
+		}
+	});
+
+	function computeStyleTests() {
+		// Minified: var b,c,d,j
+		var div, body, container, contents;
+
+		body = document.getElementsByTagName( "body" )[ 0 ];
+		if ( !body || !body.style ) {
+			// Test fired too early or in an unsupported environment, exit.
+			return;
+		}
+
+		// Setup
+		div = document.createElement( "div" );
+		container = document.createElement( "div" );
+		container.style.cssText = "position:absolute;border:0;width:0;height:0;top:0;left:-9999px";
+		body.appendChild( container ).appendChild( div );
+
 		div.style.cssText =
 			// Support: Firefox<29, Android 2.3
 			// Vendor-prefix box-sizing
 			"-webkit-box-sizing:border-box;-moz-box-sizing:border-box;" +
 			"box-sizing:border-box;display:block;margin-top:1%;top:1%;" +
 			"border:1px;padding:1px;width:4px;position:absolute";
-		div.innerHTML = "";
-		docElem.appendChild( container );
 
-		var divStyle = window.getComputedStyle( div, null );
-		pixelPositionVal = divStyle.top !== "1%";
-		boxSizingReliableVal = divStyle.width === "4px";
+		// Support: IE<9
+		// Assume reasonable values in the absence of getComputedStyle
+		pixelPositionVal = boxSizingReliableVal = false;
+		reliableMarginRightVal = true;
 
-		docElem.removeChild( container );
+		// Check for getComputedStyle so that this code is not run in IE<9.
+		if ( window.getComputedStyle ) {
+			pixelPositionVal = ( window.getComputedStyle( div, null ) || {} ).top !== "1%";
+			boxSizingReliableVal =
+				( window.getComputedStyle( div, null ) || { width: "4px" } ).width === "4px";
+
+			// Support: Android 2.3
+			// Div with explicit width and no margin-right incorrectly
+			// gets computed margin-right based on width of container (#3333)
+			// WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right
+			contents = div.appendChild( document.createElement( "div" ) );
+
+			// Reset CSS: box-sizing; display; margin; border; padding
+			contents.style.cssText = div.style.cssText =
+				// Support: Firefox<29, Android 2.3
+				// Vendor-prefix box-sizing
+				"-webkit-box-sizing:content-box;-moz-box-sizing:content-box;" +
+				"box-sizing:content-box;display:block;margin:0;border:0;padding:0";
+			contents.style.marginRight = contents.style.width = "0";
+			div.style.width = "1px";
+
+			reliableMarginRightVal =
+				!parseFloat( ( window.getComputedStyle( contents, null ) || {} ).marginRight );
+
+			div.removeChild( contents );
+		}
+
+		// Support: IE8
+		// Check if table cells still have offsetWidth/Height when they are set
+		// to display:none and there are still other visible table cells in a
+		// table row; if so, offsetWidth/Height are not reliable for use when
+		// determining if an element has been hidden directly using
+		// display:none (it is still safe to use offsets if a parent element is
+		// hidden; don safety goggles and see bug #4512 for more information).
+		div.innerHTML = "<table><tr><td></td><td>t</td></tr></table>";
+		contents = div.getElementsByTagName( "td" );
+		contents[ 0 ].style.cssText = "margin:0;border:0;padding:0;display:none";
+		reliableHiddenOffsetsVal = contents[ 0 ].offsetHeight === 0;
+		if ( reliableHiddenOffsetsVal ) {
+			contents[ 0 ].style.display = "";
+			contents[ 1 ].style.display = "none";
+			reliableHiddenOffsetsVal = contents[ 0 ].offsetHeight === 0;
+		}
+
+		body.removeChild( container );
 	}
 
-	// Support: node.js jsdom
-	// Don't assume that getComputedStyle is a property of the global object
-	if ( window.getComputedStyle ) {
-		jQuery.extend( support, {
-			pixelPosition: function() {
-
-				// This test is executed only once but we still do memoizing
-				// since we can use the boxSizingReliable pre-computing.
-				// No need to check if the test was already performed, though.
-				computePixelPositionAndBoxSizingReliable();
-				return pixelPositionVal;
-			},
-			boxSizingReliable: function() {
-				if ( boxSizingReliableVal == null ) {
-					computePixelPositionAndBoxSizingReliable();
-				}
-				return boxSizingReliableVal;
-			},
-			reliableMarginRight: function() {
-
-				// Support: Android 2.3
-				// Check if div with explicit width and no margin-right incorrectly
-				// gets computed margin-right based on width of container. (#3333)
-				// WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right
-				// This support function is only executed once so no memoizing is needed.
-				var ret,
-					marginDiv = div.appendChild( document.createElement( "div" ) );
-
-				// Reset CSS: box-sizing; display; margin; border; padding
-				marginDiv.style.cssText = div.style.cssText =
-					// Support: Firefox<29, Android 2.3
-					// Vendor-prefix box-sizing
-					"-webkit-box-sizing:content-box;-moz-box-sizing:content-box;" +
-					"box-sizing:content-box;display:block;margin:0;border:0;padding:0";
-				marginDiv.style.marginRight = marginDiv.style.width = "0";
-				div.style.width = "1px";
-				docElem.appendChild( container );
-
-				ret = !parseFloat( window.getComputedStyle( marginDiv, null ).marginRight );
-
-				docElem.removeChild( container );
-				div.removeChild( marginDiv );
-
-				return ret;
-			}
-		});
-	}
 })();
 
 
@@ -5930,8 +6651,11 @@ jQuery.swap = function( elem, options, callback, args ) {
 
 
 var
-	// Swappable if display is none or starts with table except "table", "table-cell", or "table-caption"
-	// See here for display values: https://developer.mozilla.org/en-US/docs/CSS/display
+		ralpha = /alpha\([^)]*\)/i,
+	ropacity = /opacity\s*=\s*([^)]*)/,
+
+	// swappable if display is none or starts with table except "table", "table-cell", or "table-caption"
+	// see here for display values: https://developer.mozilla.org/en-US/docs/CSS/display
 	rdisplayswap = /^(none|table(?!-c[ea]).+)/,
 	rnumsplit = new RegExp( "^(" + pnum + ")(.*)$", "i" ),
 	rrelNum = new RegExp( "^([+-])=(" + pnum + ")", "i" ),
@@ -5944,16 +6668,17 @@ var
 
 	cssPrefixes = [ "Webkit", "O", "Moz", "ms" ];
 
-// Return a css property mapped to a potentially vendor prefixed property
+
+// return a css property mapped to a potentially vendor prefixed property
 function vendorPropName( style, name ) {
 
-	// Shortcut for names that are not vendor prefixed
+	// shortcut for names that are not vendor prefixed
 	if ( name in style ) {
 		return name;
 	}
 
-	// Check for vendor prefixed names
-	var capName = name[0].toUpperCase() + name.slice(1),
+	// check for vendor prefixed names
+	var capName = name.charAt(0).toUpperCase() + name.slice(1),
 		origName = name,
 		i = cssPrefixes.length;
 
@@ -5965,6 +6690,57 @@ function vendorPropName( style, name ) {
 	}
 
 	return origName;
+}
+
+function showHide( elements, show ) {
+	var display, elem, hidden,
+		values = [],
+		index = 0,
+		length = elements.length;
+
+	for ( ; index < length; index++ ) {
+		elem = elements[ index ];
+		if ( !elem.style ) {
+			continue;
+		}
+
+		values[ index ] = jQuery._data( elem, "olddisplay" );
+		display = elem.style.display;
+		if ( show ) {
+			// Reset the inline display of this element to learn if it is
+			// being hidden by cascaded rules or not
+			if ( !values[ index ] && display === "none" ) {
+				elem.style.display = "";
+			}
+
+			// Set elements which have been overridden with display: none
+			// in a stylesheet to whatever the default browser style is
+			// for such an element
+			if ( elem.style.display === "" && isHidden( elem ) ) {
+				values[ index ] = jQuery._data( elem, "olddisplay", defaultDisplay(elem.nodeName) );
+			}
+		} else {
+			hidden = isHidden( elem );
+
+			if ( display && display !== "none" || !hidden ) {
+				jQuery._data( elem, "olddisplay", hidden ? display : jQuery.css( elem, "display" ) );
+			}
+		}
+	}
+
+	// Set the display of most of the elements in a second loop
+	// to avoid the constant reflow
+	for ( index = 0; index < length; index++ ) {
+		elem = elements[ index ];
+		if ( !elem.style ) {
+			continue;
+		}
+		if ( !show || elem.style.display === "none" || elem.style.display === "" ) {
+			elem.style.display = show ? values[ index ] || "" : "none";
+		}
+	}
+
+	return elements;
 }
 
 function setPositiveNumber( elem, value, subtract ) {
@@ -5985,7 +6761,7 @@ function augmentWidthOrHeight( elem, name, extra, isBorderBox, styles ) {
 		val = 0;
 
 	for ( ; i < 4; i += 2 ) {
-		// Both box models exclude margin, so add it if we want it
+		// both box models exclude margin, so add it if we want it
 		if ( extra === "margin" ) {
 			val += jQuery.css( elem, extra + cssExpand[ i ], true, styles );
 		}
@@ -5996,15 +6772,15 @@ function augmentWidthOrHeight( elem, name, extra, isBorderBox, styles ) {
 				val -= jQuery.css( elem, "padding" + cssExpand[ i ], true, styles );
 			}
 
-			// At this point, extra isn't border nor margin, so remove border
+			// at this point, extra isn't border nor margin, so remove border
 			if ( extra !== "margin" ) {
 				val -= jQuery.css( elem, "border" + cssExpand[ i ] + "Width", true, styles );
 			}
 		} else {
-			// At this point, extra isn't content, so add padding
+			// at this point, extra isn't content, so add padding
 			val += jQuery.css( elem, "padding" + cssExpand[ i ], true, styles );
 
-			// At this point, extra isn't content nor padding, so add border
+			// at this point, extra isn't content nor padding, so add border
 			if ( extra !== "padding" ) {
 				val += jQuery.css( elem, "border" + cssExpand[ i ] + "Width", true, styles );
 			}
@@ -6020,9 +6796,9 @@ function getWidthOrHeight( elem, name, extra ) {
 	var valueIsBorderBox = true,
 		val = name === "width" ? elem.offsetWidth : elem.offsetHeight,
 		styles = getStyles( elem ),
-		isBorderBox = jQuery.css( elem, "boxSizing", false, styles ) === "border-box";
+		isBorderBox = support.boxSizing && jQuery.css( elem, "boxSizing", false, styles ) === "border-box";
 
-	// Some non-html elements return undefined for offsetWidth, so check for null/undefined
+	// some non-html elements return undefined for offsetWidth, so check for null/undefined
 	// svg - https://bugzilla.mozilla.org/show_bug.cgi?id=649285
 	// MathML - https://bugzilla.mozilla.org/show_bug.cgi?id=491668
 	if ( val <= 0 || val == null ) {
@@ -6037,16 +6813,15 @@ function getWidthOrHeight( elem, name, extra ) {
 			return val;
 		}
 
-		// Check for style in case a browser which returns unreliable values
+		// we need the check for style in case a browser which returns unreliable values
 		// for getComputedStyle silently falls back to the reliable elem.style
-		valueIsBorderBox = isBorderBox &&
-			( support.boxSizingReliable() || val === elem.style[ name ] );
+		valueIsBorderBox = isBorderBox && ( support.boxSizingReliable() || val === elem.style[ name ] );
 
 		// Normalize "", auto, and prepare for extra
 		val = parseFloat( val ) || 0;
 	}
 
-	// Use the active box-sizing model to add/subtract irrelevant styles
+	// use the active box-sizing model to add/subtract irrelevant styles
 	return ( val +
 		augmentWidthOrHeight(
 			elem,
@@ -6058,66 +6833,13 @@ function getWidthOrHeight( elem, name, extra ) {
 	) + "px";
 }
 
-function showHide( elements, show ) {
-	var display, elem, hidden,
-		values = [],
-		index = 0,
-		length = elements.length;
-
-	for ( ; index < length; index++ ) {
-		elem = elements[ index ];
-		if ( !elem.style ) {
-			continue;
-		}
-
-		values[ index ] = data_priv.get( elem, "olddisplay" );
-		display = elem.style.display;
-		if ( show ) {
-			// Reset the inline display of this element to learn if it is
-			// being hidden by cascaded rules or not
-			if ( !values[ index ] && display === "none" ) {
-				elem.style.display = "";
-			}
-
-			// Set elements which have been overridden with display: none
-			// in a stylesheet to whatever the default browser style is
-			// for such an element
-			if ( elem.style.display === "" && isHidden( elem ) ) {
-				values[ index ] = data_priv.access( elem, "olddisplay", defaultDisplay(elem.nodeName) );
-			}
-		} else {
-			hidden = isHidden( elem );
-
-			if ( display !== "none" || !hidden ) {
-				data_priv.set( elem, "olddisplay", hidden ? display : jQuery.css( elem, "display" ) );
-			}
-		}
-	}
-
-	// Set the display of most of the elements in a second loop
-	// to avoid the constant reflow
-	for ( index = 0; index < length; index++ ) {
-		elem = elements[ index ];
-		if ( !elem.style ) {
-			continue;
-		}
-		if ( !show || elem.style.display === "none" || elem.style.display === "" ) {
-			elem.style.display = show ? values[ index ] || "" : "none";
-		}
-	}
-
-	return elements;
-}
-
 jQuery.extend({
-
 	// Add in style property hooks for overriding the default
 	// behavior of getting and setting a style property
 	cssHooks: {
 		opacity: {
 			get: function( elem, computed ) {
 				if ( computed ) {
-
 					// We should always get a number back from opacity
 					var ret = curCSS( elem, "opacity" );
 					return ret === "" ? "1" : ret;
@@ -6145,12 +6867,12 @@ jQuery.extend({
 	// Add in properties whose names you wish to fix before
 	// setting or getting the value
 	cssProps: {
-		"float": "cssFloat"
+		// normalize float css property
+		"float": support.cssFloat ? "cssFloat" : "styleFloat"
 	},
 
 	// Get and set the style property on a DOM Node
 	style: function( elem, name, value, extra ) {
-
 		// Don't set styles on text and comment nodes
 		if ( !elem || elem.nodeType === 3 || elem.nodeType === 8 || !elem.style ) {
 			return;
@@ -6163,39 +6885,45 @@ jQuery.extend({
 
 		name = jQuery.cssProps[ origName ] || ( jQuery.cssProps[ origName ] = vendorPropName( style, origName ) );
 
-		// Gets hook for the prefixed version, then unprefixed version
+		// gets hook for the prefixed version
+		// followed by the unprefixed version
 		hooks = jQuery.cssHooks[ name ] || jQuery.cssHooks[ origName ];
 
 		// Check if we're setting a value
 		if ( value !== undefined ) {
 			type = typeof value;
 
-			// Convert "+=" or "-=" to relative numbers (#7345)
+			// convert relative number strings (+= or -=) to relative numbers. #7345
 			if ( type === "string" && (ret = rrelNum.exec( value )) ) {
 				value = ( ret[1] + 1 ) * ret[2] + parseFloat( jQuery.css( elem, name ) );
 				// Fixes bug #9237
 				type = "number";
 			}
 
-			// Make sure that null and NaN values aren't set (#7116)
+			// Make sure that null and NaN values aren't set. See: #7116
 			if ( value == null || value !== value ) {
 				return;
 			}
 
-			// If a number, add 'px' to the (except for certain CSS properties)
+			// If a number was passed in, add 'px' to the (except for certain CSS properties)
 			if ( type === "number" && !jQuery.cssNumber[ origName ] ) {
 				value += "px";
 			}
 
-			// Support: IE9-11+
-			// background-* props affect original clone's values
-			if ( !support.clearCloneStyle && value === "" && name.indexOf( "background" ) === 0 ) {
+			// Fixes #8908, it can be done more correctly by specifing setters in cssHooks,
+			// but it would mean to define eight (for every problematic property) identical functions
+			if ( !support.clearCloneStyle && value === "" && name.indexOf("background") === 0 ) {
 				style[ name ] = "inherit";
 			}
 
 			// If a hook was provided, use that value, otherwise just set the specified value
 			if ( !hooks || !("set" in hooks) || (value = hooks.set( elem, value, extra )) !== undefined ) {
-				style[ name ] = value;
+
+				// Support: IE
+				// Swallow errors from 'invalid' CSS values (#5509)
+				try {
+					style[ name ] = value;
+				} catch(e) {}
 			}
 
 		} else {
@@ -6210,13 +6938,14 @@ jQuery.extend({
 	},
 
 	css: function( elem, name, extra, styles ) {
-		var val, num, hooks,
+		var num, val, hooks,
 			origName = jQuery.camelCase( name );
 
 		// Make sure that we're working with the right name
 		name = jQuery.cssProps[ origName ] || ( jQuery.cssProps[ origName ] = vendorPropName( elem.style, origName ) );
 
-		// Try prefixed name followed by the unprefixed name
+		// gets hook for the prefixed version
+		// followed by the unprefixed version
 		hooks = jQuery.cssHooks[ name ] || jQuery.cssHooks[ origName ];
 
 		// If a hook was provided get the computed value from there
@@ -6229,12 +6958,12 @@ jQuery.extend({
 			val = curCSS( elem, name, styles );
 		}
 
-		// Convert "normal" to computed value
+		//convert "normal" to computed value
 		if ( val === "normal" && name in cssNormalTransform ) {
 			val = cssNormalTransform[ name ];
 		}
 
-		// Make numeric if forced or a qualifier was provided and val looks numeric
+		// Return, converting to number if forced or a qualifier was provided and val looks numeric
 		if ( extra === "" || extra ) {
 			num = parseFloat( val );
 			return extra === true || jQuery.isNumeric( num ) ? num || 0 : val;
@@ -6247,9 +6976,8 @@ jQuery.each([ "height", "width" ], function( i, name ) {
 	jQuery.cssHooks[ name ] = {
 		get: function( elem, computed, extra ) {
 			if ( computed ) {
-
-				// Certain elements can have dimension info if we invisibly show them
-				// but it must have a current display style that would benefit
+				// certain elements can have dimension info if we invisibly show them
+				// however, it must have a current display style that would benefit from this
 				return rdisplayswap.test( jQuery.css( elem, "display" ) ) && elem.offsetWidth === 0 ?
 					jQuery.swap( elem, cssShow, function() {
 						return getWidthOrHeight( elem, name, extra );
@@ -6265,7 +6993,7 @@ jQuery.each([ "height", "width" ], function( i, name ) {
 					elem,
 					name,
 					extra,
-					jQuery.css( elem, "boxSizing", false, styles ) === "border-box",
+					support.boxSizing && jQuery.css( elem, "boxSizing", false, styles ) === "border-box",
 					styles
 				) : 0
 			);
@@ -6273,10 +7001,55 @@ jQuery.each([ "height", "width" ], function( i, name ) {
 	};
 });
 
-// Support: Android 2.3
+if ( !support.opacity ) {
+	jQuery.cssHooks.opacity = {
+		get: function( elem, computed ) {
+			// IE uses filters for opacity
+			return ropacity.test( (computed && elem.currentStyle ? elem.currentStyle.filter : elem.style.filter) || "" ) ?
+				( 0.01 * parseFloat( RegExp.$1 ) ) + "" :
+				computed ? "1" : "";
+		},
+
+		set: function( elem, value ) {
+			var style = elem.style,
+				currentStyle = elem.currentStyle,
+				opacity = jQuery.isNumeric( value ) ? "alpha(opacity=" + value * 100 + ")" : "",
+				filter = currentStyle && currentStyle.filter || style.filter || "";
+
+			// IE has trouble with opacity if it does not have layout
+			// Force it by setting the zoom level
+			style.zoom = 1;
+
+			// if setting opacity to 1, and no other filters exist - attempt to remove filter attribute #6652
+			// if value === "", then remove inline opacity #12685
+			if ( ( value >= 1 || value === "" ) &&
+					jQuery.trim( filter.replace( ralpha, "" ) ) === "" &&
+					style.removeAttribute ) {
+
+				// Setting style.filter to null, "" & " " still leave "filter:" in the cssText
+				// if "filter:" is present at all, clearType is disabled, we want to avoid this
+				// style.removeAttribute is IE Only, but so apparently is this code path...
+				style.removeAttribute( "filter" );
+
+				// if there is no filter style applied in a css rule or unset inline opacity, we are done
+				if ( value === "" || currentStyle && !currentStyle.filter ) {
+					return;
+				}
+			}
+
+			// otherwise, set new filter values
+			style.filter = ralpha.test( filter ) ?
+				filter.replace( ralpha, opacity ) :
+				filter + " " + opacity;
+		}
+	};
+}
+
 jQuery.cssHooks.marginRight = addGetHookIf( support.reliableMarginRight,
 	function( elem, computed ) {
 		if ( computed ) {
+			// WebKit Bug 13343 - getComputedStyle returns wrong value for margin-right
+			// Work around by temporarily setting element display to inline-block
 			return jQuery.swap( elem, { "display": "inline-block" },
 				curCSS, [ elem, "marginRight" ] );
 		}
@@ -6294,7 +7067,7 @@ jQuery.each({
 			var i = 0,
 				expanded = {},
 
-				// Assumes a single number if not a string
+				// assumes a single number if not a string
 				parts = typeof value === "string" ? value.split(" ") : [ value ];
 
 			for ( ; i < 4; i++ ) {
@@ -6417,18 +7190,17 @@ Tween.propHooks = {
 				return tween.elem[ tween.prop ];
 			}
 
-			// Passing an empty string as a 3rd parameter to .css will automatically
-			// attempt a parseFloat and fallback to a string if the parse fails.
-			// Simple values such as "10px" are parsed to Float;
-			// complex values such as "rotate(1rad)" are returned as-is.
+			// passing an empty string as a 3rd parameter to .css will automatically
+			// attempt a parseFloat and fallback to a string if the parse fails
+			// so, simple values such as "10px" are parsed to Float.
+			// complex values such as "rotate(1rad)" are returned as is.
 			result = jQuery.css( tween.elem, tween.prop, "" );
 			// Empty strings, null, undefined and "auto" are converted to 0.
 			return !result || result === "auto" ? 0 : result;
 		},
 		set: function( tween ) {
-			// Use step hook for back compat.
-			// Use cssHook if its there.
-			// Use .style if available and use plain properties where available.
+			// use step hook for back compat - use cssHook if its there - use .style if its
+			// available and use plain properties where available
 			if ( jQuery.fx.step[ tween.prop ] ) {
 				jQuery.fx.step[ tween.prop ]( tween );
 			} else if ( tween.elem.style && ( tween.elem.style[ jQuery.cssProps[ tween.prop ] ] != null || jQuery.cssHooks[ tween.prop ] ) ) {
@@ -6440,8 +7212,9 @@ Tween.propHooks = {
 	}
 };
 
-// Support: IE9
+// Support: IE <=9
 // Panic based approach to setting things on disconnected nodes
+
 Tween.propHooks.scrollTop = Tween.propHooks.scrollLeft = {
 	set: function( tween ) {
 		if ( tween.elem.nodeType && tween.elem.parentNode ) {
@@ -6497,16 +7270,16 @@ var
 				start = +target || 1;
 
 				do {
-					// If previous iteration zeroed out, double until we get *something*.
-					// Use string for doubling so we don't accidentally see scale as unchanged below
+					// If previous iteration zeroed out, double until we get *something*
+					// Use a string for doubling factor so we don't accidentally see scale as unchanged below
 					scale = scale || ".5";
 
 					// Adjust and apply
 					start = start / scale;
 					jQuery.style( tween.elem, prop, start + unit );
 
-				// Update scale, tolerating zero or NaN from tween.cur(),
-				// break the loop if scale is unchanged or perfect, or if we've just had enough
+				// Update scale, tolerating zero or NaN from tween.cur()
+				// And breaking the loop if scale is unchanged or perfect, or if we've just had enough
 				} while ( scale !== (scale = tween.cur() / target) && scale !== 1 && --maxIterations );
 			}
 
@@ -6535,11 +7308,11 @@ function createFxNow() {
 // Generate parameters to create a standard animation
 function genFx( type, includeWidth ) {
 	var which,
-		i = 0,
-		attrs = { height: type };
+		attrs = { height: type },
+		i = 0;
 
-	// If we include width, step value is 1 to do all cssExpand values,
-	// otherwise step value is 2 to skip over Left and Right
+	// if we include width, step value is 1 to do all cssExpand values,
+	// if we don't include width, step value is 2 to skip over Left and Right
 	includeWidth = includeWidth ? 1 : 0;
 	for ( ; i < 4 ; i += 2 - includeWidth ) {
 		which = cssExpand[ i ];
@@ -6561,7 +7334,7 @@ function createTween( value, prop, animation ) {
 	for ( ; index < length; index++ ) {
 		if ( (tween = collection[ index ].call( animation, prop, value )) ) {
 
-			// We're done with this property
+			// we're done with this property
 			return tween;
 		}
 	}
@@ -6574,9 +7347,9 @@ function defaultPrefilter( elem, props, opts ) {
 		orig = {},
 		style = elem.style,
 		hidden = elem.nodeType && isHidden( elem ),
-		dataShow = data_priv.get( elem, "fxshow" );
+		dataShow = jQuery._data( elem, "fxshow" );
 
-	// Handle queue: false promises
+	// handle queue: false promises
 	if ( !opts.queue ) {
 		hooks = jQuery._queueHooks( elem, "fx" );
 		if ( hooks.unqueued == null ) {
@@ -6591,7 +7364,8 @@ function defaultPrefilter( elem, props, opts ) {
 		hooks.unqueued++;
 
 		anim.always(function() {
-			// Ensure the complete handler is called before this completes
+			// doing this makes sure that the complete handler will be called
+			// before this completes
 			anim.always(function() {
 				hooks.unqueued--;
 				if ( !jQuery.queue( elem, "fx" ).length ) {
@@ -6601,10 +7375,10 @@ function defaultPrefilter( elem, props, opts ) {
 		});
 	}
 
-	// Height/width overflow pass
+	// height/width overflow pass
 	if ( elem.nodeType === 1 && ( "height" in props || "width" in props ) ) {
 		// Make sure that nothing sneaks out
-		// Record all 3 overflow attributes because IE9-10 do not
+		// Record all 3 overflow attributes because IE does not
 		// change the overflow attribute when overflowX and
 		// overflowY are set to the same value
 		opts.overflow = [ style.overflow, style.overflowX, style.overflowY ];
@@ -6615,20 +7389,29 @@ function defaultPrefilter( elem, props, opts ) {
 
 		// Test default display if display is currently "none"
 		checkDisplay = display === "none" ?
-			data_priv.get( elem, "olddisplay" ) || defaultDisplay( elem.nodeName ) : display;
+			jQuery._data( elem, "olddisplay" ) || defaultDisplay( elem.nodeName ) : display;
 
 		if ( checkDisplay === "inline" && jQuery.css( elem, "float" ) === "none" ) {
-			style.display = "inline-block";
+
+			// inline-level elements accept inline-block;
+			// block-level elements need to be inline with layout
+			if ( !support.inlineBlockNeedsLayout || defaultDisplay( elem.nodeName ) === "inline" ) {
+				style.display = "inline-block";
+			} else {
+				style.zoom = 1;
+			}
 		}
 	}
 
 	if ( opts.overflow ) {
 		style.overflow = "hidden";
-		anim.always(function() {
-			style.overflow = opts.overflow[ 0 ];
-			style.overflowX = opts.overflow[ 1 ];
-			style.overflowY = opts.overflow[ 2 ];
-		});
+		if ( !support.shrinkWrapBlocks() ) {
+			anim.always(function() {
+				style.overflow = opts.overflow[ 0 ];
+				style.overflowX = opts.overflow[ 1 ];
+				style.overflowY = opts.overflow[ 2 ];
+			});
+		}
 	}
 
 	// show/hide pass
@@ -6660,10 +7443,10 @@ function defaultPrefilter( elem, props, opts ) {
 				hidden = dataShow.hidden;
 			}
 		} else {
-			dataShow = data_priv.access( elem, "fxshow", {} );
+			dataShow = jQuery._data( elem, "fxshow", {} );
 		}
 
-		// Store state if its toggle - enables .stop().toggle() to "reverse"
+		// store state if its toggle - enables .stop().toggle() to "reverse"
 		if ( toggle ) {
 			dataShow.hidden = !hidden;
 		}
@@ -6676,8 +7459,7 @@ function defaultPrefilter( elem, props, opts ) {
 		}
 		anim.done(function() {
 			var prop;
-
-			data_priv.remove( elem, "fxshow" );
+			jQuery._removeData( elem, "fxshow" );
 			for ( prop in orig ) {
 				jQuery.style( elem, prop, orig[ prop ] );
 			}
@@ -6723,8 +7505,8 @@ function propFilter( props, specialEasing ) {
 			value = hooks.expand( value );
 			delete props[ name ];
 
-			// Not quite $.extend, this won't overwrite existing keys.
-			// Reusing 'index' because we have the correct "name"
+			// not quite $.extend, this wont overwrite keys already present.
+			// also - reusing 'index' from above because we have the correct "name"
 			for ( index in value ) {
 				if ( !( index in props ) ) {
 					props[ index ] = value[ index ];
@@ -6743,7 +7525,7 @@ function Animation( elem, properties, options ) {
 		index = 0,
 		length = animationPrefilters.length,
 		deferred = jQuery.Deferred().always( function() {
-			// Don't match elem in the :animated selector
+			// don't match elem in the :animated selector
 			delete tick.elem;
 		}),
 		tick = function() {
@@ -6752,8 +7534,7 @@ function Animation( elem, properties, options ) {
 			}
 			var currentTime = fxNow || createFxNow(),
 				remaining = Math.max( 0, animation.startTime + animation.duration - currentTime ),
-				// Support: Android 2.3
-				// Archaic crash bug won't allow us to use `1 - ( 0.5 || 0 )` (#12497)
+				// archaic crash bug won't allow us to use 1 - ( 0.5 || 0 ) (#12497)
 				temp = remaining / animation.duration || 0,
 				percent = 1 - temp,
 				index = 0,
@@ -6789,7 +7570,7 @@ function Animation( elem, properties, options ) {
 			},
 			stop: function( gotoEnd ) {
 				var index = 0,
-					// If we are going to the end, we want to run all the tweens
+					// if we are going to the end, we want to run all the tweens
 					// otherwise we skip this part
 					length = gotoEnd ? animation.tweens.length : 0;
 				if ( stopped ) {
@@ -6800,7 +7581,8 @@ function Animation( elem, properties, options ) {
 					animation.tweens[ index ].run( 1 );
 				}
 
-				// Resolve when we played the last frame; otherwise, reject
+				// resolve when we played the last frame
+				// otherwise, reject
 				if ( gotoEnd ) {
 					deferred.resolveWith( elem, [ animation, gotoEnd ] );
 				} else {
@@ -6842,7 +7624,6 @@ function Animation( elem, properties, options ) {
 }
 
 jQuery.Animation = jQuery.extend( Animation, {
-
 	tweener: function( props, callback ) {
 		if ( jQuery.isFunction( props ) ) {
 			callback = props;
@@ -6882,7 +7663,7 @@ jQuery.speed = function( speed, easing, fn ) {
 	opt.duration = jQuery.fx.off ? 0 : typeof opt.duration === "number" ? opt.duration :
 		opt.duration in jQuery.fx.speeds ? jQuery.fx.speeds[ opt.duration ] : jQuery.fx.speeds._default;
 
-	// Normalize opt.queue - true/undefined/null -> "fx"
+	// normalize opt.queue - true/undefined/null -> "fx"
 	if ( opt.queue == null || opt.queue === true ) {
 		opt.queue = "fx";
 	}
@@ -6906,10 +7687,10 @@ jQuery.speed = function( speed, easing, fn ) {
 jQuery.fn.extend({
 	fadeTo: function( speed, to, easing, callback ) {
 
-		// Show any hidden elements after setting opacity to 0
+		// show any hidden elements after setting opacity to 0
 		return this.filter( isHidden ).css( "opacity", 0 ).show()
 
-			// Animate to the value specified
+			// animate to the value specified
 			.end().animate({ opacity: to }, speed, easing, callback );
 	},
 	animate: function( prop, speed, easing, callback ) {
@@ -6920,7 +7701,7 @@ jQuery.fn.extend({
 				var anim = Animation( this, jQuery.extend( {}, prop ), optall );
 
 				// Empty animations, or finishing resolves immediately
-				if ( empty || data_priv.get( this, "finish" ) ) {
+				if ( empty || jQuery._data( this, "finish" ) ) {
 					anim.stop( true );
 				}
 			};
@@ -6950,7 +7731,7 @@ jQuery.fn.extend({
 			var dequeue = true,
 				index = type != null && type + "queueHooks",
 				timers = jQuery.timers,
-				data = data_priv.get( this );
+				data = jQuery._data( this );
 
 			if ( index ) {
 				if ( data[ index ] && data[ index ].stop ) {
@@ -6972,9 +7753,9 @@ jQuery.fn.extend({
 				}
 			}
 
-			// Start the next in the queue if the last step wasn't forced.
-			// Timers currently will call their complete callbacks, which
-			// will dequeue but only if they were gotoEnd.
+			// start the next in the queue if the last step wasn't forced
+			// timers currently will call their complete callbacks, which will dequeue
+			// but only if they were gotoEnd
 			if ( dequeue || !gotoEnd ) {
 				jQuery.dequeue( this, type );
 			}
@@ -6986,23 +7767,23 @@ jQuery.fn.extend({
 		}
 		return this.each(function() {
 			var index,
-				data = data_priv.get( this ),
+				data = jQuery._data( this ),
 				queue = data[ type + "queue" ],
 				hooks = data[ type + "queueHooks" ],
 				timers = jQuery.timers,
 				length = queue ? queue.length : 0;
 
-			// Enable finishing flag on private data
+			// enable finishing flag on private data
 			data.finish = true;
 
-			// Empty the queue first
+			// empty the queue first
 			jQuery.queue( this, type, [] );
 
 			if ( hooks && hooks.stop ) {
 				hooks.stop.call( this, true );
 			}
 
-			// Look for any active animations, and finish them
+			// look for any active animations, and finish them
 			for ( index = timers.length; index--; ) {
 				if ( timers[ index ].elem === this && timers[ index ].queue === type ) {
 					timers[ index ].anim.stop( true );
@@ -7010,14 +7791,14 @@ jQuery.fn.extend({
 				}
 			}
 
-			// Look for any animations in the old queue and finish them
+			// look for any animations in the old queue and finish them
 			for ( index = 0; index < length; index++ ) {
 				if ( queue[ index ] && queue[ index ].finish ) {
 					queue[ index ].finish.call( this );
 				}
 			}
 
-			// Turn off finishing flag
+			// turn off finishing flag
 			delete data.finish;
 		});
 	}
@@ -7049,8 +7830,8 @@ jQuery.each({
 jQuery.timers = [];
 jQuery.fx.tick = function() {
 	var timer,
-		i = 0,
-		timers = jQuery.timers;
+		timers = jQuery.timers,
+		i = 0;
 
 	fxNow = jQuery.now();
 
@@ -7114,36 +7895,240 @@ jQuery.fn.delay = function( time, type ) {
 
 
 (function() {
-	var input = document.createElement( "input" ),
-		select = document.createElement( "select" ),
-		opt = select.appendChild( document.createElement( "option" ) );
+	// Minified: var a,b,c,d,e
+	var input, div, select, a, opt;
 
-	input.type = "checkbox";
+	// Setup
+	div = document.createElement( "div" );
+	div.setAttribute( "className", "t" );
+	div.innerHTML = "  <link/><table></table><a href='/a'>a</a><input type='checkbox'/>";
+	a = div.getElementsByTagName("a")[ 0 ];
 
-	// Support: iOS<=5.1, Android<=4.2+
-	// Default value for a checkbox should be "on"
-	support.checkOn = input.value !== "";
+	// First batch of tests.
+	select = document.createElement("select");
+	opt = select.appendChild( document.createElement("option") );
+	input = div.getElementsByTagName("input")[ 0 ];
 
-	// Support: IE<=11+
-	// Must access selectedIndex to make default options select
+	a.style.cssText = "top:1px";
+
+	// Test setAttribute on camelCase class. If it works, we need attrFixes when doing get/setAttribute (ie6/7)
+	support.getSetAttribute = div.className !== "t";
+
+	// Get the style information from getAttribute
+	// (IE uses .cssText instead)
+	support.style = /top/.test( a.getAttribute("style") );
+
+	// Make sure that URLs aren't manipulated
+	// (IE normalizes it by default)
+	support.hrefNormalized = a.getAttribute("href") === "/a";
+
+	// Check the default checkbox/radio value ("" on WebKit; "on" elsewhere)
+	support.checkOn = !!input.value;
+
+	// Make sure that a selected-by-default option has a working selected property.
+	// (WebKit defaults to false instead of true, IE too, if it's in an optgroup)
 	support.optSelected = opt.selected;
 
-	// Support: Android<=2.3
-	// Options inside disabled selects are incorrectly marked as disabled
+	// Tests for enctype support on a form (#6743)
+	support.enctype = !!document.createElement("form").enctype;
+
+	// Make sure that the options inside disabled selects aren't marked as disabled
+	// (WebKit marks them as disabled)
 	select.disabled = true;
 	support.optDisabled = !opt.disabled;
 
-	// Support: IE<=11+
-	// An input loses its value after becoming a radio
+	// Support: IE8 only
+	// Check if we can trust getAttribute("value")
 	input = document.createElement( "input" );
+	input.setAttribute( "value", "" );
+	support.input = input.getAttribute( "value" ) === "";
+
+	// Check if an input maintains its value after becoming a radio
 	input.value = "t";
-	input.type = "radio";
+	input.setAttribute( "type", "radio" );
 	support.radioValue = input.value === "t";
 })();
 
 
+var rreturn = /\r/g;
+
+jQuery.fn.extend({
+	val: function( value ) {
+		var hooks, ret, isFunction,
+			elem = this[0];
+
+		if ( !arguments.length ) {
+			if ( elem ) {
+				hooks = jQuery.valHooks[ elem.type ] || jQuery.valHooks[ elem.nodeName.toLowerCase() ];
+
+				if ( hooks && "get" in hooks && (ret = hooks.get( elem, "value" )) !== undefined ) {
+					return ret;
+				}
+
+				ret = elem.value;
+
+				return typeof ret === "string" ?
+					// handle most common string cases
+					ret.replace(rreturn, "") :
+					// handle cases where value is null/undef or number
+					ret == null ? "" : ret;
+			}
+
+			return;
+		}
+
+		isFunction = jQuery.isFunction( value );
+
+		return this.each(function( i ) {
+			var val;
+
+			if ( this.nodeType !== 1 ) {
+				return;
+			}
+
+			if ( isFunction ) {
+				val = value.call( this, i, jQuery( this ).val() );
+			} else {
+				val = value;
+			}
+
+			// Treat null/undefined as ""; convert numbers to string
+			if ( val == null ) {
+				val = "";
+			} else if ( typeof val === "number" ) {
+				val += "";
+			} else if ( jQuery.isArray( val ) ) {
+				val = jQuery.map( val, function( value ) {
+					return value == null ? "" : value + "";
+				});
+			}
+
+			hooks = jQuery.valHooks[ this.type ] || jQuery.valHooks[ this.nodeName.toLowerCase() ];
+
+			// If set returns undefined, fall back to normal setting
+			if ( !hooks || !("set" in hooks) || hooks.set( this, val, "value" ) === undefined ) {
+				this.value = val;
+			}
+		});
+	}
+});
+
+jQuery.extend({
+	valHooks: {
+		option: {
+			get: function( elem ) {
+				var val = jQuery.find.attr( elem, "value" );
+				return val != null ?
+					val :
+					// Support: IE10-11+
+					// option.text throws exceptions (#14686, #14858)
+					jQuery.trim( jQuery.text( elem ) );
+			}
+		},
+		select: {
+			get: function( elem ) {
+				var value, option,
+					options = elem.options,
+					index = elem.selectedIndex,
+					one = elem.type === "select-one" || index < 0,
+					values = one ? null : [],
+					max = one ? index + 1 : options.length,
+					i = index < 0 ?
+						max :
+						one ? index : 0;
+
+				// Loop through all the selected options
+				for ( ; i < max; i++ ) {
+					option = options[ i ];
+
+					// oldIE doesn't update selected after form reset (#2551)
+					if ( ( option.selected || i === index ) &&
+							// Don't return options that are disabled or in a disabled optgroup
+							( support.optDisabled ? !option.disabled : option.getAttribute("disabled") === null ) &&
+							( !option.parentNode.disabled || !jQuery.nodeName( option.parentNode, "optgroup" ) ) ) {
+
+						// Get the specific value for the option
+						value = jQuery( option ).val();
+
+						// We don't need an array for one selects
+						if ( one ) {
+							return value;
+						}
+
+						// Multi-Selects return an array
+						values.push( value );
+					}
+				}
+
+				return values;
+			},
+
+			set: function( elem, value ) {
+				var optionSet, option,
+					options = elem.options,
+					values = jQuery.makeArray( value ),
+					i = options.length;
+
+				while ( i-- ) {
+					option = options[ i ];
+
+					if ( jQuery.inArray( jQuery.valHooks.option.get( option ), values ) >= 0 ) {
+
+						// Support: IE6
+						// When new option element is added to select box we need to
+						// force reflow of newly added node in order to workaround delay
+						// of initialization properties
+						try {
+							option.selected = optionSet = true;
+
+						} catch ( _ ) {
+
+							// Will be executed only in IE6
+							option.scrollHeight;
+						}
+
+					} else {
+						option.selected = false;
+					}
+				}
+
+				// Force browsers to behave consistently when non-matching value is set
+				if ( !optionSet ) {
+					elem.selectedIndex = -1;
+				}
+
+				return options;
+			}
+		}
+	}
+});
+
+// Radios and checkboxes getter/setter
+jQuery.each([ "radio", "checkbox" ], function() {
+	jQuery.valHooks[ this ] = {
+		set: function( elem, value ) {
+			if ( jQuery.isArray( value ) ) {
+				return ( elem.checked = jQuery.inArray( jQuery(elem).val(), value ) >= 0 );
+			}
+		}
+	};
+	if ( !support.checkOn ) {
+		jQuery.valHooks[ this ].get = function( elem ) {
+			// Support: Webkit
+			// "" is returned instead of "on" if a value isn't specified
+			return elem.getAttribute("value") === null ? "on" : elem.value;
+		};
+	}
+});
+
+
+
+
 var nodeHook, boolHook,
-	attrHandle = jQuery.expr.attrHandle;
+	attrHandle = jQuery.expr.attrHandle,
+	ruseDefault = /^(?:checked|selected)$/i,
+	getSetAttribute = support.getSetAttribute,
+	getSetInput = support.input;
 
 jQuery.fn.extend({
 	attr: function( name, value ) {
@@ -7218,10 +8203,21 @@ jQuery.extend({
 				// Boolean attributes get special treatment (#10870)
 				if ( jQuery.expr.match.bool.test( name ) ) {
 					// Set corresponding property to false
-					elem[ propName ] = false;
+					if ( getSetInput && getSetAttribute || !ruseDefault.test( name ) ) {
+						elem[ propName ] = false;
+					// Support: IE<9
+					// Also clear defaultChecked/defaultSelected (if appropriate)
+					} else {
+						elem[ jQuery.camelCase( "default-" + name ) ] =
+							elem[ propName ] = false;
+					}
+
+				// See #9699 for explanation of this approach (setting first, then removal)
+				} else {
+					jQuery.attr( elem, name, "" );
 				}
 
-				elem.removeAttribute( name );
+				elem.removeAttribute( getSetAttribute ? name : propName );
 			}
 		}
 	},
@@ -7229,8 +8225,9 @@ jQuery.extend({
 	attrHooks: {
 		type: {
 			set: function( elem, value ) {
-				if ( !support.radioValue && value === "radio" &&
-					jQuery.nodeName( elem, "input" ) ) {
+				if ( !support.radioValue && value === "radio" && jQuery.nodeName(elem, "input") ) {
+					// Setting the type on a radio button after the value resets the value in IE6-9
+					// Reset value to default in case type is set after value during creation
 					var val = elem.value;
 					elem.setAttribute( "type", value );
 					if ( val ) {
@@ -7243,40 +8240,155 @@ jQuery.extend({
 	}
 });
 
-// Hooks for boolean attributes
+// Hook for boolean attributes
 boolHook = {
 	set: function( elem, value, name ) {
 		if ( value === false ) {
 			// Remove boolean attributes when set to false
 			jQuery.removeAttr( elem, name );
+		} else if ( getSetInput && getSetAttribute || !ruseDefault.test( name ) ) {
+			// IE<8 needs the *property* name
+			elem.setAttribute( !getSetAttribute && jQuery.propFix[ name ] || name, name );
+
+		// Use defaultChecked and defaultSelected for oldIE
 		} else {
-			elem.setAttribute( name, name );
+			elem[ jQuery.camelCase( "default-" + name ) ] = elem[ name ] = true;
 		}
+
 		return name;
 	}
 };
+
+// Retrieve booleans specially
 jQuery.each( jQuery.expr.match.bool.source.match( /\w+/g ), function( i, name ) {
+
 	var getter = attrHandle[ name ] || jQuery.find.attr;
 
-	attrHandle[ name ] = function( elem, name, isXML ) {
-		var ret, handle;
-		if ( !isXML ) {
-			// Avoid an infinite loop by temporarily removing this function from the getter
-			handle = attrHandle[ name ];
-			attrHandle[ name ] = ret;
-			ret = getter( elem, name, isXML ) != null ?
-				name.toLowerCase() :
-				null;
-			attrHandle[ name ] = handle;
-		}
-		return ret;
-	};
+	attrHandle[ name ] = getSetInput && getSetAttribute || !ruseDefault.test( name ) ?
+		function( elem, name, isXML ) {
+			var ret, handle;
+			if ( !isXML ) {
+				// Avoid an infinite loop by temporarily removing this function from the getter
+				handle = attrHandle[ name ];
+				attrHandle[ name ] = ret;
+				ret = getter( elem, name, isXML ) != null ?
+					name.toLowerCase() :
+					null;
+				attrHandle[ name ] = handle;
+			}
+			return ret;
+		} :
+		function( elem, name, isXML ) {
+			if ( !isXML ) {
+				return elem[ jQuery.camelCase( "default-" + name ) ] ?
+					name.toLowerCase() :
+					null;
+			}
+		};
 });
 
+// fix oldIE attroperties
+if ( !getSetInput || !getSetAttribute ) {
+	jQuery.attrHooks.value = {
+		set: function( elem, value, name ) {
+			if ( jQuery.nodeName( elem, "input" ) ) {
+				// Does not return so that setAttribute is also used
+				elem.defaultValue = value;
+			} else {
+				// Use nodeHook if defined (#1954); otherwise setAttribute is fine
+				return nodeHook && nodeHook.set( elem, value, name );
+			}
+		}
+	};
+}
+
+// IE6/7 do not support getting/setting some attributes with get/setAttribute
+if ( !getSetAttribute ) {
+
+	// Use this for any attribute in IE6/7
+	// This fixes almost every IE6/7 issue
+	nodeHook = {
+		set: function( elem, value, name ) {
+			// Set the existing or create a new attribute node
+			var ret = elem.getAttributeNode( name );
+			if ( !ret ) {
+				elem.setAttributeNode(
+					(ret = elem.ownerDocument.createAttribute( name ))
+				);
+			}
+
+			ret.value = value += "";
+
+			// Break association with cloned elements by also using setAttribute (#9646)
+			if ( name === "value" || value === elem.getAttribute( name ) ) {
+				return value;
+			}
+		}
+	};
+
+	// Some attributes are constructed with empty-string values when not defined
+	attrHandle.id = attrHandle.name = attrHandle.coords =
+		function( elem, name, isXML ) {
+			var ret;
+			if ( !isXML ) {
+				return (ret = elem.getAttributeNode( name )) && ret.value !== "" ?
+					ret.value :
+					null;
+			}
+		};
+
+	// Fixing value retrieval on a button requires this module
+	jQuery.valHooks.button = {
+		get: function( elem, name ) {
+			var ret = elem.getAttributeNode( name );
+			if ( ret && ret.specified ) {
+				return ret.value;
+			}
+		},
+		set: nodeHook.set
+	};
+
+	// Set contenteditable to false on removals(#10429)
+	// Setting to empty string throws an error as an invalid value
+	jQuery.attrHooks.contenteditable = {
+		set: function( elem, value, name ) {
+			nodeHook.set( elem, value === "" ? false : value, name );
+		}
+	};
+
+	// Set width and height to auto instead of 0 on empty string( Bug #8150 )
+	// This is for removals
+	jQuery.each([ "width", "height" ], function( i, name ) {
+		jQuery.attrHooks[ name ] = {
+			set: function( elem, value ) {
+				if ( value === "" ) {
+					elem.setAttribute( name, "auto" );
+					return value;
+				}
+			}
+		};
+	});
+}
+
+if ( !support.style ) {
+	jQuery.attrHooks.style = {
+		get: function( elem ) {
+			// Return undefined in the case of empty string
+			// Note: IE uppercases css property names, but if we were to .toLowerCase()
+			// .cssText, that would destroy case senstitivity in URL's, like in "background"
+			return elem.style.cssText || undefined;
+		},
+		set: function( elem, value ) {
+			return ( elem.style.cssText = value + "" );
+		}
+	};
+}
 
 
 
-var rfocusable = /^(?:input|select|textarea|button)$/i;
+
+var rfocusable = /^(?:input|select|textarea|button|object)$/i,
+	rclickable = /^(?:a|area)$/i;
 
 jQuery.fn.extend({
 	prop: function( name, value ) {
@@ -7284,8 +8396,13 @@ jQuery.fn.extend({
 	},
 
 	removeProp: function( name ) {
+		name = jQuery.propFix[ name ] || name;
 		return this.each(function() {
-			delete this[ jQuery.propFix[ name ] || name ];
+			// try/catch handles cases where IE balks (such as removing a property on window)
+			try {
+				this[ name ] = undefined;
+				delete this[ name ];
+			} catch( e ) {}
 		});
 	}
 });
@@ -7300,7 +8417,7 @@ jQuery.extend({
 		var ret, hooks, notxml,
 			nType = elem.nodeType;
 
-		// Don't get/set properties on text, comment and attribute nodes
+		// don't get/set properties on text, comment and attribute nodes
 		if ( !elem || nType === 3 || nType === 8 || nType === 2 ) {
 			return;
 		}
@@ -7328,20 +8445,49 @@ jQuery.extend({
 	propHooks: {
 		tabIndex: {
 			get: function( elem ) {
-				return elem.hasAttribute( "tabindex" ) || rfocusable.test( elem.nodeName ) || elem.href ?
-					elem.tabIndex :
-					-1;
+				// elem.tabIndex doesn't always return the correct value when it hasn't been explicitly set
+				// http://fluidproject.org/blog/2008/01/09/getting-setting-and-removing-tabindex-values-with-javascript/
+				// Use proper attribute retrieval(#12072)
+				var tabindex = jQuery.find.attr( elem, "tabindex" );
+
+				return tabindex ?
+					parseInt( tabindex, 10 ) :
+					rfocusable.test( elem.nodeName ) || rclickable.test( elem.nodeName ) && elem.href ?
+						0 :
+						-1;
 			}
 		}
 	}
 });
 
+// Some attributes require a special call on IE
+// http://msdn.microsoft.com/en-us/library/ms536429%28VS.85%29.aspx
+if ( !support.hrefNormalized ) {
+	// href/src property should get the full normalized URL (#10299/#12915)
+	jQuery.each([ "href", "src" ], function( i, name ) {
+		jQuery.propHooks[ name ] = {
+			get: function( elem ) {
+				return elem.getAttribute( name, 4 );
+			}
+		};
+	});
+}
+
+// Support: Safari, IE9+
+// mis-reports the default selected property of an option
+// Accessing the parent's selectedIndex property fixes it
 if ( !support.optSelected ) {
 	jQuery.propHooks.selected = {
 		get: function( elem ) {
 			var parent = elem.parentNode;
-			if ( parent && parent.parentNode ) {
-				parent.parentNode.selectedIndex;
+
+			if ( parent ) {
+				parent.selectedIndex;
+
+				// Make sure that it also works with optgroups, see #5701
+				if ( parent.parentNode ) {
+					parent.parentNode.selectedIndex;
+				}
 			}
 			return null;
 		}
@@ -7363,6 +8509,11 @@ jQuery.each([
 	jQuery.propFix[ this.toLowerCase() ] = this;
 });
 
+// IE6/7 call enctype encoding
+if ( !support.enctype ) {
+	jQuery.propFix.enctype = "encoding";
+}
+
 
 
 
@@ -7371,9 +8522,9 @@ var rclass = /[\t\r\n\f]/g;
 jQuery.fn.extend({
 	addClass: function( value ) {
 		var classes, elem, cur, clazz, j, finalValue,
-			proceed = typeof value === "string" && value,
 			i = 0,
-			len = this.length;
+			len = this.length,
+			proceed = typeof value === "string" && value;
 
 		if ( jQuery.isFunction( value ) ) {
 			return this.each(function( j ) {
@@ -7414,9 +8565,9 @@ jQuery.fn.extend({
 
 	removeClass: function( value ) {
 		var classes, elem, cur, clazz, j, finalValue,
-			proceed = arguments.length === 0 || typeof value === "string" && value,
 			i = 0,
-			len = this.length;
+			len = this.length,
+			proceed = arguments.length === 0 || typeof value === "string" && value;
 
 		if ( jQuery.isFunction( value ) ) {
 			return this.each(function( j ) {
@@ -7443,7 +8594,7 @@ jQuery.fn.extend({
 						}
 					}
 
-					// Only assign if different to avoid unneeded rendering.
+					// only assign if different to avoid unneeded rendering.
 					finalValue = value ? jQuery.trim( cur ) : "";
 					if ( elem.className !== finalValue ) {
 						elem.className = finalValue;
@@ -7470,14 +8621,14 @@ jQuery.fn.extend({
 
 		return this.each(function() {
 			if ( type === "string" ) {
-				// Toggle individual class names
+				// toggle individual class names
 				var className,
 					i = 0,
 					self = jQuery( this ),
 					classNames = value.match( rnotwhite ) || [];
 
 				while ( (className = classNames[ i++ ]) ) {
-					// Check each className given, space separated list
+					// check each className given, space separated list
 					if ( self.hasClass( className ) ) {
 						self.removeClass( className );
 					} else {
@@ -7489,14 +8640,14 @@ jQuery.fn.extend({
 			} else if ( type === strundefined || type === "boolean" ) {
 				if ( this.className ) {
 					// store className if set
-					data_priv.set( this, "__className__", this.className );
+					jQuery._data( this, "__className__", this.className );
 				}
 
-				// If the element has a class name or if we're passed `false`,
+				// If the element has a class name or if we're passed "false",
 				// then remove the whole classname (if there was one, the above saved it).
 				// Otherwise bring back whatever was previously saved (if anything),
 				// falling back to the empty string if nothing was stored.
-				this.className = this.className || value === false ? "" : data_priv.get( this, "__className__" ) || "";
+				this.className = this.className || value === false ? "" : jQuery._data( this, "__className__" ) || "";
 			}
 		});
 	},
@@ -7512,163 +8663,6 @@ jQuery.fn.extend({
 		}
 
 		return false;
-	}
-});
-
-
-
-
-var rreturn = /\r/g;
-
-jQuery.fn.extend({
-	val: function( value ) {
-		var hooks, ret, isFunction,
-			elem = this[0];
-
-		if ( !arguments.length ) {
-			if ( elem ) {
-				hooks = jQuery.valHooks[ elem.type ] || jQuery.valHooks[ elem.nodeName.toLowerCase() ];
-
-				if ( hooks && "get" in hooks && (ret = hooks.get( elem, "value" )) !== undefined ) {
-					return ret;
-				}
-
-				ret = elem.value;
-
-				return typeof ret === "string" ?
-					// Handle most common string cases
-					ret.replace(rreturn, "") :
-					// Handle cases where value is null/undef or number
-					ret == null ? "" : ret;
-			}
-
-			return;
-		}
-
-		isFunction = jQuery.isFunction( value );
-
-		return this.each(function( i ) {
-			var val;
-
-			if ( this.nodeType !== 1 ) {
-				return;
-			}
-
-			if ( isFunction ) {
-				val = value.call( this, i, jQuery( this ).val() );
-			} else {
-				val = value;
-			}
-
-			// Treat null/undefined as ""; convert numbers to string
-			if ( val == null ) {
-				val = "";
-
-			} else if ( typeof val === "number" ) {
-				val += "";
-
-			} else if ( jQuery.isArray( val ) ) {
-				val = jQuery.map( val, function( value ) {
-					return value == null ? "" : value + "";
-				});
-			}
-
-			hooks = jQuery.valHooks[ this.type ] || jQuery.valHooks[ this.nodeName.toLowerCase() ];
-
-			// If set returns undefined, fall back to normal setting
-			if ( !hooks || !("set" in hooks) || hooks.set( this, val, "value" ) === undefined ) {
-				this.value = val;
-			}
-		});
-	}
-});
-
-jQuery.extend({
-	valHooks: {
-		option: {
-			get: function( elem ) {
-				var val = jQuery.find.attr( elem, "value" );
-				return val != null ?
-					val :
-					// Support: IE10-11+
-					// option.text throws exceptions (#14686, #14858)
-					jQuery.trim( jQuery.text( elem ) );
-			}
-		},
-		select: {
-			get: function( elem ) {
-				var value, option,
-					options = elem.options,
-					index = elem.selectedIndex,
-					one = elem.type === "select-one" || index < 0,
-					values = one ? null : [],
-					max = one ? index + 1 : options.length,
-					i = index < 0 ?
-						max :
-						one ? index : 0;
-
-				// Loop through all the selected options
-				for ( ; i < max; i++ ) {
-					option = options[ i ];
-
-					// IE6-9 doesn't update selected after form reset (#2551)
-					if ( ( option.selected || i === index ) &&
-							// Don't return options that are disabled or in a disabled optgroup
-							( support.optDisabled ? !option.disabled : option.getAttribute( "disabled" ) === null ) &&
-							( !option.parentNode.disabled || !jQuery.nodeName( option.parentNode, "optgroup" ) ) ) {
-
-						// Get the specific value for the option
-						value = jQuery( option ).val();
-
-						// We don't need an array for one selects
-						if ( one ) {
-							return value;
-						}
-
-						// Multi-Selects return an array
-						values.push( value );
-					}
-				}
-
-				return values;
-			},
-
-			set: function( elem, value ) {
-				var optionSet, option,
-					options = elem.options,
-					values = jQuery.makeArray( value ),
-					i = options.length;
-
-				while ( i-- ) {
-					option = options[ i ];
-					if ( (option.selected = jQuery.inArray( option.value, values ) >= 0) ) {
-						optionSet = true;
-					}
-				}
-
-				// Force browsers to behave consistently when non-matching value is set
-				if ( !optionSet ) {
-					elem.selectedIndex = -1;
-				}
-				return values;
-			}
-		}
-	}
-});
-
-// Radios and checkboxes getter/setter
-jQuery.each([ "radio", "checkbox" ], function() {
-	jQuery.valHooks[ this ] = {
-		set: function( elem, value ) {
-			if ( jQuery.isArray( value ) ) {
-				return ( elem.checked = jQuery.inArray( jQuery(elem).val(), value ) >= 0 );
-			}
-		}
-	};
-	if ( !support.checkOn ) {
-		jQuery.valHooks[ this ].get = function( elem ) {
-			return elem.getAttribute("value") === null ? "on" : elem.value;
-		};
 	}
 });
 
@@ -7718,10 +8712,48 @@ var rquery = (/\?/);
 
 
 
-// Support: Android 2.3
-// Workaround failure to string-cast null input
+var rvalidtokens = /(,)|(\[|{)|(}|])|"(?:[^"\\\r\n]|\\["\\\/bfnrt]|\\u[\da-fA-F]{4})*"\s*:?|true|false|null|-?(?!0\d)\d+(?:\.\d+|)(?:[eE][+-]?\d+|)/g;
+
 jQuery.parseJSON = function( data ) {
-	return JSON.parse( data + "" );
+	// Attempt to parse using the native JSON parser first
+	if ( window.JSON && window.JSON.parse ) {
+		// Support: Android 2.3
+		// Workaround failure to string-cast null input
+		return window.JSON.parse( data + "" );
+	}
+
+	var requireNonComma,
+		depth = null,
+		str = jQuery.trim( data + "" );
+
+	// Guard against invalid (and possibly dangerous) input by ensuring that nothing remains
+	// after removing valid tokens
+	return str && !jQuery.trim( str.replace( rvalidtokens, function( token, comma, open, close ) {
+
+		// Force termination if we see a misplaced comma
+		if ( requireNonComma && comma ) {
+			depth = 0;
+		}
+
+		// Perform no more replacements after returning to outermost depth
+		if ( depth === 0 ) {
+			return token;
+		}
+
+		// Commas must not follow "[", "{", or ","
+		requireNonComma = open || comma;
+
+		// Determine new depth
+		// array/object open ("[" or "{"): depth += true - false (increment)
+		// array/object close ("]" or "}"): depth += false - true (decrement)
+		// other cases ("," or primitive): depth += true - true (numeric cast)
+		depth += !close - !open;
+
+		// Remove this token
+		return "";
+	}) ) ?
+		( Function( "return " + str ) )() :
+		jQuery.error( "Invalid JSON: " + data );
 };
 
 
@@ -7731,16 +8763,19 @@ jQuery.parseXML = function( data ) {
 	if ( !data || typeof data !== "string" ) {
 		return null;
 	}
-
-	// Support: IE9
 	try {
-		tmp = new DOMParser();
-		xml = tmp.parseFromString( data, "text/xml" );
-	} catch ( e ) {
+		if ( window.DOMParser ) { // Standard
+			tmp = new DOMParser();
+			xml = tmp.parseFromString( data, "text/xml" );
+		} else { // IE
+			xml = new ActiveXObject( "Microsoft.XMLDOM" );
+			xml.async = "false";
+			xml.loadXML( data );
+		}
+	} catch( e ) {
 		xml = undefined;
 	}
-
-	if ( !xml || xml.getElementsByTagName( "parsererror" ).length ) {
+	if ( !xml || !xml.documentElement || xml.getElementsByTagName( "parsererror" ).length ) {
 		jQuery.error( "Invalid XML: " + data );
 	}
 	return xml;
@@ -7748,9 +8783,13 @@ jQuery.parseXML = function( data ) {
 
 
 var
+	// Document location
+	ajaxLocParts,
+	ajaxLocation,
+
 	rhash = /#.*$/,
 	rts = /([?&])_=[^&]*/,
-	rheaders = /^(.*?):[ \t]*([^\r\n]*)$/mg,
+	rheaders = /^(.*?):[ \t]*([^\r\n]*)\r?$/mg, // IE leaves an \r character at EOL
 	// #7653, #8125, #8152: local protocol detection
 	rlocalProtocol = /^(?:about|app|app-storage|.+-extension|file|res|widget):$/,
 	rnoContent = /^(?:GET|HEAD)$/,
@@ -7776,13 +8815,22 @@ var
 	transports = {},
 
 	// Avoid comment-prolog char sequence (#10098); must appease lint and evade compression
-	allTypes = "*/".concat( "*" ),
+	allTypes = "*/".concat("*");
 
-	// Document location
-	ajaxLocation = window.location.href,
+// #8138, IE may throw an exception when accessing
+// a field from window.location if document.domain has been set
+try {
+	ajaxLocation = location.href;
+} catch( e ) {
+	// Use the href attribute of an A element
+	// since IE will modify it given document.location
+	ajaxLocation = document.createElement( "a" );
+	ajaxLocation.href = "";
+	ajaxLocation = ajaxLocation.href;
+}
 
-	// Segment location into parts
-	ajaxLocParts = rurl.exec( ajaxLocation.toLowerCase() ) || [];
+// Segment location into parts
+ajaxLocParts = rurl.exec( ajaxLocation.toLowerCase() ) || [];
 
 // Base "constructor" for jQuery.ajaxPrefilter and jQuery.ajaxTransport
 function addToPrefiltersOrTransports( structure ) {
@@ -7803,7 +8851,7 @@ function addToPrefiltersOrTransports( structure ) {
 			// For each dataType in the dataTypeExpression
 			while ( (dataType = dataTypes[i++]) ) {
 				// Prepend if requested
-				if ( dataType[0] === "+" ) {
+				if ( dataType.charAt( 0 ) === "+" ) {
 					dataType = dataType.slice( 1 ) || "*";
 					(structure[ dataType ] = structure[ dataType ] || []).unshift( func );
 
@@ -7845,7 +8893,7 @@ function inspectPrefiltersOrTransports( structure, options, originalOptions, jqX
 // that takes "flat" options (not to be deep extended)
 // Fixes #9887
 function ajaxExtend( target, src ) {
-	var key, deep,
+	var deep, key,
 		flatOptions = jQuery.ajaxSettings.flatOptions || {};
 
 	for ( key in src ) {
@@ -7865,8 +8913,7 @@ function ajaxExtend( target, src ) {
  * - returns the corresponding response
  */
 function ajaxHandleResponses( s, jqXHR, responses ) {
-
-	var ct, type, finalDataType, firstDataType,
+	var firstDataType, ct, finalDataType, type,
 		contents = s.contents,
 		dataTypes = s.dataTypes;
 
@@ -7952,7 +8999,7 @@ function ajaxConvert( s, response, jqXHR, isSuccess ) {
 
 		if ( current ) {
 
-		// There's only work to do if current dataType is non-auto
+			// There's only work to do if current dataType is non-auto
 			if ( current === "*" ) {
 
 				current = prev;
@@ -8115,20 +9162,23 @@ jQuery.extend({
 		// Force options to be an object
 		options = options || {};
 
-		var transport,
-			// URL without anti-cache param
-			cacheURL,
-			// Response headers
-			responseHeadersString,
-			responseHeaders,
-			// timeout handle
-			timeoutTimer,
-			// Cross-domain detection vars
+		var // Cross-domain detection vars
 			parts,
-			// To know if global events are to be dispatched
-			fireGlobals,
 			// Loop variable
 			i,
+			// URL without anti-cache param
+			cacheURL,
+			// Response headers as string
+			responseHeadersString,
+			// timeout handle
+			timeoutTimer,
+
+			// To know if global events are to be dispatched
+			fireGlobals,
+
+			transport,
+			// Response headers
+			responseHeaders,
 			// Create the final options object
 			s = jQuery.ajaxSetup( {}, options ),
 			// Callbacks context
@@ -8225,11 +9275,10 @@ jQuery.extend({
 		jqXHR.error = jqXHR.fail;
 
 		// Remove hash character (#7531: and string promotion)
-		// Add protocol if not provided (prefilters might expect it)
+		// Add protocol if not provided (#5866: IE7 issue with protocol-less urls)
 		// Handle falsy url in the settings object (#10093: consistency with old signature)
 		// We also use the url parameter if available
-		s.url = ( ( url || s.url || ajaxLocation ) + "" ).replace( rhash, "" )
-			.replace( rprotocol, ajaxLocParts[ 1 ] + "//" );
+		s.url = ( ( url || s.url || ajaxLocation ) + "" ).replace( rhash, "" ).replace( rprotocol, ajaxLocParts[ 1 ] + "//" );
 
 		// Alias method option to type as per ticket #12004
 		s.type = options.method || options.type || s.method || s.type;
@@ -8335,7 +9384,7 @@ jQuery.extend({
 			return jqXHR.abort();
 		}
 
-		// Aborting is no longer a cancellation
+		// aborting is no longer a cancellation
 		strAbort = "abort";
 
 		// Install callbacks on deferreds
@@ -8447,7 +9496,8 @@ jQuery.extend({
 					isSuccess = !error;
 				}
 			} else {
-				// Extract error from statusText and normalize for non-aborts
+				// We extract error from statusText
+				// then normalize statusText and status for non-aborts
 				error = statusText;
 				if ( status || !statusText ) {
 					statusText = "error";
@@ -8503,7 +9553,7 @@ jQuery.extend({
 
 jQuery.each( [ "get", "post" ], function( i, method ) {
 	jQuery[ method ] = function( url, data, callback, type ) {
-		// Shift arguments if data argument was omitted
+		// shift arguments if data argument was omitted
 		if ( jQuery.isFunction( data ) ) {
 			type = type || callback;
 			callback = data;
@@ -8535,28 +9585,25 @@ jQuery._evalUrl = function( url ) {
 
 jQuery.fn.extend({
 	wrapAll: function( html ) {
-		var wrap;
-
 		if ( jQuery.isFunction( html ) ) {
-			return this.each(function( i ) {
-				jQuery( this ).wrapAll( html.call(this, i) );
+			return this.each(function(i) {
+				jQuery(this).wrapAll( html.call(this, i) );
 			});
 		}
 
-		if ( this[ 0 ] ) {
-
+		if ( this[0] ) {
 			// The elements to wrap the target around
-			wrap = jQuery( html, this[ 0 ].ownerDocument ).eq( 0 ).clone( true );
+			var wrap = jQuery( html, this[0].ownerDocument ).eq(0).clone(true);
 
-			if ( this[ 0 ].parentNode ) {
-				wrap.insertBefore( this[ 0 ] );
+			if ( this[0].parentNode ) {
+				wrap.insertBefore( this[0] );
 			}
 
 			wrap.map(function() {
 				var elem = this;
 
-				while ( elem.firstElementChild ) {
-					elem = elem.firstElementChild;
+				while ( elem.firstChild && elem.firstChild.nodeType === 1 ) {
+					elem = elem.firstChild;
 				}
 
 				return elem;
@@ -8568,8 +9615,8 @@ jQuery.fn.extend({
 
 	wrapInner: function( html ) {
 		if ( jQuery.isFunction( html ) ) {
-			return this.each(function( i ) {
-				jQuery( this ).wrapInner( html.call(this, i) );
+			return this.each(function(i) {
+				jQuery(this).wrapInner( html.call(this, i) );
 			});
 		}
 
@@ -8589,7 +9636,7 @@ jQuery.fn.extend({
 	wrap: function( html ) {
 		var isFunction = jQuery.isFunction( html );
 
-		return this.each(function( i ) {
+		return this.each(function(i) {
 			jQuery( this ).wrapAll( isFunction ? html.call(this, i) : html );
 		});
 	},
@@ -8607,8 +9654,11 @@ jQuery.fn.extend({
 jQuery.expr.filters.hidden = function( elem ) {
 	// Support: Opera <= 12.12
 	// Opera reports offsetWidths and offsetHeights less than zero on some elements
-	return elem.offsetWidth <= 0 && elem.offsetHeight <= 0;
+	return elem.offsetWidth <= 0 && elem.offsetHeight <= 0 ||
+		(!support.reliableHiddenOffsets() &&
+			((elem.style && elem.style.display) || jQuery.css( elem, "display" )) === "none");
 };
+
 jQuery.expr.filters.visible = function( elem ) {
 	return !jQuery.expr.filters.hidden( elem );
 };
@@ -8697,8 +9747,7 @@ jQuery.fn.extend({
 		})
 		.filter(function() {
 			var type = this.type;
-
-			// Use .is( ":disabled" ) so that fieldset[disabled] works
+			// Use .is(":disabled") so that fieldset[disabled] works
 			return this.name && !jQuery( this ).is( ":disabled" ) &&
 				rsubmittable.test( this.nodeName ) && !rsubmitterTypes.test( type ) &&
 				( this.checked || !rcheckableType.test( type ) );
@@ -8718,134 +9767,195 @@ jQuery.fn.extend({
 });
 
 
-jQuery.ajaxSettings.xhr = function() {
-	try {
-		return new XMLHttpRequest();
-	} catch( e ) {}
-};
+// Create the request object
+// (This is still attached to ajaxSettings for backward compatibility)
+jQuery.ajaxSettings.xhr = window.ActiveXObject !== undefined ?
+	// Support: IE6+
+	function() {
+
+		// XHR cannot access local files, always use ActiveX for that case
+		return !this.isLocal &&
+
+			// Support: IE7-8
+			// oldIE XHR does not support non-RFC2616 methods (#13240)
+			// See http://msdn.microsoft.com/en-us/library/ie/ms536648(v=vs.85).aspx
+			// and http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#sec9
+			// Although this check for six methods instead of eight
+			// since IE also does not support "trace" and "connect"
+			/^(get|post|head|put|delete|options)$/i.test( this.type ) &&
+
+			createStandardXHR() || createActiveXHR();
+	} :
+	// For all other browsers, use the standard XMLHttpRequest object
+	createStandardXHR;
 
 var xhrId = 0,
 	xhrCallbacks = {},
-	xhrSuccessStatus = {
-		// file protocol always yields status code 0, assume 200
-		0: 200,
-		// Support: IE9
-		// #1450: sometimes IE returns 1223 when it should be 204
-		1223: 204
-	},
 	xhrSupported = jQuery.ajaxSettings.xhr();
 
-// Support: IE9
+// Support: IE<10
 // Open requests must be manually aborted on unload (#5280)
 // See https://support.microsoft.com/kb/2856746 for more info
 if ( window.attachEvent ) {
 	window.attachEvent( "onunload", function() {
 		for ( var key in xhrCallbacks ) {
-			xhrCallbacks[ key ]();
+			xhrCallbacks[ key ]( undefined, true );
 		}
 	});
 }
 
+// Determine support properties
 support.cors = !!xhrSupported && ( "withCredentials" in xhrSupported );
-support.ajax = xhrSupported = !!xhrSupported;
+xhrSupported = support.ajax = !!xhrSupported;
 
-jQuery.ajaxTransport(function( options ) {
-	var callback;
+// Create transport if the browser can provide an xhr
+if ( xhrSupported ) {
 
-	// Cross domain only allowed if supported through XMLHttpRequest
-	if ( support.cors || xhrSupported && !options.crossDomain ) {
-		return {
-			send: function( headers, complete ) {
-				var i,
-					xhr = options.xhr(),
-					id = ++xhrId;
+	jQuery.ajaxTransport(function( options ) {
+		// Cross domain only allowed if supported through XMLHttpRequest
+		if ( !options.crossDomain || support.cors ) {
 
-				xhr.open( options.type, options.url, options.async, options.username, options.password );
+			var callback;
 
-				// Apply custom fields if provided
-				if ( options.xhrFields ) {
-					for ( i in options.xhrFields ) {
-						xhr[ i ] = options.xhrFields[ i ];
+			return {
+				send: function( headers, complete ) {
+					var i,
+						xhr = options.xhr(),
+						id = ++xhrId;
+
+					// Open the socket
+					xhr.open( options.type, options.url, options.async, options.username, options.password );
+
+					// Apply custom fields if provided
+					if ( options.xhrFields ) {
+						for ( i in options.xhrFields ) {
+							xhr[ i ] = options.xhrFields[ i ];
+						}
 					}
-				}
 
-				// Override mime type if needed
-				if ( options.mimeType && xhr.overrideMimeType ) {
-					xhr.overrideMimeType( options.mimeType );
-				}
+					// Override mime type if needed
+					if ( options.mimeType && xhr.overrideMimeType ) {
+						xhr.overrideMimeType( options.mimeType );
+					}
 
-				// X-Requested-With header
-				// For cross-domain requests, seeing as conditions for a preflight are
-				// akin to a jigsaw puzzle, we simply never set it to be sure.
-				// (it can always be set on a per-request basis or even using ajaxSetup)
-				// For same-domain requests, won't change header if already provided.
-				if ( !options.crossDomain && !headers["X-Requested-With"] ) {
-					headers["X-Requested-With"] = "XMLHttpRequest";
-				}
+					// X-Requested-With header
+					// For cross-domain requests, seeing as conditions for a preflight are
+					// akin to a jigsaw puzzle, we simply never set it to be sure.
+					// (it can always be set on a per-request basis or even using ajaxSetup)
+					// For same-domain requests, won't change header if already provided.
+					if ( !options.crossDomain && !headers["X-Requested-With"] ) {
+						headers["X-Requested-With"] = "XMLHttpRequest";
+					}
 
-				// Set headers
-				for ( i in headers ) {
-					xhr.setRequestHeader( i, headers[ i ] );
-				}
+					// Set headers
+					for ( i in headers ) {
+						// Support: IE<9
+						// IE's ActiveXObject throws a 'Type Mismatch' exception when setting
+						// request header to a null-value.
+						//
+						// To keep consistent with other XHR implementations, cast the value
+						// to string and ignore `undefined`.
+						if ( headers[ i ] !== undefined ) {
+							xhr.setRequestHeader( i, headers[ i ] + "" );
+						}
+					}
 
-				// Callback
-				callback = function( type ) {
-					return function() {
-						if ( callback ) {
+					// Do send the request
+					// This may raise an exception which is actually
+					// handled in jQuery.ajax (so no try/catch here)
+					xhr.send( ( options.hasContent && options.data ) || null );
+
+					// Listener
+					callback = function( _, isAbort ) {
+						var status, statusText, responses;
+
+						// Was never called and is aborted or complete
+						if ( callback && ( isAbort || xhr.readyState === 4 ) ) {
+							// Clean up
 							delete xhrCallbacks[ id ];
-							callback = xhr.onload = xhr.onerror = null;
+							callback = undefined;
+							xhr.onreadystatechange = jQuery.noop;
 
-							if ( type === "abort" ) {
-								xhr.abort();
-							} else if ( type === "error" ) {
-								complete(
-									// file: protocol always yields status 0; see #8605, #14207
-									xhr.status,
-									xhr.statusText
-								);
+							// Abort manually if needed
+							if ( isAbort ) {
+								if ( xhr.readyState !== 4 ) {
+									xhr.abort();
+								}
 							} else {
-								complete(
-									xhrSuccessStatus[ xhr.status ] || xhr.status,
-									xhr.statusText,
-									// Support: IE9
-									// Accessing binary-data responseText throws an exception
-									// (#11426)
-									typeof xhr.responseText === "string" ? {
-										text: xhr.responseText
-									} : undefined,
-									xhr.getAllResponseHeaders()
-								);
+								responses = {};
+								status = xhr.status;
+
+								// Support: IE<10
+								// Accessing binary-data responseText throws an exception
+								// (#11426)
+								if ( typeof xhr.responseText === "string" ) {
+									responses.text = xhr.responseText;
+								}
+
+								// Firefox throws an exception when accessing
+								// statusText for faulty cross-domain requests
+								try {
+									statusText = xhr.statusText;
+								} catch( e ) {
+									// We normalize with Webkit giving an empty statusText
+									statusText = "";
+								}
+
+								// Filter status for non standard behaviors
+
+								// If the request is local and we have data: assume a success
+								// (success with no data won't get notified, that's the best we
+								// can do given current implementations)
+								if ( !status && options.isLocal && !options.crossDomain ) {
+									status = responses.text ? 200 : 404;
+								// IE - #1450: sometimes returns 1223 when it should be 204
+								} else if ( status === 1223 ) {
+									status = 204;
+								}
 							}
 						}
+
+						// Call complete if needed
+						if ( responses ) {
+							complete( status, statusText, responses, xhr.getAllResponseHeaders() );
+						}
 					};
-				};
 
-				// Listen to events
-				xhr.onload = callback();
-				xhr.onerror = callback("error");
+					if ( !options.async ) {
+						// if we're in sync mode we fire the callback
+						callback();
+					} else if ( xhr.readyState === 4 ) {
+						// (IE6 & IE7) if it's in cache and has been
+						// retrieved directly we need to fire the callback
+						setTimeout( callback );
+					} else {
+						// Add to the list of active xhr callbacks
+						xhr.onreadystatechange = xhrCallbacks[ id ] = callback;
+					}
+				},
 
-				// Create the abort callback
-				callback = xhrCallbacks[ id ] = callback("abort");
-
-				try {
-					// Do send the request (this may raise an exception)
-					xhr.send( options.hasContent && options.data || null );
-				} catch ( e ) {
-					// #14683: Only rethrow if this hasn't been notified as an error yet
+				abort: function() {
 					if ( callback ) {
-						throw e;
+						callback( undefined, true );
 					}
 				}
-			},
+			};
+		}
+	});
+}
 
-			abort: function() {
-				if ( callback ) {
-					callback();
-				}
-			}
-		};
-	}
-});
+// Functions to create xhrs
+function createStandardXHR() {
+	try {
+		return new window.XMLHttpRequest();
+	} catch( e ) {}
+}
+
+function createActiveXHR() {
+	try {
+		return new window.ActiveXObject( "Microsoft.XMLHTTP" );
+	} catch( e ) {}
+}
 
 
 
@@ -8866,42 +9976,71 @@ jQuery.ajaxSetup({
 	}
 });
 
-// Handle cache's special case and crossDomain
+// Handle cache's special case and global
 jQuery.ajaxPrefilter( "script", function( s ) {
 	if ( s.cache === undefined ) {
 		s.cache = false;
 	}
 	if ( s.crossDomain ) {
 		s.type = "GET";
+		s.global = false;
 	}
 });
 
 // Bind script tag hack transport
-jQuery.ajaxTransport( "script", function( s ) {
+jQuery.ajaxTransport( "script", function(s) {
+
 	// This transport only deals with cross domain requests
 	if ( s.crossDomain ) {
-		var script, callback;
+
+		var script,
+			head = document.head || jQuery("head")[0] || document.documentElement;
+
 		return {
-			send: function( _, complete ) {
-				script = jQuery("<script>").prop({
-					async: true,
-					charset: s.scriptCharset,
-					src: s.url
-				}).on(
-					"load error",
-					callback = function( evt ) {
-						script.remove();
-						callback = null;
-						if ( evt ) {
-							complete( evt.type === "error" ? 404 : 200, evt.type );
+
+			send: function( _, callback ) {
+
+				script = document.createElement("script");
+
+				script.async = true;
+
+				if ( s.scriptCharset ) {
+					script.charset = s.scriptCharset;
+				}
+
+				script.src = s.url;
+
+				// Attach handlers for all browsers
+				script.onload = script.onreadystatechange = function( _, isAbort ) {
+
+					if ( isAbort || !script.readyState || /loaded|complete/.test( script.readyState ) ) {
+
+						// Handle memory leak in IE
+						script.onload = script.onreadystatechange = null;
+
+						// Remove the script
+						if ( script.parentNode ) {
+							script.parentNode.removeChild( script );
+						}
+
+						// Dereference the script
+						script = null;
+
+						// Callback if not abort
+						if ( !isAbort ) {
+							callback( 200, "success" );
 						}
 					}
-				);
-				document.head.appendChild( script[ 0 ] );
+				};
+
+				// Circumvent IE6 bugs with base elements (#2709 and #4378) by prepending
+				// Use native DOM manipulation to avoid our domManip AJAX trickery
+				head.insertBefore( script, head.firstChild );
 			},
+
 			abort: function() {
-				if ( callback ) {
-					callback();
+				if ( script ) {
+					script.onload( undefined, true );
 				}
 			}
 		};
@@ -9037,12 +10176,12 @@ jQuery.fn.load = function( url, params, callback ) {
 		return _load.apply( this, arguments );
 	}
 
-	var selector, type, response,
+	var selector, response, type,
 		self = this,
 		off = url.indexOf(" ");
 
 	if ( off >= 0 ) {
-		selector = jQuery.trim( url.slice( off ) );
+		selector = jQuery.trim( url.slice( off, url.length ) );
 		url = url.slice( 0, off );
 	}
 
@@ -9111,13 +10250,18 @@ jQuery.expr.filters.animated = function( elem ) {
 
 
 
+
 var docElem = window.document.documentElement;
 
 /**
  * Gets a window from an element
  */
 function getWindow( elem ) {
-	return jQuery.isWindow( elem ) ? elem : elem.nodeType === 9 && elem.defaultView;
+	return jQuery.isWindow( elem ) ?
+		elem :
+		elem.nodeType === 9 ?
+			elem.defaultView || elem.parentWindow :
+			false;
 }
 
 jQuery.offset = {
@@ -9127,7 +10271,7 @@ jQuery.offset = {
 			curElem = jQuery( elem ),
 			props = {};
 
-		// Set position first, in-case top/left are set even on static elem
+		// set position first, in-case top/left are set even on static elem
 		if ( position === "static" ) {
 			elem.style.position = "relative";
 		}
@@ -9136,15 +10280,13 @@ jQuery.offset = {
 		curCSSTop = jQuery.css( elem, "top" );
 		curCSSLeft = jQuery.css( elem, "left" );
 		calculatePosition = ( position === "absolute" || position === "fixed" ) &&
-			( curCSSTop + curCSSLeft ).indexOf("auto") > -1;
+			jQuery.inArray("auto", [ curCSSTop, curCSSLeft ] ) > -1;
 
-		// Need to be able to calculate position if either
-		// top or left is auto and position is either absolute or fixed
+		// need to be able to calculate position if either top or left is auto and position is either absolute or fixed
 		if ( calculatePosition ) {
 			curPosition = curElem.position();
 			curTop = curPosition.top;
 			curLeft = curPosition.left;
-
 		} else {
 			curTop = parseFloat( curCSSTop ) || 0;
 			curLeft = parseFloat( curCSSLeft ) || 0;
@@ -9163,7 +10305,6 @@ jQuery.offset = {
 
 		if ( "using" in options ) {
 			options.using.call( elem, props );
-
 		} else {
 			curElem.css( props );
 		}
@@ -9181,8 +10322,8 @@ jQuery.fn.extend({
 		}
 
 		var docElem, win,
-			elem = this[ 0 ],
 			box = { top: 0, left: 0 },
+			elem = this[ 0 ],
 			doc = elem && elem.ownerDocument;
 
 		if ( !doc ) {
@@ -9196,15 +10337,15 @@ jQuery.fn.extend({
 			return box;
 		}
 
-		// Support: BlackBerry 5, iOS 3 (original iPhone)
 		// If we don't have gBCR, just use 0,0 rather than error
+		// BlackBerry 5, iOS 3 (original iPhone)
 		if ( typeof elem.getBoundingClientRect !== strundefined ) {
 			box = elem.getBoundingClientRect();
 		}
 		win = getWindow( doc );
 		return {
-			top: box.top + win.pageYOffset - docElem.clientTop,
-			left: box.left + win.pageXOffset - docElem.clientLeft
+			top: box.top  + ( win.pageYOffset || docElem.scrollTop )  - ( docElem.clientTop  || 0 ),
+			left: box.left + ( win.pageXOffset || docElem.scrollLeft ) - ( docElem.clientLeft || 0 )
 		};
 	},
 
@@ -9214,14 +10355,13 @@ jQuery.fn.extend({
 		}
 
 		var offsetParent, offset,
-			elem = this[ 0 ],
-			parentOffset = { top: 0, left: 0 };
+			parentOffset = { top: 0, left: 0 },
+			elem = this[ 0 ];
 
-		// Fixed elements are offset from window (parentOffset = {top:0, left: 0}, because it is its only offset parent
+		// fixed elements are offset from window (parentOffset = {top:0, left: 0}, because it is its only offset parent
 		if ( jQuery.css( elem, "position" ) === "fixed" ) {
-			// Assume getBoundingClientRect is there when computed position is fixed
+			// we assume that getBoundingClientRect is available when computed position is fixed
 			offset = elem.getBoundingClientRect();
-
 		} else {
 			// Get *real* offsetParent
 			offsetParent = this.offsetParent();
@@ -9233,14 +10373,16 @@ jQuery.fn.extend({
 			}
 
 			// Add offsetParent borders
-			parentOffset.top += jQuery.css( offsetParent[ 0 ], "borderTopWidth", true );
+			parentOffset.top  += jQuery.css( offsetParent[ 0 ], "borderTopWidth", true );
 			parentOffset.left += jQuery.css( offsetParent[ 0 ], "borderLeftWidth", true );
 		}
 
 		// Subtract parent offsets and element margins
+		// note: when an element has margin: auto the offsetLeft and marginLeft
+		// are the same in Safari causing offset.left to incorrectly be 0
 		return {
-			top: offset.top - parentOffset.top - jQuery.css( elem, "marginTop", true ),
-			left: offset.left - parentOffset.left - jQuery.css( elem, "marginLeft", true )
+			top:  offset.top  - parentOffset.top - jQuery.css( elem, "marginTop", true ),
+			left: offset.left - parentOffset.left - jQuery.css( elem, "marginLeft", true)
 		};
 	},
 
@@ -9251,7 +10393,6 @@ jQuery.fn.extend({
 			while ( offsetParent && ( !jQuery.nodeName( offsetParent, "html" ) && jQuery.css( offsetParent, "position" ) === "static" ) ) {
 				offsetParent = offsetParent.offsetParent;
 			}
-
 			return offsetParent || docElem;
 		});
 	}
@@ -9259,20 +10400,22 @@ jQuery.fn.extend({
 
 // Create scrollLeft and scrollTop methods
 jQuery.each( { scrollLeft: "pageXOffset", scrollTop: "pageYOffset" }, function( method, prop ) {
-	var top = "pageYOffset" === prop;
+	var top = /Y/.test( prop );
 
 	jQuery.fn[ method ] = function( val ) {
 		return access( this, function( elem, method, val ) {
 			var win = getWindow( elem );
 
 			if ( val === undefined ) {
-				return win ? win[ prop ] : elem[ method ];
+				return win ? (prop in win) ? win[ prop ] :
+					win.document.documentElement[ method ] :
+					elem[ method ];
 			}
 
 			if ( win ) {
 				win.scrollTo(
-					!top ? val : window.pageXOffset,
-					top ? val : window.pageYOffset
+					!top ? val : jQuery( win ).scrollLeft(),
+					top ? val : jQuery( win ).scrollTop()
 				);
 
 			} else {
@@ -9282,18 +10425,16 @@ jQuery.each( { scrollLeft: "pageXOffset", scrollTop: "pageYOffset" }, function( 
 	};
 });
 
-// Support: Safari<7+, Chrome<37+
 // Add the top/left cssHooks using jQuery.fn.position
 // Webkit bug: https://bugs.webkit.org/show_bug.cgi?id=29084
-// Blink bug: https://code.google.com/p/chromium/issues/detail?id=229280
-// getComputedStyle returns percent when specified for top/left/bottom/right;
-// rather than make the css module depend on the offset module, just check for it here
+// getComputedStyle returns percent when specified for top/left/bottom/right
+// rather than make the css module depend on the offset module, we just check for it here
 jQuery.each( [ "top", "left" ], function( i, prop ) {
 	jQuery.cssHooks[ prop ] = addGetHookIf( support.pixelPosition,
 		function( elem, computed ) {
 			if ( computed ) {
 				computed = curCSS( elem, prop );
-				// If curCSS returns percentage, fallback to offset
+				// if curCSS returns percentage, fallback to offset
 				return rnumnonpx.test( computed ) ?
 					jQuery( elem ).position()[ prop ] + "px" :
 					computed;
@@ -9306,7 +10447,7 @@ jQuery.each( [ "top", "left" ], function( i, prop ) {
 // Create innerHeight, innerWidth, height, width, outerHeight and outerWidth methods
 jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 	jQuery.each( { padding: "inner" + name, content: type, "": "outer" + name }, function( defaultExtra, funcName ) {
-		// Margin is only for outerHeight, outerWidth
+		// margin is only for outerHeight, outerWidth
 		jQuery.fn[ funcName ] = function( margin, value ) {
 			var chainable = arguments.length && ( defaultExtra || typeof margin !== "boolean" ),
 				extra = defaultExtra || ( margin === true || value === true ? "margin" : "border" );
@@ -9325,8 +10466,8 @@ jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 				if ( elem.nodeType === 9 ) {
 					doc = elem.documentElement;
 
-					// Either scroll[Width/Height] or offset[Width/Height] or client[Width/Height],
-					// whichever is greatest
+					// Either scroll[Width/Height] or offset[Width/Height] or client[Width/Height], whichever is greatest
+					// unfortunately, this causes bug #3838 in IE6/8 only, but there is currently no good, small way to fix it.
 					return Math.max(
 						elem.body[ "scroll" + name ], doc[ "scroll" + name ],
 						elem.body[ "offset" + name ], doc[ "offset" + name ],
@@ -9397,8 +10538,8 @@ jQuery.noConflict = function( deep ) {
 	return jQuery;
 };
 
-// Expose jQuery and $ identifiers, even in AMD
-// (#7102#comment:10, https://github.com/jquery/jquery/pull/557)
+// Expose jQuery and $ identifiers, even in
+// AMD (#7102#comment:10, https://github.com/jquery/jquery/pull/557)
 // and CommonJS for browser emulators (#13566)
 if ( typeof noGlobal === strundefined ) {
 	window.jQuery = window.$ = jQuery;
@@ -69396,7 +70537,7 @@ if ( typeof define === 'function' && define.amd ) {
 
 },{"desandro-get-style-property":"/Users/kimberly/Documents/Coding/ember/blog/node_modules/desandro-get-style-property/get-style-property.js"}],"/Users/kimberly/Documents/Coding/ember/blog/node_modules/imagesLoaded/imagesloaded.js":[function(require,module,exports){
 /*!
- * imagesLoaded v3.1.8
+ * imagesLoaded v3.2.0
  * JavaScript is all like "You images are done yet or what?"
  * MIT License
  */
@@ -69406,7 +70547,7 @@ if ( typeof define === 'function' && define.amd ) {
 
   /*global define: false, module: false, require: false */
 
-  if ( typeof define === 'function' && define.amd ) {
+  if ( typeof define == 'function' && define.amd ) {
     // AMD
     define( [
       'eventEmitter/EventEmitter',
@@ -69414,7 +70555,7 @@ if ( typeof define === 'function' && define.amd ) {
     ], function( EventEmitter, eventie ) {
       return factory( window, EventEmitter, eventie );
     });
-  } else if ( typeof exports === 'object' ) {
+  } else if ( typeof module == 'object' && module.exports ) {
     // CommonJS
     module.exports = factory(
       window,
@@ -69440,7 +70581,6 @@ function factory( window, EventEmitter, eventie ) {
 
 var $ = window.jQuery;
 var console = window.console;
-var hasConsole = typeof console !== 'undefined';
 
 // -------------------------- helpers -------------------------- //
 
@@ -69454,7 +70594,7 @@ function extend( a, b ) {
 
 var objToString = Object.prototype.toString;
 function isArray( obj ) {
-  return objToString.call( obj ) === '[object Array]';
+  return objToString.call( obj ) == '[object Array]';
 }
 
 // turn element or nodeList into an array
@@ -69463,9 +70603,9 @@ function makeArray( obj ) {
   if ( isArray( obj ) ) {
     // use object if already an array
     ary = obj;
-  } else if ( typeof obj.length === 'number' ) {
+  } else if ( typeof obj.length == 'number' ) {
     // convert nodeList to array
-    for ( var i=0, len = obj.length; i < len; i++ ) {
+    for ( var i=0; i < obj.length; i++ ) {
       ary.push( obj[i] );
     }
   } else {
@@ -69485,17 +70625,17 @@ function makeArray( obj ) {
   function ImagesLoaded( elem, options, onAlways ) {
     // coerce ImagesLoaded() without new, to be new ImagesLoaded()
     if ( !( this instanceof ImagesLoaded ) ) {
-      return new ImagesLoaded( elem, options );
+      return new ImagesLoaded( elem, options, onAlways );
     }
     // use elem as selector string
-    if ( typeof elem === 'string' ) {
+    if ( typeof elem == 'string' ) {
       elem = document.querySelectorAll( elem );
     }
 
     this.elements = makeArray( elem );
     this.options = extend( {}, this.options );
 
-    if ( typeof options === 'function' ) {
+    if ( typeof options == 'function' ) {
       onAlways = options;
     } else {
       extend( this.options, options );
@@ -69527,25 +70667,71 @@ function makeArray( obj ) {
     this.images = [];
 
     // filter & find items if we have an item selector
-    for ( var i=0, len = this.elements.length; i < len; i++ ) {
+    for ( var i=0; i < this.elements.length; i++ ) {
       var elem = this.elements[i];
-      // filter siblings
-      if ( elem.nodeName === 'IMG' ) {
-        this.addImage( elem );
-      }
-      // find children
-      // no non-element nodes, #143
-      var nodeType = elem.nodeType;
-      if ( !nodeType || !( nodeType === 1 || nodeType === 9 || nodeType === 11 ) ) {
-        continue;
-      }
-      var childElems = elem.querySelectorAll('img');
-      // concat childElems to filterFound array
-      for ( var j=0, jLen = childElems.length; j < jLen; j++ ) {
-        var img = childElems[j];
-        this.addImage( img );
+      this.addElementImages( elem );
+    }
+  };
+
+  /**
+   * @param {Node} element
+   */
+  ImagesLoaded.prototype.addElementImages = function( elem ) {
+    // filter siblings
+    if ( elem.nodeName == 'IMG' ) {
+      this.addImage( elem );
+    }
+    // get background image on element
+    if ( this.options.background === true ) {
+      this.addElementBackgroundImages( elem );
+    }
+
+    // find children
+    // no non-element nodes, #143
+    var nodeType = elem.nodeType;
+    if ( !nodeType || !elementNodeTypes[ nodeType ] ) {
+      return;
+    }
+    var childImgs = elem.querySelectorAll('img');
+    // concat childElems to filterFound array
+    for ( var i=0; i < childImgs.length; i++ ) {
+      var img = childImgs[i];
+      this.addImage( img );
+    }
+
+    // get child background images
+    if ( typeof this.options.background == 'string' ) {
+      var children = elem.querySelectorAll( this.options.background );
+      for ( i=0; i < children.length; i++ ) {
+        var child = children[i];
+        this.addElementBackgroundImages( child );
       }
     }
+  };
+
+  var elementNodeTypes = {
+    1: true,
+    9: true,
+    11: true
+  };
+
+  ImagesLoaded.prototype.addElementBackgroundImages = function( elem ) {
+    var style = getStyle( elem );
+    // get url inside url("...")
+    var reURL = /url\(['"]*([^'"\)]+)['"]*\)/gi;
+    var matches = reURL.exec( style.backgroundImage );
+    while ( matches !== null ) {
+      var url = matches && matches[1];
+      if ( url ) {
+        this.addBackground( url, elem );
+      }
+      matches = reURL.exec( style.backgroundImage );
+    }
+  };
+
+  // IE8
+  var getStyle = window.getComputedStyle || function( elem ) {
+    return elem.currentStyle;
   };
 
   /**
@@ -69556,73 +70742,63 @@ function makeArray( obj ) {
     this.images.push( loadingImage );
   };
 
+  ImagesLoaded.prototype.addBackground = function( url, elem ) {
+    var background = new Background( url, elem );
+    this.images.push( background );
+  };
+
   ImagesLoaded.prototype.check = function() {
     var _this = this;
-    var checkedCount = 0;
-    var length = this.images.length;
+    this.progressedCount = 0;
     this.hasAnyBroken = false;
     // complete if no images
-    if ( !length ) {
+    if ( !this.images.length ) {
       this.complete();
       return;
     }
 
-    function onConfirm( image, message ) {
-      if ( _this.options.debug && hasConsole ) {
-        console.log( 'confirm', image, message );
-      }
-
-      _this.progress( image );
-      checkedCount++;
-      if ( checkedCount === length ) {
-        _this.complete();
-      }
-      return true; // bind once
+    function onProgress( image, elem, message ) {
+      // HACK - Chrome triggers event before object properties have changed. #83
+      setTimeout( function() {
+        _this.progress( image, elem, message );
+      });
     }
 
-    for ( var i=0; i < length; i++ ) {
+    for ( var i=0; i < this.images.length; i++ ) {
       var loadingImage = this.images[i];
-      loadingImage.on( 'confirm', onConfirm );
+      loadingImage.once( 'progress', onProgress );
       loadingImage.check();
     }
   };
 
-  ImagesLoaded.prototype.progress = function( image ) {
+  ImagesLoaded.prototype.progress = function( image, elem, message ) {
+    this.progressedCount++;
     this.hasAnyBroken = this.hasAnyBroken || !image.isLoaded;
-    // HACK - Chrome triggers event before object properties have changed. #83
-    var _this = this;
-    setTimeout( function() {
-      _this.emit( 'progress', _this, image );
-      if ( _this.jqDeferred && _this.jqDeferred.notify ) {
-        _this.jqDeferred.notify( _this, image );
-      }
-    });
+    // progress event
+    this.emit( 'progress', this, image, elem );
+    if ( this.jqDeferred && this.jqDeferred.notify ) {
+      this.jqDeferred.notify( this, image );
+    }
+    // check if completed
+    if ( this.progressedCount == this.images.length ) {
+      this.complete();
+    }
+
+    if ( this.options.debug && console ) {
+      console.log( 'progress: ' + message, image, elem );
+    }
   };
 
   ImagesLoaded.prototype.complete = function() {
     var eventName = this.hasAnyBroken ? 'fail' : 'done';
     this.isComplete = true;
-    var _this = this;
-    // HACK - another setTimeout so that confirm happens after progress
-    setTimeout( function() {
-      _this.emit( eventName, _this );
-      _this.emit( 'always', _this );
-      if ( _this.jqDeferred ) {
-        var jqMethod = _this.hasAnyBroken ? 'reject' : 'resolve';
-        _this.jqDeferred[ jqMethod ]( _this );
-      }
-    });
+    this.emit( eventName, this );
+    this.emit( 'always', this );
+    if ( this.jqDeferred ) {
+      var jqMethod = this.hasAnyBroken ? 'reject' : 'resolve';
+      this.jqDeferred[ jqMethod ]( this );
+    }
   };
-
-  // -------------------------- jquery -------------------------- //
-
-  if ( $ ) {
-    $.fn.imagesLoaded = function( options, callback ) {
-      var instance = new ImagesLoaded( this, options, callback );
-      return instance.jqDeferred.promise( $(this) );
-    };
-  }
-
 
   // --------------------------  -------------------------- //
 
@@ -69633,99 +70809,113 @@ function makeArray( obj ) {
   LoadingImage.prototype = new EventEmitter();
 
   LoadingImage.prototype.check = function() {
-    // first check cached any previous images that have same src
-    var resource = cache[ this.img.src ] || new Resource( this.img.src );
-    if ( resource.isConfirmed ) {
-      this.confirm( resource.isLoaded, 'cached was confirmed' );
-      return;
-    }
-
     // If complete is true and browser supports natural sizes,
     // try to check for image status manually.
-    if ( this.img.complete && this.img.naturalWidth !== undefined ) {
+    var isComplete = this.getIsImageComplete();
+    if ( isComplete ) {
       // report based on naturalWidth
       this.confirm( this.img.naturalWidth !== 0, 'naturalWidth' );
       return;
     }
 
     // If none of the checks above matched, simulate loading on detached element.
-    var _this = this;
-    resource.on( 'confirm', function( resrc, message ) {
-      _this.confirm( resrc.isLoaded, message );
-      return true;
-    });
+    this.proxyImage = new Image();
+    eventie.bind( this.proxyImage, 'load', this );
+    eventie.bind( this.proxyImage, 'error', this );
+    // bind to image as well for Firefox. #191
+    eventie.bind( this.img, 'load', this );
+    eventie.bind( this.img, 'error', this );
+    this.proxyImage.src = this.img.src;
+  };
 
-    resource.check();
+  LoadingImage.prototype.getIsImageComplete = function() {
+    return this.img.complete && this.img.naturalWidth !== undefined;
   };
 
   LoadingImage.prototype.confirm = function( isLoaded, message ) {
     this.isLoaded = isLoaded;
-    this.emit( 'confirm', this, message );
-  };
-
-  // -------------------------- Resource -------------------------- //
-
-  // Resource checks each src, only once
-  // separate class from LoadingImage to prevent memory leaks. See #115
-
-  var cache = {};
-
-  function Resource( src ) {
-    this.src = src;
-    // add to cache
-    cache[ src ] = this;
-  }
-
-  Resource.prototype = new EventEmitter();
-
-  Resource.prototype.check = function() {
-    // only trigger checking once
-    if ( this.isChecked ) {
-      return;
-    }
-    // simulate loading on detached element
-    var proxyImage = new Image();
-    eventie.bind( proxyImage, 'load', this );
-    eventie.bind( proxyImage, 'error', this );
-    proxyImage.src = this.src;
-    // set flag
-    this.isChecked = true;
+    this.emit( 'progress', this, this.img, message );
   };
 
   // ----- events ----- //
 
   // trigger specified handler for event type
-  Resource.prototype.handleEvent = function( event ) {
+  LoadingImage.prototype.handleEvent = function( event ) {
     var method = 'on' + event.type;
     if ( this[ method ] ) {
       this[ method ]( event );
     }
   };
 
-  Resource.prototype.onload = function( event ) {
+  LoadingImage.prototype.onload = function() {
     this.confirm( true, 'onload' );
-    this.unbindProxyEvents( event );
+    this.unbindEvents();
   };
 
-  Resource.prototype.onerror = function( event ) {
+  LoadingImage.prototype.onerror = function() {
     this.confirm( false, 'onerror' );
-    this.unbindProxyEvents( event );
+    this.unbindEvents();
   };
 
-  // ----- confirm ----- //
+  LoadingImage.prototype.unbindEvents = function() {
+    eventie.unbind( this.proxyImage, 'load', this );
+    eventie.unbind( this.proxyImage, 'error', this );
+    eventie.unbind( this.img, 'load', this );
+    eventie.unbind( this.img, 'error', this );
+  };
 
-  Resource.prototype.confirm = function( isLoaded, message ) {
-    this.isConfirmed = true;
+  // -------------------------- Background -------------------------- //
+
+  function Background( url, element ) {
+    this.url = url;
+    this.element = element;
+    this.img = new Image();
+  }
+
+  // inherit LoadingImage prototype
+  Background.prototype = new LoadingImage();
+
+  Background.prototype.check = function() {
+    eventie.bind( this.img, 'load', this );
+    eventie.bind( this.img, 'error', this );
+    this.img.src = this.url;
+    // check if image is already complete
+    var isComplete = this.getIsImageComplete();
+    if ( isComplete ) {
+      this.confirm( this.img.naturalWidth !== 0, 'naturalWidth' );
+      this.unbindEvents();
+    }
+  };
+
+  Background.prototype.unbindEvents = function() {
+    eventie.unbind( this.img, 'load', this );
+    eventie.unbind( this.img, 'error', this );
+  };
+
+  Background.prototype.confirm = function( isLoaded, message ) {
     this.isLoaded = isLoaded;
-    this.emit( 'confirm', this, message );
+    this.emit( 'progress', this, this.element, message );
   };
 
-  Resource.prototype.unbindProxyEvents = function( event ) {
-    eventie.unbind( event.target, 'load', this );
-    eventie.unbind( event.target, 'error', this );
-  };
+  // -------------------------- jQuery -------------------------- //
 
-  // -----  ----- //
+  ImagesLoaded.makeJQueryPlugin = function( jQuery ) {
+    jQuery = jQuery || window.jQuery;
+    if ( !jQuery ) {
+      return;
+    }
+    // set local variable
+    $ = jQuery;
+    // $().imagesLoaded()
+    $.fn.imagesLoaded = function( options, callback ) {
+      var instance = new ImagesLoaded( this, options, callback );
+      return instance.jqDeferred.promise( $(this) );
+    };
+  };
+  // try making plugin
+  ImagesLoaded.makeJQueryPlugin();
+
+  // --------------------------  -------------------------- //
 
   return ImagesLoaded;
 
@@ -73130,8477 +74320,6 @@ return Outlayer;
       };
     }
   });
-;/*!
- * modernizr v3.0.0-alpha.3
- * Build http://v3.modernizr.com/download/#-adownload-ambientlight-animation-apng-appearance-applicationcache-audio-audioloop-audiopreload-backgroundblendmode-backgroundcliptext-backgroundsize-batteryapi-beacon-bgpositionshorthand-bgpositionxy-bgrepeatspace_bgrepeatround-bgsizecover-blobconstructor-bloburls-blobworkers-borderimage-borderradius-boxshadow-boxsizing-canvas-canvasblending-canvastext-canvaswinding-capture-checked-classlist-contains-contenteditable-contextmenu-cookies-cors-createelementattrs_createelement_attrs-cssall-cssanimations-csscalc-csschunit-csscolumns-cssescape-cssexunit-cssfilters-cssgradients-csshyphens_softhyphens_softhyphensfind-cssinvalid-cssmask-csspointerevents-csspositionsticky-csspseudoanimations-csspseudotransitions-cssreflections-cssremunit-cssresize-cssscrollbar-csstransforms-csstransforms3d-csstransitions-cssvalid-cssvhunit-cssvmaxunit-cubicbezierrange-customevent-customprotocolhandler-dart-datachannel-datalistelem-dataset-datauri-dataview-dataworkers-details-devicemotion_deviceorientation-directory-display_runin-displaytable-documentfragment-draganddrop-ellipsis-emoji-es5-es5array-es5date-es5function-es5object-es5string-es5syntax-es5undefined-es6array-es6math-es6number-es6object-es6string-eventlistener-eventsource-exiforientation-fileinput-filereader-filesystem-flash-flexbox-flexboxlegacy-flexboxtweener-flexwrap-fontface-formattribute-formvalidation-framed-fullscreen-gamepads-generatedcontent-generators-geolocation-getrandomvalues-getusermedia-hashchange-hidden-hiddenscroll-history-hsla-htmlimports-ie8compat-indexeddb-indexeddbblob-inlinesvg-input-inputformaction-inputformenctype-inputformmethod-inputformtarget-inputtypes-intl-jpegxr-json-lastchild-localizednumber-localstorage-lowbandwidth-lowbattery-mathml-mediaqueries-microdata-multiplebgs-mutationobserver-notification-nthchild-objectfit-olreversed-oninput-opacity-outputelem-overflowscrolling-pagevisibility-peerconnection-performance-picture-placeholder-pointerevents-pointerlock-postmessage-preserve3d-progressbar_meter-promises-proximity-queryselector-quotamanagement-regions-requestanimationframe-requestautocomplete-rgba-ruby-sandbox-scriptasync-scriptdefer-seamless-search-serviceworker-sessionstorage-shapes-sharedworkers-siblinggeneral-sizes-smil-speechrecognition-speechsynthesis-srcdoc-srcset-strictmode-stylescoped-subpixelfont-supports-svg-svgasimg-svgclippaths-svgfilters-svgforeignobject-target-template-templatestrings-textalignlast-textareamaxlength-textshadow-texttrackapi_track-time-todataurljpeg_todataurlpng_todataurlwebp-touchevents-transferables-typedarrays-unicode-unicoderange-unknownelements-urlparser-userdata-userselect-vibrate-video-videoautoplay-videoloop-videopreload-vml-webaudio-webgl-webglextensions-webintents-webp-webpalpha-webpanimation-webplossless_webp_lossless-websockets-websocketsbinary-websqldatabase-webworkers-willchange-wrapflow-xhr2-xhrresponsetype-xhrresponsetypearraybuffer-xhrresponsetypeblob-xhrresponsetypedocument-xhrresponsetypejson-xhrresponsetypetext-addtest-domprefixes-hasevent-load-mq-prefixed-prefixedcss-prefixes-printshiv-testallprops-testprop-teststyles-dontmin
- *
- * Copyright (c)
- *  Faruk Ates
- *  Paul Irish
- *  Alex Sexton
- *  Ryan Seddon
- *  Alexander Farkas
- *  Patrick Kettner
- *  Stu Cox
- *  Richard Herrera
-
- * MIT License
- */
-
-/*
- * Modernizr tests which native CSS3 and HTML5 features are available in the
- * current UA and makes the results available to you in two ways: as properties on
- * a global `Modernizr` object, and as classes on the `<html>` element. This
- * information allows you to progressively enhance your pages with a granular level
- * of control over the experience.
-*/
-
-;(function(window, document, undefined){
-  var classes = [];
-
-
-  // Take the html5 variable out of the
-  // html5shiv scope so we can return it.
-  var html5;
-
-  /**
-  * @preserve HTML5 Shiv 3.7.2 | @afarkas @jdalton @jon_neal @rem | MIT/GPL2 Licensed
-  */
-  ;(function(window, document) {
-  /*jshint evil:true */
-    /** version */
-    var version = '3.7.2';
-
-    /** Preset options */
-    var options = window.html5 || {};
-
-    /** Used to skip problem elements */
-    var reSkip = /^<|^(?:button|map|select|textarea|object|iframe|option|optgroup)$/i;
-
-    /** Not all elements can be cloned in IE **/
-    var saveClones = /^(?:a|b|code|div|fieldset|h1|h2|h3|h4|h5|h6|i|label|li|ol|p|q|span|strong|style|table|tbody|td|th|tr|ul)$/i;
-
-    /** Detect whether the browser supports default html5 styles */
-    var supportsHtml5Styles;
-
-    /** Name of the expando, to work with multiple documents or to re-shiv one document */
-    var expando = '_html5shiv';
-
-    /** The id for the the documents expando */
-    var expanID = 0;
-
-    /** Cached data for each document */
-    var expandoData = {};
-
-    /** Detect whether the browser supports unknown elements */
-    var supportsUnknownElements;
-
-    (function() {
-      try {
-          var a = document.createElement('a');
-          a.innerHTML = '<xyz></xyz>';
-          //if the hidden property is implemented we can assume, that the browser supports basic HTML5 Styles
-          supportsHtml5Styles = ('hidden' in a);
-
-          supportsUnknownElements = a.childNodes.length == 1 || (function() {
-            // assign a false positive if unable to shiv
-            (document.createElement)('a');
-            var frag = document.createDocumentFragment();
-            return (
-              typeof frag.cloneNode == 'undefined' ||
-              typeof frag.createDocumentFragment == 'undefined' ||
-              typeof frag.createElement == 'undefined'
-            );
-          }());
-      } catch(e) {
-        // assign a false positive if detection fails => unable to shiv
-        supportsHtml5Styles = true;
-        supportsUnknownElements = true;
-      }
-
-    }());
-
-    /*--------------------------------------------------------------------------*/
-
-    /**
-     * Creates a style sheet with the given CSS text and adds it to the document.
-     * @private
-     * @param {Document} ownerDocument The document.
-     * @param {String} cssText The CSS text.
-     * @returns {StyleSheet} The style element.
-     */
-    function addStyleSheet(ownerDocument, cssText) {
-      var p = ownerDocument.createElement('p'),
-          parent = ownerDocument.getElementsByTagName('head')[0] || ownerDocument.documentElement;
-
-      p.innerHTML = 'x<style>' + cssText + '</style>';
-      return parent.insertBefore(p.lastChild, parent.firstChild);
-    }
-
-    /**
-     * Returns the value of `html5.elements` as an array.
-     * @private
-     * @returns {Array} An array of shived element node names.
-     */
-    function getElements() {
-      var elements = html5.elements;
-      return typeof elements == 'string' ? elements.split(' ') : elements;
-    }
-
-    /**
-     * Extends the built-in list of html5 elements
-     * @memberOf html5
-     * @param {String|Array} newElements whitespace separated list or array of new element names to shiv
-     * @param {Document} ownerDocument The context document.
-     */
-    function addElements(newElements, ownerDocument) {
-      var elements = html5.elements;
-      if(typeof elements != 'string'){
-        elements = elements.join(' ');
-      }
-      if(typeof newElements != 'string'){
-        newElements = newElements.join(' ');
-      }
-      html5.elements = elements +' '+ newElements;
-      shivDocument(ownerDocument);
-    }
-
-      /**
-     * Returns the data associated to the given document
-     * @private
-     * @param {Document} ownerDocument The document.
-     * @returns {Object} An object of data.
-     */
-    function getExpandoData(ownerDocument) {
-      var data = expandoData[ownerDocument[expando]];
-      if (!data) {
-          data = {};
-          expanID++;
-          ownerDocument[expando] = expanID;
-          expandoData[expanID] = data;
-      }
-      return data;
-    }
-
-    /**
-     * returns a shived element for the given nodeName and document
-     * @memberOf html5
-     * @param {String} nodeName name of the element
-     * @param {Document} ownerDocument The context document.
-     * @returns {Object} The shived element.
-     */
-    function createElement(nodeName, ownerDocument, data){
-      if (!ownerDocument) {
-          ownerDocument = document;
-      }
-      if(supportsUnknownElements){
-          return ownerDocument.createElement(nodeName);
-      }
-      if (!data) {
-          data = getExpandoData(ownerDocument);
-      }
-      var node;
-
-      if (data.cache[nodeName]) {
-          node = data.cache[nodeName].cloneNode();
-      } else if (saveClones.test(nodeName)) {
-          node = (data.cache[nodeName] = data.createElem(nodeName)).cloneNode();
-      } else {
-          node = data.createElem(nodeName);
-      }
-
-      // Avoid adding some elements to fragments in IE < 9 because
-      // * Attributes like `name` or `type` cannot be set/changed once an element
-      //   is inserted into a document/fragment
-      // * Link elements with `src` attributes that are inaccessible, as with
-      //   a 403 response, will cause the tab/window to crash
-      // * Script elements appended to fragments will execute when their `src`
-      //   or `text` property is set
-      return node.canHaveChildren && !reSkip.test(nodeName) && !node.tagUrn ? data.frag.appendChild(node) : node;
-    }
-
-    /**
-     * returns a shived DocumentFragment for the given document
-     * @memberOf html5
-     * @param {Document} ownerDocument The context document.
-     * @returns {Object} The shived DocumentFragment.
-     */
-    function createDocumentFragment(ownerDocument, data){
-      if (!ownerDocument) {
-          ownerDocument = document;
-      }
-      if(supportsUnknownElements){
-          return ownerDocument.createDocumentFragment();
-      }
-      data = data || getExpandoData(ownerDocument);
-      var clone = data.frag.cloneNode(),
-          i = 0,
-          elems = getElements(),
-          l = elems.length;
-      for(;i<l;i++){
-          clone.createElement(elems[i]);
-      }
-      return clone;
-    }
-
-    /**
-     * Shivs the `createElement` and `createDocumentFragment` methods of the document.
-     * @private
-     * @param {Document|DocumentFragment} ownerDocument The document.
-     * @param {Object} data of the document.
-     */
-    function shivMethods(ownerDocument, data) {
-      if (!data.cache) {
-          data.cache = {};
-          data.createElem = ownerDocument.createElement;
-          data.createFrag = ownerDocument.createDocumentFragment;
-          data.frag = data.createFrag();
-      }
-
-
-      ownerDocument.createElement = function(nodeName) {
-        //abort shiv
-        if (!html5.shivMethods) {
-            return data.createElem(nodeName);
-        }
-        return createElement(nodeName, ownerDocument, data);
-      };
-
-      ownerDocument.createDocumentFragment = Function('h,f', 'return function(){' +
-        'var n=f.cloneNode(),c=n.createElement;' +
-        'h.shivMethods&&(' +
-          // unroll the `createElement` calls
-          getElements().join().replace(/[\w\-:]+/g, function(nodeName) {
-            data.createElem(nodeName);
-            data.frag.createElement(nodeName);
-            return 'c("' + nodeName + '")';
-          }) +
-        ');return n}'
-      )(html5, data.frag);
-    }
-
-    /*--------------------------------------------------------------------------*/
-
-    /**
-     * Shivs the given document.
-     * @memberOf html5
-     * @param {Document} ownerDocument The document to shiv.
-     * @returns {Document} The shived document.
-     */
-    function shivDocument(ownerDocument) {
-      if (!ownerDocument) {
-          ownerDocument = document;
-      }
-      var data = getExpandoData(ownerDocument);
-
-      if (html5.shivCSS && !supportsHtml5Styles && !data.hasCSS) {
-        data.hasCSS = !!addStyleSheet(ownerDocument,
-          // corrects block display not defined in IE6/7/8/9
-          'article,aside,dialog,figcaption,figure,footer,header,hgroup,main,nav,section{display:block}' +
-          // adds styling not present in IE6/7/8/9
-          'mark{background:#FF0;color:#000}' +
-          // hides non-rendered elements
-          'template{display:none}'
-        );
-      }
-      if (!supportsUnknownElements) {
-        shivMethods(ownerDocument, data);
-      }
-      return ownerDocument;
-    }
-
-    /*--------------------------------------------------------------------------*/
-
-    /**
-     * The `html5` object is exposed so that more elements can be shived and
-     * existing shiving can be detected on iframes.
-     * @type Object
-     * @example
-     *
-     * // options can be changed before the script is included
-     * html5 = { 'elements': 'mark section', 'shivCSS': false, 'shivMethods': false };
-     */
-    var html5 = {
-
-      /**
-       * An array or space separated string of node names of the elements to shiv.
-       * @memberOf html5
-       * @type Array|String
-       */
-      'elements': options.elements || 'abbr article aside audio bdi canvas data datalist details dialog figcaption figure footer header hgroup main mark meter nav output picture progress section summary template time video',
-
-      /**
-       * current version of html5shiv
-       */
-      'version': version,
-
-      /**
-       * A flag to indicate that the HTML5 style sheet should be inserted.
-       * @memberOf html5
-       * @type Boolean
-       */
-      'shivCSS': (options.shivCSS !== false),
-
-      /**
-       * Is equal to true if a browser supports creating unknown/HTML5 elements
-       * @memberOf html5
-       * @type boolean
-       */
-      'supportsUnknownElements': supportsUnknownElements,
-
-      /**
-       * A flag to indicate that the document's `createElement` and `createDocumentFragment`
-       * methods should be overwritten.
-       * @memberOf html5
-       * @type Boolean
-       */
-      'shivMethods': (options.shivMethods !== false),
-
-      /**
-       * A string to describe the type of `html5` object ("default" or "default print").
-       * @memberOf html5
-       * @type String
-       */
-      'type': 'default',
-
-      // shivs the document according to the specified `html5` object options
-      'shivDocument': shivDocument,
-
-      //creates a shived element
-      createElement: createElement,
-
-      //creates a shived documentFragment
-      createDocumentFragment: createDocumentFragment,
-
-      //extends list of elements
-      addElements: addElements
-    };
-
-    /*--------------------------------------------------------------------------*/
-
-    // expose html5
-    window.html5 = html5;
-
-    // shiv the document
-    shivDocument(document);
-
-    /*------------------------------- Print Shiv -------------------------------*/
-
-    /** Used to filter media types */
-    var reMedia = /^$|\b(?:all|print)\b/;
-
-    /** Used to namespace printable elements */
-    var shivNamespace = 'html5shiv';
-
-    /** Detect whether the browser supports shivable style sheets */
-    var supportsShivableSheets = !supportsUnknownElements && (function() {
-      // assign a false negative if unable to shiv
-      var docEl = document.documentElement;
-      return !(
-        typeof document.namespaces == 'undefined' ||
-        typeof document.parentWindow == 'undefined' ||
-        typeof docEl.applyElement == 'undefined' ||
-        typeof docEl.removeNode == 'undefined' ||
-        typeof window.attachEvent == 'undefined'
-      );
-    }());
-
-    /*--------------------------------------------------------------------------*/
-
-    /**
-     * Wraps all HTML5 elements in the given document with printable elements.
-     * (eg. the "header" element is wrapped with the "html5shiv:header" element)
-     * @private
-     * @param {Document} ownerDocument The document.
-     * @returns {Array} An array wrappers added.
-     */
-    function addWrappers(ownerDocument) {
-      var node,
-          nodes = ownerDocument.getElementsByTagName('*'),
-          index = nodes.length,
-          reElements = RegExp('^(?:' + getElements().join('|') + ')$', 'i'),
-          result = [];
-
-      while (index--) {
-        node = nodes[index];
-        if (reElements.test(node.nodeName)) {
-          result.push(node.applyElement(createWrapper(node)));
-        }
-      }
-      return result;
-    }
-
-    /**
-     * Creates a printable wrapper for the given element.
-     * @private
-     * @param {Element} element The element.
-     * @returns {Element} The wrapper.
-     */
-    function createWrapper(element) {
-      var node,
-          nodes = element.attributes,
-          index = nodes.length,
-          wrapper = element.ownerDocument.createElement(shivNamespace + ':' + element.nodeName);
-
-      // copy element attributes to the wrapper
-      while (index--) {
-        node = nodes[index];
-        node.specified && wrapper.setAttribute(node.nodeName, node.nodeValue);
-      }
-      // copy element styles to the wrapper
-      wrapper.style.cssText = element.style.cssText;
-      return wrapper;
-    }
-
-    /**
-     * Shivs the given CSS text.
-     * (eg. header{} becomes html5shiv\:header{})
-     * @private
-     * @param {String} cssText The CSS text to shiv.
-     * @returns {String} The shived CSS text.
-     */
-    function shivCssText(cssText) {
-      var pair,
-          parts = cssText.split('{'),
-          index = parts.length,
-          reElements = RegExp('(^|[\\s,>+~])(' + getElements().join('|') + ')(?=[[\\s,>+~#.:]|$)', 'gi'),
-          replacement = '$1' + shivNamespace + '\\:$2';
-
-      while (index--) {
-        pair = parts[index] = parts[index].split('}');
-        pair[pair.length - 1] = pair[pair.length - 1].replace(reElements, replacement);
-        parts[index] = pair.join('}');
-      }
-      return parts.join('{');
-    }
-
-    /**
-     * Removes the given wrappers, leaving the original elements.
-     * @private
-     * @params {Array} wrappers An array of printable wrappers.
-     */
-    function removeWrappers(wrappers) {
-      var index = wrappers.length;
-      while (index--) {
-        wrappers[index].removeNode();
-      }
-    }
-
-    /*--------------------------------------------------------------------------*/
-
-    /**
-     * Shivs the given document for print.
-     * @memberOf html5
-     * @param {Document} ownerDocument The document to shiv.
-     * @returns {Document} The shived document.
-     */
-    function shivPrint(ownerDocument) {
-      var shivedSheet,
-          wrappers,
-          data = getExpandoData(ownerDocument),
-          namespaces = ownerDocument.namespaces,
-          ownerWindow = ownerDocument.parentWindow;
-
-      if (!supportsShivableSheets || ownerDocument.printShived) {
-        return ownerDocument;
-      }
-      if (typeof namespaces[shivNamespace] == 'undefined') {
-        namespaces.add(shivNamespace);
-      }
-
-      function removeSheet() {
-        clearTimeout(data._removeSheetTimer);
-        if (shivedSheet) {
-            shivedSheet.removeNode(true);
-        }
-        shivedSheet= null;
-      }
-
-      ownerWindow.attachEvent('onbeforeprint', function() {
-
-        removeSheet();
-
-        var imports,
-            length,
-            sheet,
-            collection = ownerDocument.styleSheets,
-            cssText = [],
-            index = collection.length,
-            sheets = Array(index);
-
-        // convert styleSheets collection to an array
-        while (index--) {
-          sheets[index] = collection[index];
-        }
-        // concat all style sheet CSS text
-        while ((sheet = sheets.pop())) {
-          // IE does not enforce a same origin policy for external style sheets...
-          // but has trouble with some dynamically created stylesheets
-          if (!sheet.disabled && reMedia.test(sheet.media)) {
-
-            try {
-              imports = sheet.imports;
-              length = imports.length;
-            } catch(er){
-              length = 0;
-            }
-
-            for (index = 0; index < length; index++) {
-              sheets.push(imports[index]);
-            }
-
-            try {
-              cssText.push(sheet.cssText);
-            } catch(er){}
-          }
-        }
-
-        // wrap all HTML5 elements with printable elements and add the shived style sheet
-        cssText = shivCssText(cssText.reverse().join(''));
-        wrappers = addWrappers(ownerDocument);
-        shivedSheet = addStyleSheet(ownerDocument, cssText);
-
-      });
-
-      ownerWindow.attachEvent('onafterprint', function() {
-        // remove wrappers, leaving the original elements, and remove the shived style sheet
-        removeWrappers(wrappers);
-        clearTimeout(data._removeSheetTimer);
-        data._removeSheetTimer = setTimeout(removeSheet, 500);
-      });
-
-      ownerDocument.printShived = true;
-      return ownerDocument;
-    }
-
-    /*--------------------------------------------------------------------------*/
-
-    // expose API
-    html5.type += ' print';
-    html5.shivPrint = shivPrint;
-
-    // shiv for print
-    shivPrint(document);
-
-  }(this, document));
-
-
-
-  var tests = [];
-
-
-  var ModernizrProto = {
-    // The current version, dummy
-    _version: '3.0.0-alpha.3',
-
-    // Any settings that don't work as separate modules
-    // can go in here as configuration.
-    _config: {
-      'classPrefix' : '',
-      'enableClasses' : true,
-      'enableJSClass' : true,
-      'usePrefixes' : true
-    },
-
-    // Queue of tests
-    _q: [],
-
-    // Stub these for people who are listening
-    on: function( test, cb ) {
-      // I don't really think people should do this, but we can
-      // safe guard it a bit.
-      // -- NOTE:: this gets WAY overridden in src/addTest for
-      // actual async tests. This is in case people listen to
-      // synchronous tests. I would leave it out, but the code
-      // to *disallow* sync tests in the real version of this
-      // function is actually larger than this.
-      var self = this;
-      setTimeout(function() {
-        cb(self[test]);
-      }, 0);
-    },
-
-    addTest: function( name, fn, options ) {
-      tests.push({name : name, fn : fn, options : options });
-    },
-
-    addAsyncTest: function (fn) {
-      tests.push({name : null, fn : fn});
-    }
-  };
-
-
-
-  // Fake some of Object.create
-  // so we can force non test results
-  // to be non "own" properties.
-  var Modernizr = function(){};
-  Modernizr.prototype = ModernizrProto;
-
-  // Leak modernizr globally when you `require` it
-  // rather than force it here.
-  // Overwrite name so constructor name is nicer :D
-  Modernizr = new Modernizr();
-
-
-/*!
-{
-  "name": "Application Cache",
-  "property": "applicationcache",
-  "caniuse": "offline-apps",
-  "tags": ["storage", "offline"],
-  "notes": [{
-    "name": "MDN documentation",
-    "href": "https://developer.mozilla.org/en/docs/HTML/Using_the_application_cache"
-  }],
-  "polyfills": ["html5gears"]
-}
-!*/
-/* DOC
-Detects support for the Application Cache, for storing data to enable web-based applications run offline.
-
-The API has been [heavily criticized](http://alistapart.com/article/application-cache-is-a-douchebag) and discussions are underway to address this.
-*/
-
-  Modernizr.addTest('applicationcache', 'applicationCache' in window);
-
-/*!
-{
-  "name": "Beacon API",
-  "notes": [{
-    "name": "MDN documentation",
-    "href": "https://developer.mozilla.org/en-US/docs/Web/API/navigator.sendBeacon"
-  },{
-    "name": "W3C specification",
-    "href": "https://dvcs.w3.org/hg/webperf/raw-file/tip/specs/Beacon/Overview.html"
-  }],
-  "property": "beacon",
-  "tags": ["beacon", "network"],
-  "authors": ["Cătălin Mariș"]
-}
-!*/
-/* DOC
-Detects support for an API that allows for asynchronous transfer of small HTTP data from the client to a server.
-*/
-
-  Modernizr.addTest('beacon', 'sendBeacon' in navigator);
-
-/*!
-{
-  "name": "Binary WebSockets",
-  "property": "websocketsbinary",
-  "tags": ["websockets"],
-  "builderAliases": ["websockets_binary"]
-}
-!*/
-
-  // binaryType is truthy if there is support.. returns "blob" in new-ish chrome.
-  // plus.google.com/115535723976198353696/posts/ERN6zYozENV
-  // github.com/Modernizr/Modernizr/issues/370
-
-  Modernizr.addTest('websocketsbinary', function() {
-    var protocol = 'https:'==location.protocol?'wss':'ws',
-    protoBin;
-
-    if('WebSocket' in window) {
-      if( protoBin = 'binaryType' in WebSocket.prototype ) {
-        return protoBin;
-      }
-      try {
-        return !!(new WebSocket(protocol+'://.').binaryType);
-      } catch (e){}
-    }
-
-    return false;
-  });
-
-/*!
-{
-  "name": "Blob constructor",
-  "property": "blobconstructor",
-  "aliases": ["blob-constructor"],
-  "builderAliases": ["blob_constructor"],
-  "caniuse": "blobbuilder",
-  "notes": [{
-    "name": "W3C spec",
-    "href": "http://dev.w3.org/2006/webapi/FileAPI/#constructorBlob"
-  }],
-  "polyfills": ["blobjs"]
-}
-!*/
-/* DOC
-Detects support for the Blob constructor, for creating file-like objects of immutable, raw data.
-*/
-
-  Modernizr.addTest('blobconstructor', function () {
-    try {
-      return !!new Blob();
-    } catch (e) {
-      return false;
-    }
-  }, {
-    aliases: ['blob-constructor']
-  });
-
-/*!
-{
-  "name": "Cross-Origin Resource Sharing",
-  "property": "cors",
-  "caniuse": "cors",
-  "authors": ["Theodoor van Donge"],
-  "notes": [{
-    "name": "MDN documentation",
-    "href": "https://developer.mozilla.org/en-US/docs/HTTP/Access_control_CORS"
-  }],
-  "polyfills": ["pmxdr", "ppx", "flxhr"]
-}
-!*/
-/* DOC
-Detects support for Cross-Origin Resource Sharing: method of performing XMLHttpRequests across domains.
-*/
-
-  Modernizr.addTest('cors', 'XMLHttpRequest' in window && 'withCredentials' in new XMLHttpRequest());
-
-/*!
-{
-  "name": "CSS :target pseudo-class",
-  "caniuse": "css-sel3",
-  "property": "target",
-  "tags": ["css"],
-  "notes": [{
-    "name": "MDN documentation",
-    "href": "https://developer.mozilla.org/en-US/docs/Web/CSS/:target"
-  }],
-  "authors": ["@zachleat"],
-  "warnings": ["Opera Mini supports :target but doesn't update the hash for anchor links."]
-}
-!*/
-/* DOC
-Detects support for the ':target' CSS pseudo-class.
-*/
-
-  // querySelector
-  Modernizr.addTest('target', function() {
-    var doc = window.document;
-    if(!('querySelectorAll' in doc) ) {
-      return false;
-    }
-
-    try {
-      doc.querySelectorAll(':target');
-      return true;
-    } catch(e) {
-      return false;
-    }
-  });
-
-/*!
-{
-  "name": "Cookies",
-  "property": "cookies",
-  "tags": ["storage"],
-  "authors": ["tauren"]
-}
-!*/
-/* DOC
-Detects whether cookie support is enabled.
-*/
-
-  // https://github.com/Modernizr/Modernizr/issues/191
-
-  Modernizr.addTest('cookies', function () {
-    // navigator.cookieEnabled cannot detect custom or nuanced cookie blocking
-    // configurations. For example, when blocking cookies via the Advanced
-    // Privacy Settings in IE9, it always returns true. And there have been
-    // issues in the past with site-specific exceptions.
-    // Don't rely on it.
-
-    // try..catch because some in situations `document.cookie` is exposed but throws a
-    // SecurityError if you try to access it; e.g. documents created from data URIs
-    // or in sandboxed iframes (depending on flags/context)
-    try {
-      // Create cookie
-      document.cookie = 'cookietest=1';
-      var ret = document.cookie.indexOf('cookietest=') != -1;
-      // Delete cookie
-      document.cookie = 'cookietest=1; expires=Thu, 01-Jan-1970 00:00:01 GMT';
-      return ret;
-    }
-    catch (e) {
-      return false;
-    }
-  });
-
-/*!
-{
-  "name": "CSS Supports",
-  "property": "supports",
-  "caniuse": "css-featurequeries",
-  "tags": ["css"],
-  "builderAliases": ["css_supports"],
-  "notes": [{
-    "name": "W3 Spec",
-    "href": "http://dev.w3.org/csswg/css3-conditional/#at-supports"
-  },{
-    "name": "Related Github Issue",
-    "href": "github.com/Modernizr/Modernizr/issues/648"
-  },{
-    "name": "W3 Info",
-    "href": "http://dev.w3.org/csswg/css3-conditional/#the-csssupportsrule-interface"
-  }]
-}
-!*/
-
-  var newSyntax = 'CSS' in window && 'supports' in window.CSS;
-  var oldSyntax = 'supportsCSS' in window;
-  Modernizr.addTest('supports', newSyntax || oldSyntax);
-
-/*!
-{
-  "name": "CSS.escape()",
-  "property": "cssescape",
-  "polyfills": [
-    "css-escape"
-  ],
-  "tags": [
-    "css",
-    "cssom"
-  ]
-}
-!*/
-/* DOC
-Tests for `CSS.escape()` support.
-*/
-
-  var CSS = window.CSS;
-  Modernizr.addTest('cssescape', CSS ? typeof CSS.escape == 'function' : false);
-
-/*!
-{
-  "name": "Custom protocol handler",
-  "property": "customprotocolhandler",
-  "authors": ["Ben Schwarz"],
-  "builderAliases": ["custom_protocol_handler"],
-  "notes": [{
-    "name": "WHATWG overview",
-    "href": "http://developers.whatwg.org/timers.html#custom-handlers"
-  },{
-    "name": "MDN documentation",
-    "href": "https://developer.mozilla.org/en-US/docs/Web/API/navigator.registerProtocolHandler"
-  }],
-  "warnings": [],
-  "polyfills": []
-}
-!*/
-/* DOC
-Detects support for the `window.registerProtocolHandler()` API to allow websites to register themselves as possible handlers for particular protocols.
-*/
-
-  Modernizr.addTest('customprotocolhandler', function() {
-    // early bailout where it doesn't exist at all
-    if ( !navigator.registerProtocolHandler ) return false;
-
-    // registerProtocolHandler was stubbed in webkit for a while, and didn't
-    // actually do anything. We intentionally set it improperly to test for
-    // the proper sort of failure
-    try {
-      navigator.registerProtocolHandler('thisShouldFail');
-    }
-    catch (e) {
-      return e instanceof TypeError;
-    }
-
-    return false;
-  });
-
-/*!
-{
-  "name": "CustomEvent",
-  "property": "customevent",
-  "tags": ["customevent"],
-  "authors": ["Alberto Elias"],
-  "notes": [{
-    "name": "W3C DOM reference",
-    "href": "http://www.w3.org/TR/DOM-Level-3-Events/#interface-CustomEvent"
-  }, {
-    "name": "MDN documentation",
-    "href": "https://developer.mozilla.org/en/docs/Web/API/CustomEvent"
-  }],
-  "polyfills": ["eventlistener"]
-}
-!*/
-/* DOC
-
-Detects support for CustomEvent.
-
-*/
-
-  Modernizr.addTest('customevent', 'CustomEvent' in window && typeof window.CustomEvent === 'function');
-
-/*!
-{
-  "name": "DataView",
-  "property": "dataview",
-  "authors": ["Addy Osmani"],
-  "builderAliases": ["dataview_api"],
-  "notes": [{
-    "name": "MDN documentation",
-    "href": "https://developer.mozilla.org/en/JavaScript_typed_arrays/DataView"
-  }],
-  "polyfills": ["jdataview"]
-}
-!*/
-/* DOC
-Detects support for the DataView interface for reading data from an ArrayBuffer as part of the Typed Array spec.
-*/
-
-  Modernizr.addTest('dataview', (typeof DataView !== 'undefined' && 'getFloat64' in DataView.prototype));
-
-/*!
-{
-  "name": "Orientation and Motion Events",
-  "property": ["devicemotion", "deviceorientation"],
-  "caniuse": "deviceorientation",
-  "notes": [{
-    "name": "W3C Editor's Draft",
-    "href": "http://dev.w3.org/geo/api/spec-source-orientation.html"
-  },{
-    "name": "Implementation by iOS Safari (Orientation)",
-    "href": "http://goo.gl/fhce3"
-  },{
-    "name": "Implementation by iOS Safari (Motion)",
-    "href": "http://goo.gl/rLKz8"
-  }],
-  "authors": ["Shi Chuan"],
-  "tags": ["event"],
-  "builderAliases": ["event_deviceorientation_motion"]
-}
-!*/
-/* DOC
-Part of Device Access aspect of HTML5, same category as geolocation.
-
-`devicemotion` tests for Device Motion Event support, returns boolean value true/false.
-
-`deviceorientation` tests for Device Orientation Event support, returns boolean value true/false
-*/
-
-  Modernizr.addTest('devicemotion', 'DeviceMotionEvent' in window);
-  Modernizr.addTest('deviceorientation', 'DeviceOrientationEvent' in window);
-
-/*!
-{
-  "name": "DOM4 MutationObserver",
-  "property": "mutationobserver",
-  "caniuse": "mutationobserver",
-  "tags": ["dom"],
-  "authors": ["Karel Sedláček (@ksdlck)"],
-  "polyfills": ["mutationobservers"],
-  "notes": [{
-    "name": "MDN documentation",
-    "href": "https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver"
-  }]
-}
-!*/
-/* DOC
-
-Determines if DOM4 MutationObserver support is available.
-
-*/
-
-  Modernizr.addTest('mutationobserver',
-    !!window.MutationObserver || !!window.WebKitMutationObserver);
-
-/*!
-{
-  "name": "ES5 Date",
-  "property": "es5date",
-  "notes": [{
-    "name": "ECMAScript 5.1 Language Specification",
-    "href": "http://www.ecma-international.org/ecma-262/5.1/"
-  }],
-  "polyfills": ["es5shim"],
-  "authors": ["Ron Waldon (@jokeyrhyme)"],
-  "tags": ["es5"]
-}
-!*/
-/* DOC
-Check if browser implements ECMAScript 5 Date per specification.
-*/
-
-  Modernizr.addTest('es5date', function () {
-    var isoDate = '2013-04-12T06:06:37.307Z',
-      canParseISODate = false;
-    try {
-      canParseISODate = !!Date.parse(isoDate);
-    } catch (e) {
-      // no ISO date parsing yet
-    }
-    return !!(Date.now &&
-      Date.prototype &&
-      Date.prototype.toISOString &&
-      Date.prototype.toJSON &&
-      canParseISODate);
-  });
-
-/*!
-{
-  "name": "ES5 Function",
-  "property": "es5function",
-  "notes": [{
-    "name": "ECMAScript 5.1 Language Specification",
-    "href": "http://www.ecma-international.org/ecma-262/5.1/"
-  }],
-  "polyfills": ["es5shim"],
-  "authors": ["Ron Waldon (@jokeyrhyme)"],
-  "tags": ["es5"]
-}
-!*/
-/* DOC
-Check if browser implements ECMAScript 5 Function per specification.
-*/
-
-  Modernizr.addTest('es5function', function () {
-    return !!(Function.prototype && Function.prototype.bind);
-  });
-
-/*!
-{
-  "name": "ES5 Array",
-  "property": "es5array",
-  "notes": [{
-    "name": "ECMAScript 5.1 Language Specification",
-    "href": "http://www.ecma-international.org/ecma-262/5.1/"
-  }],
-  "polyfills": ["es5shim"],
-  "authors": ["Ron Waldon (@jokeyrhyme)"],
-  "tags": ["es5"]
-}
-!*/
-/* DOC
-Check if browser implements ECMAScript 5 Array per specification.
-*/
-
-  Modernizr.addTest('es5array', function () {
-    return !!(Array.prototype &&
-      Array.prototype.every &&
-      Array.prototype.filter &&
-      Array.prototype.forEach &&
-      Array.prototype.indexOf &&
-      Array.prototype.lastIndexOf &&
-      Array.prototype.map &&
-      Array.prototype.some &&
-      Array.prototype.reduce &&
-      Array.prototype.reduceRight &&
-      Array.isArray);
-  });
-
-/*!
-{
-  "name": "ES5 Object",
-  "property": "es5object",
-  "notes": [{
-    "name": "ECMAScript 5.1 Language Specification",
-    "href": "http://www.ecma-international.org/ecma-262/5.1/"
-  }],
-  "polyfills": ["es5shim", "es5sham"],
-  "authors": ["Ron Waldon (@jokeyrhyme)"],
-  "tags": ["es5"]
-}
-!*/
-/* DOC
-Check if browser implements ECMAScript 5 Object per specification.
-*/
-
-  Modernizr.addTest('es5object', function () {
-    return !!(Object.keys &&
-      Object.create &&
-      Object.getPrototypeOf &&
-      Object.getOwnPropertyNames &&
-      Object.isSealed &&
-      Object.isFrozen &&
-      Object.isExtensible &&
-      Object.getOwnPropertyDescriptor &&
-      Object.defineProperty &&
-      Object.defineProperties &&
-      Object.seal &&
-      Object.freeze &&
-      Object.preventExtensions);
-  });
-
-/*!
-{
-  "name": "ES5 Immutable Undefined",
-  "property": "es5undefined",
-  "notes": [{
-    "name": "ECMAScript 5.1 Language Specification",
-    "href": "http://www.ecma-international.org/ecma-262/5.1/"
-  }, {
-    "name": "original implementation of detect code",
-    "href": "http://kangax.github.io/es5-compat-table/"
-  }],
-  "authors": ["Ron Waldon (@jokeyrhyme)"],
-  "tags": ["es5"]
-}
-!*/
-/* DOC
-Check if browser prevents assignment to global `undefined` per ECMAScript 5.
-*/
-
-  Modernizr.addTest('es5undefined', function () {
-    var result, originalUndefined;
-    try {
-      originalUndefined = window.undefined;
-      window.undefined = 12345;
-      result = typeof window.undefined === 'undefined';
-      window.undefined = originalUndefined;
-    } catch (e) {
-      return false;
-    }
-    return result;
-  });
-
-/*!
-{
-  "name": "ES5 Strict Mode",
-  "property": "strictmode",
-  "caniuse": "sctrict-mode",
-  "notes": [{
-    "name": "ECMAScript 5.1 Language Specification",
-    "href": "http://www.ecma-international.org/ecma-262/5.1/"
-  }],
-  "authors": ["@kangax"],
-  "tags": ["es5"],
-  "builderAliases": ["es5_strictmode"]
-}
-!*/
-/* DOC
-Check if browser implements ECMAScript 5 Object strict mode.
-*/
-
-  Modernizr.addTest('strictmode', (function(){'use strict'; return !this; })());
-
-/*!
-{
-  "name": "ES5 Syntax",
-  "property": "es5syntax",
-  "notes": [{
-    "name": "ECMAScript 5.1 Language Specification",
-    "href": "http://www.ecma-international.org/ecma-262/5.1/"
-  }, {
-    "name": "original implementation of detect code",
-    "href": "http://kangax.github.io/es5-compat-table/"
-  }],
-  "authors": ["Ron Waldon (@jokeyrhyme)"],
-  "warnings": ["This detect uses `eval()`, so CSP may be a problem."],
-  "tags": ["es5"]
-}
-!*/
-/* DOC
-Check if browser accepts ECMAScript 5 syntax.
-*/
-
-  Modernizr.addTest('es5syntax', function () {
-    var value, obj, stringAccess, getter, setter, reservedWords, zeroWidthChars;
-    try {
-      // Property access on strings
-      stringAccess = eval('"foobar"[3] === "b"');
-      // Getter in property initializer
-      getter = eval('({ get x(){ return 1 } }).x === 1');
-      eval('({ set x(v){ value = v; } }).x = 1');
-      // Setter in property initializer
-      setter = value === 1;
-      // Reserved words as property names
-      eval('obj = ({ if: 1 })');
-      reservedWords = obj['if'] === 1;
-      // Zero-width characters in identifiers
-      zeroWidthChars = eval('_\u200c\u200d = true');
-
-      return stringAccess && getter && setter && reservedWords && zeroWidthChars;
-    } catch (ignore) {
-      return false;
-    }
-  });
-
-/*!
-{
-  "name": "ES5 String",
-  "property": "es5string",
-  "notes": [{
-    "name": "ECMAScript 5.1 Language Specification",
-    "href": "http://www.ecma-international.org/ecma-262/5.1/"
-  }],
-  "polyfills": ["es5shim"],
-  "authors": ["Ron Waldon (@jokeyrhyme)"],
-  "tags": ["es5"]
-}
-!*/
-/* DOC
-Check if browser implements ECMAScript 5 String per specification.
-*/
-
-  Modernizr.addTest('es5string', function () {
-    return !!(String.prototype && String.prototype.trim);
-  });
-
-/*!
-{
-  "name": "ES6 Number",
-  "property": "es6number",
-  "notes": [{
-    "name": "unofficial ECMAScript 6 draft specification",
-    "href": "http://people.mozilla.org/~jorendorff/es6-draft.html"
-  }],
-  "polyfills": ["es6shim"],
-  "authors": ["Ron Waldon (@jokeyrhyme)"],
-  "warnings": ["ECMAScript 6 is still a only a draft, so this detect may not match the final specification or implementations."],
-  "tags": ["es6"]
-}
-!*/
-/* DOC
-Check if browser implements ECMAScript 6 Number per specification.
-*/
-
-  Modernizr.addTest('es6number', !!(Number.isFinite &&
-    Number.isInteger &&
-    Number.isSafeInteger &&
-    Number.isNaN &&
-    Number.parseInt &&
-    Number.parseFloat &&
-    Number.isInteger(Number.MAX_SAFE_INTEGER) &&
-    Number.isInteger(Number.MIN_SAFE_INTEGER) &&
-    Number.isFinite(Number.EPSILON)));
-
-/*!
-{
-  "name": "ES6 Object",
-  "property": "es6object",
-  "notes": [{
-    "name": "unofficial ECMAScript 6 draft specification",
-    "href": "http://people.mozilla.org/~jorendorff/es6-draft.html"
-  }],
-  "polyfills": ["es6shim"],
-  "authors": ["Ron Waldon (@jokeyrhyme)"],
-  "warnings": ["ECMAScript 6 is still a only a draft, so this detect may not match the final specification or implementations."],
-  "tags": ["es6"]
-}
-!*/
-/* DOC
-Check if browser implements ECMAScript 6 Object per specification.
-*/
-
-  Modernizr.addTest('es6object', !!(Object.assign &&
-    Object.is &&
-    Object.setPrototypeOf));
-
-/*!
-{
-  "name": "ES6 Promises",
-  "property": "promises",
-  "caniuse": "promises",
-  "polyfills": ["es6promises"],
-  "authors": ["Krister Kari", "Jake Archibald"],
-  "tags": ["es6"],
-  "notes": [{
-    "name": "The ES6 promises spec",
-    "href": "https://github.com/domenic/promises-unwrapping"
-  },{
-    "name": "Chromium dashboard - ES6 Promises",
-    "href": "http://www.chromestatus.com/features/5681726336532480"
-  },{
-    "name": "JavaScript Promises: There and back again - HTML5 Rocks",
-    "href": "http://www.html5rocks.com/en/tutorials/es6/promises/"
-  }]
-}
-!*/
-/* DOC
-Check if browser implements ECMAScript 6 Promises per specification.
-*/
-
-  Modernizr.addTest('promises', function() {
-    return 'Promise' in window &&
-    // Some of these methods are missing from
-    // Firefox/Chrome experimental implementations
-    'resolve' in window.Promise &&
-    'reject' in window.Promise &&
-    'all' in window.Promise &&
-    'race' in window.Promise &&
-    // Older version of the spec had a resolver object
-    // as the arg rather than a function
-    (function() {
-      var resolve;
-      new window.Promise(function(r) { resolve = r; });
-      return typeof resolve === 'function';
-    }());
-  });
-
-/*!
-{
-  "name": "ES6 Generators",
-  "property": "generators",
-  "authors": ["Michael Kachanovskyi"],
-  "tags": ["es6"]
-}
-!*/
-/* DOC
-Check if browser implements ECMAScript 6 Generators per specification.
-*/
-
-  Modernizr.addTest('generators', function() {
-    try {
-      /* jshint evil: true */
-      new Function('function* test() {}')();
-    } catch(e) {
-      return false;
-    }
-    return true;
-  });
-
-/*!
-{
-  "name": "ES6 Math",
-  "property": "es6math",
-  "notes": [{
-    "name": "unofficial ECMAScript 6 draft specification",
-    "href": "http://people.mozilla.org/~jorendorff/es6-draft.html"
-  }],
-  "polyfills": ["es6shim"],
-  "authors": ["Ron Waldon (@jokeyrhyme)"],
-  "warnings": ["ECMAScript 6 is still a only a draft, so this detect may not match the final specification or implementations."],
-  "tags": ["es6"]
-}
-!*/
-/* DOC
-Check if browser implements ECMAScript 6 Math per specification.
-*/
-
-  Modernizr.addTest('es6math', !!(Math &&
-    Math.clz32 &&
-    Math.cbrt &&
-    Math.imul &&
-    Math.sign &&
-    Math.log10 &&
-    Math.log2 &&
-    Math.log1p &&
-    Math.expm1 &&
-    Math.cosh &&
-    Math.sinh &&
-    Math.tanh &&
-    Math.acosh &&
-    Math.asinh &&
-    Math.atanh &&
-    Math.hypot &&
-    Math.trunc &&
-    Math.fround));
-
-/*!
-{
-  "name": "ES6 Array",
-  "property": "es6array",
-  "notes": [{
-    "name": "unofficial ECMAScript 6 draft specification",
-    "href": "http://people.mozilla.org/~jorendorff/es6-draft.html"
-  }],
-  "polyfills": ["es6shim"],
-  "authors": ["Ron Waldon (@jokeyrhyme)"],
-  "warnings": ["ECMAScript 6 is still a only a draft, so this detect may not match the final specification or implementations."],
-  "tags": ["es6"]
-}
-!*/
-/* DOC
-Check if browser implements ECMAScript 6 Array per specification.
-*/
-
-  Modernizr.addTest('es6array', !!(Array.prototype &&
-    Array.prototype.copyWithin &&
-    Array.prototype.fill &&
-    Array.prototype.find &&
-    Array.prototype.findIndex &&
-    Array.prototype.keys &&
-    Array.prototype.entries &&
-    Array.prototype.values &&
-    Array.from &&
-    Array.of));
-
-/*!
-{
-  "name": "ES6 String",
-  "property": "es6string",
-  "notes": [{
-    "name": "unofficial ECMAScript 6 draft specification",
-    "href": "http://people.mozilla.org/~jorendorff/es6-draft.html"
-  }],
-  "polyfills": ["es6shim"],
-  "authors": ["Ron Waldon (@jokeyrhyme)"],
-  "warnings": ["ECMAScript 6 is still a only a draft, so this detect may not match the final specification or implementations."],
-  "tags": ["es6"]
-}
-!*/
-/* DOC
-Check if browser implements ECMAScript 6 String per specification.
-*/
-
-  Modernizr.addTest('es6string', !!(String.fromCodePoint &&
-    String.raw &&
-    String.prototype.codePointAt &&
-    String.prototype.repeat &&
-    String.prototype.startsWith &&
-    String.prototype.endsWith &&
-    String.prototype.contains));
-
-/*!
-{
-  "name": "Event Listener",
-  "property": "eventlistener",
-  "authors": ["Andrew Betts (@triblondon)"],
-  "notes": [{
-    "name": "W3C Spec",
-    "href": "http://www.w3.org/TR/DOM-Level-2-Events/events.html#Events-Registration-interfaces"
-  }],
-  "polyfills": ["eventlistener"]
-}
-!*/
-/* DOC
-Detects native support for addEventListener
-*/
-
-  Modernizr.addTest('eventlistener', 'addEventListener' in window);
-
-/*!
-{
-  "name": "File API",
-  "property": "filereader",
-  "caniuse": "fileapi",
-  "notes": [{
-    "name": "W3C Working Draft",
-    "href": "http://www.w3.org/TR/FileAPI/"
-  }],
-  "tags": ["file"],
-  "builderAliases": ["file_api"],
-  "knownBugs": ["Will fail in Safari 5 due to its lack of support for the standards defined FileReader object"]
-}
-!*/
-/* DOC
-`filereader` tests for the File API specification
-
-Tests for objects specific to the File API W3C specification without
-being redundant (don't bother testing for Blob since it is assumed
-to be the File object's prototype.)
-*/
-
-  Modernizr.addTest('filereader', !!(window.File && window.FileList && window.FileReader));
-
-/*!
-{
-  "name": "Framed window",
-  "property": "framed",
-  "tags": ["window"],
-  "builderAliases": ["window_framed"]
-}
-!*/
-/* DOC
-Tests if page is iframed.
-*/
-
-  // github.com/Modernizr/Modernizr/issues/242
-
-  Modernizr.addTest('framed', window.location != top.location);
-
-/*!
-{
-  "name": "Geolocation API",
-  "property": "geolocation",
-  "caniuse": "geolocation",
-  "tags": ["media"],
-  "notes": [{
-    "name": "MDN documentation",
-    "href": "https://developer.mozilla.org/en-US/docs/WebAPI/Using_geolocation"
-  }],
-  "polyfills": [
-    "joshuabell-polyfill",
-    "webshims",
-    "geo-location-javascript",
-    "geolocation-api-polyfill"
-  ]
-}
-!*/
-/* DOC
-Detects support for the Geolocation API for users to provide their location to web applications.
-*/
-
-  // geolocation is often considered a trivial feature detect...
-  // Turns out, it's quite tricky to get right:
-  //
-  // Using !!navigator.geolocation does two things we don't want. It:
-  //   1. Leaks memory in IE9: github.com/Modernizr/Modernizr/issues/513
-  //   2. Disables page caching in WebKit: webk.it/43956
-  //
-  // Meanwhile, in Firefox < 8, an about:config setting could expose
-  // a false positive that would throw an exception: bugzil.la/688158
-
-  Modernizr.addTest('geolocation', 'geolocation' in navigator);
-
-/*!
-{
-  "name": "History API",
-  "property": "history",
-  "caniuse": "history",
-  "tags": ["history"],
-  "authors": ["Hay Kranen", "Alexander Farkas"],
-  "notes": [{
-    "name": "W3C Spec",
-    "href": "http://www.w3.org/TR/html51/browsers.html#the-history-interface"
-  }, {
-    "name": "MDN documentation",
-    "href": "https://developer.mozilla.org/en-US/docs/Web/API/window.history"
-  }],
-  "polyfills": ["historyjs", "html5historyapi"]
-}
-!*/
-/* DOC
-Detects support for the History API for manipulating the browser session history.
-*/
-
-  Modernizr.addTest('history', function() {
-    // Issue #733
-    // The stock browser on Android 2.2 & 2.3, and 4.0.x returns positive on history support
-    // Unfortunately support is really buggy and there is no clean way to detect
-    // these bugs, so we fall back to a user agent sniff :(
-    var ua = navigator.userAgent;
-
-    // We only want Android 2 and 4.0, stock browser, and not Chrome which identifies
-    // itself as 'Mobile Safari' as well, nor Windows Phone (issue #1471).
-    if ((ua.indexOf('Android 2.') !== -1 ||
-        (ua.indexOf('Android 4.0') !== -1)) &&
-        ua.indexOf('Mobile Safari') !== -1 &&
-        ua.indexOf('Chrome') === -1 &&
-        ua.indexOf('Windows Phone') === -1) {
-      return false;
-    }
-
-    // Return the regular check
-    return (window.history && 'pushState' in window.history);
-  });
-
-/*!
-{
-  "name": "HTML Imports",
-  "notes": [
-    {
-      "name": "W3C HTML Imports Specification",
-      "href": "http://w3c.github.io/webcomponents/spec/imports/"
-    },
-    {
-      "name": "HTML Imports - #include for the web",
-      "href": "http://www.html5rocks.com/en/tutorials/webcomponents/imports/"
-    }
-  ],
-  "polyfills": ["polymer-htmlimports"],
-  "property": "htmlimports",
-  "tags": ["html", "import"]
-}
-!*/
-/* DOC
-Detects support for HTML import, a feature that is used for loading in Web Components.
- */
-
-
-  Modernizr.addTest('htmlimports', 'import' in document.createElement('link'));
-
-/*!
-{
-  "name": "IE8 compat mode",
-  "property": "ie8compat",
-  "authors": ["Erich Ocean"]
-}
-!*/
-/* DOC
-Detects whether or not the current browser is IE8 in compatibility mode (i.e. acting as IE7).
-*/
-
-  // In this case, IE8 will be acting as IE7. You may choose to remove features in this case.
-
-  // related:
-  // james.padolsey.com/javascript/detect-ie-in-js-using-conditional-comments/
-
-  Modernizr.addTest('ie8compat', (!window.addEventListener && !!document.documentMode && document.documentMode === 7));
-
-/*!
-{
-  "name": "JSON",
-  "property": "json",
-  "caniuse": "json",
-  "notes": [{
-    "name": "MDN documentation",
-    "href": "http://developer.mozilla.org/en/JSON"
-  }],
-  "polyfills": ["json2"]
-}
-!*/
-/* DOC
-Detects native support for JSON handling functions.
-*/
-
-  // this will also succeed if you've loaded the JSON2.js polyfill ahead of time
-  //   ... but that should be obvious. :)
-
-  Modernizr.addTest('json', 'JSON' in window && 'parse' in JSON && 'stringify' in JSON);
-
-/*!
-{
-  "name": "ES5",
-  "property": "es5",
-  "notes": [{
-    "name": "ECMAScript 5.1 Language Specification",
-    "href": "http://www.ecma-international.org/ecma-262/5.1/"
-  }],
-  "polyfills": ["es5shim", "es5sham"],
-  "authors": ["Ron Waldon (@jokeyrhyme)"],
-  "tags": ["es5"]
-}
-!*/
-/* DOC
-Check if browser implements everything as specified in ECMAScript 5.
-*/
-
-  Modernizr.addTest('es5', function () {
-    return !!(
-      Modernizr.es5array &&
-      Modernizr.es5date &&
-      Modernizr.es5function &&
-      Modernizr.es5object &&
-      Modernizr.strictmode &&
-      Modernizr.es5string &&
-      Modernizr.json &&
-      Modernizr.es5syntax &&
-      Modernizr.es5undefined
-    );
-  });
-
-/*!
-{
-  "name": "Local Storage",
-  "property": "localstorage",
-  "caniuse": "namevalue-storage",
-  "tags": ["storage"],
-  "knownBugs": [],
-  "notes": [],
-  "warnings": [],
-  "polyfills": [
-    "joshuabell-polyfill",
-    "cupcake",
-    "storagepolyfill",
-    "amplifyjs",
-    "yui-cacheoffline"
-  ]
-}
-!*/
-
-  // In FF4, if disabled, window.localStorage should === null.
-
-  // Normally, we could not test that directly and need to do a
-  //   `('localStorage' in window) && ` test first because otherwise Firefox will
-  //   throw bugzil.la/365772 if cookies are disabled
-
-  // Also in iOS5 Private Browsing mode, attempting to use localStorage.setItem
-  // will throw the exception:
-  //   QUOTA_EXCEEDED_ERRROR DOM Exception 22.
-  // Peculiarly, getItem and removeItem calls do not throw.
-
-  // Because we are forced to try/catch this, we'll go aggressive.
-
-  // Just FWIW: IE8 Compat mode supports these features completely:
-  //   www.quirksmode.org/dom/html5.html
-  // But IE8 doesn't support either with local files
-
-  Modernizr.addTest('localstorage', function() {
-    var mod = 'modernizr';
-    try {
-      localStorage.setItem(mod, mod);
-      localStorage.removeItem(mod);
-      return true;
-    } catch(e) {
-      return false;
-    }
-  });
-
-/*!
-{
-  "name": "Low Bandwidth Connection",
-  "property": "lowbandwidth",
-  "tags": ["network"],
-  "builderAliases": ["network_connection"]
-}
-!*/
-/* DOC
-Tests for determining low-bandwidth via `navigator.connection`
-
-There are two iterations of the `navigator.connection` interface.
-
-The first is present in Android 2.2+ and only in the Browser (not WebView)
-
-- http://docs.phonegap.com/en/1.2.0/phonegap_connection_connection.md.html#connection.type
-- http://davidbcalhoun.com/2010/using-navigator-connection-android
-
-The second is specced at http://dev.w3.org/2009/dap/netinfo/ and perhaps landing in WebKit
-
-- http://bugs.webkit.org/show_bug.cgi?id=73528
-
-Unknown devices are assumed as fast
-
-For more rigorous network testing, consider boomerang.js: http://github.com/bluesmoon/boomerang/
-*/
-
-  Modernizr.addTest('lowbandwidth', function() {
-    // polyfill
-    var connection = navigator.connection || { type: 0 };
-
-    return connection.type == 3 || // connection.CELL_2G
-      connection.type == 4 || // connection.CELL_3G
-      /^[23]g$/.test(connection.type); // string value in new spec
-  });
-
-/*!
-{
-  "name": "microdata",
-  "property": "microdata",
-  "tags": ["dom"],
-  "builderAliases": ["dom_microdata"],
-  "notes": [{
-    "name": "W3 Spec",
-    "href": "http://www.w3.org/TR/html5/microdata.html"
-  }]
-}
-!*/
-
-  Modernizr.addTest('microdata', 'getItems' in document);
-
-/*!
-{
-  "name": "Notification",
-  "property": "notification",
-  "caniuse": "notifications",
-  "authors": ["Theodoor van Donge", "Hendrik Beskow"],
-  "notes": [{
-    "name": "HTML5 Rocks tutorial",
-    "href": "http://www.html5rocks.com/en/tutorials/notifications/quick/"
-  },{
-    "name": "W3C spec",
-    "href": "www.w3.org/TR/notifications/"
-  }],
-  "polyfills": ["desktop-notify", "html5-notifications"]
-}
-!*/
-/* DOC
-Detects support for the Notifications API
-*/
-
-  Modernizr.addTest('notification', 'Notification' in window && 'permission' in window.Notification && 'requestPermission' in window.Notification);
-
-/*!
-{
-  "name": "picture Element",
-  "property": "picture",
-  "tags": ["elem"],
-  "authors": ["Scott Jehl", "Mat Marquis"],
-  "notes": [{
-    "name": "Specification",
-    "href": "http://picture.responsiveimages.org"
-  },{
-    "name": "Relevant spec issue",
-    "href": "https://github.com/ResponsiveImagesCG/picture-element/issues/87"
-  }]
-}
-!*/
-
-  Modernizr.addTest('picture', 'HTMLPictureElement' in window );
-
-/*!
-{
-  "name": "postMessage",
-  "property": "postmessage",
-  "caniuse": "x-doc-messaging",
-  "notes": [{
-    "name": "W3C Spec",
-    "href": "http://www.w3.org/TR/html5/comms.html#posting-messages"
-  }],
-  "polyfills": ["easyxdm", "postmessage-jquery"]
-}
-!*/
-/* DOC
-Detects support for the `window.postMessage` protocol for cross-document messaging.
-*/
-
-  Modernizr.addTest('postmessage', 'postMessage' in window);
-
-/*!
-{
-  "name": "QuerySelector",
-  "property": "queryselector",
-  "caniuse": "queryselector",
-  "tags": ["queryselector"],
-  "authors": ["Andrew Betts (@triblondon)"],
-  "notes": [{
-    "name" : "W3C Selectors reference",
-    "href": "http://www.w3.org/TR/selectors-api/#queryselectorall"
-  }],
-  "polyfills": ["css-selector-engine"]
-}
-!*/
-/* DOC
-Detects support for querySelector.
-*/
-
-  Modernizr.addTest('queryselector', 'querySelector' in document && 'querySelectorAll' in document);
-
-/*!
-{
-  "name": "Server Sent Events",
-  "property": "eventsource",
-  "tags": ["network"],
-  "builderAliases": ["network_eventsource"],
-  "notes": [{
-    "name": "W3 Spec",
-    "href": "http://dev.w3.org/html5/eventsource/"
-  }]
-}
-!*/
-/* DOC
-Tests for server sent events aka eventsource.
-*/
-
-  Modernizr.addTest('eventsource', 'EventSource' in window);
-
-/*!
-{
-  "name": "ServiceWorker API",
-  "property": "serviceworker",
-  "notes": [{
-    "name": "ServiceWorkers Explained",
-    "href": "https://github.com/slightlyoff/ServiceWorker/blob/master/explainer.md"
-  }]
-}
-!*/
-/* DOC
-ServiceWorkers (formerly Navigation Controllers) are a way to persistently cache resources to built apps that work better offline.
-*/
-
-  Modernizr.addTest('serviceworker', 'serviceWorker' in navigator);
-
-/*!
-{
-  "name": "Session Storage",
-  "property": "sessionstorage",
-  "tags": ["storage"],
-  "polyfills": ["joshuabell-polyfill", "cupcake", "sessionstorage"]
-}
-!*/
-
-  // Because we are forced to try/catch this, we'll go aggressive.
-
-  // Just FWIW: IE8 Compat mode supports these features completely:
-  //   www.quirksmode.org/dom/html5.html
-  // But IE8 doesn't support either with local files
-  Modernizr.addTest('sessionstorage', function() {
-    var mod = 'modernizr';
-    try {
-      sessionStorage.setItem(mod, mod);
-      sessionStorage.removeItem(mod);
-      return true;
-    } catch(e) {
-      return false;
-    }
-  });
-
-/*!
-{
-  "name": "Shared Workers",
-  "property": "sharedworkers",
-  "caniuse" : "sharedworkers",
-  "tags": ["performance", "workers"],
-  "builderAliases": ["workers_sharedworkers"],
-  "notes": [{
-    "name": "W3C Reference",
-    "href": "http://www.w3.org/TR/workers/"
-  }]
-}
-!*/
-/* DOC
-Detects support for the `SharedWorker` API from the Web Workers spec.
-*/
-
-  Modernizr.addTest('sharedworkers', 'SharedWorker' in window);
-
-/*!
-{
-  "authors": ["Cătălin Mariș"],
-  "name": "Speech Synthesis API",
-  "notes": [
-    {
-      "name": "W3C Web Speech API Specification - The SpeechSynthesis Interface",
-      "href": "https://dvcs.w3.org/hg/speech-api/raw-file/tip/speechapi.html#tts-section"
-    }
-  ],
-  "property": "speechsynthesis",
-  "tags": ["input", "speech"]
-}
-!*/
-
-
-  Modernizr.addTest('speechsynthesis', 'SpeechSynthesisUtterance' in window);
-
-/*!
-{
-  "name": "SVG",
-  "property": "svg",
-  "caniuse": "svg",
-  "tags": ["svg"],
-  "authors": ["Erik Dahlstrom"],
-  "polyfills": [
-    "svgweb",
-    "raphael",
-    "amplesdk",
-    "canvg",
-    "svg-boilerplate",
-    "sie",
-    "dojogfx",
-    "fabricjs"
-  ]
-}
-!*/
-/* DOC
-Detects support for SVG in `<embed>` or `<object>` elements.
-*/
-
-  Modernizr.addTest('svg', !!document.createElementNS && !!document.createElementNS('http://www.w3.org/2000/svg', 'svg').createSVGRect);
-
-/*!
-{
-  "name": "SVG filters",
-  "property": "svgfilters",
-  "caniuse": "svg-filters",
-  "tags": ["svg"],
-  "builderAliases": ["svg_filters"],
-  "authors": ["Erik Dahlstrom"],
-  "notes": [{
-    "name": "W3C Spec",
-    "href": "http://www.w3.org/TR/SVG11/filters.html"
-  }]
-}
-!*/
-
-  // Should fail in Safari: http://stackoverflow.com/questions/9739955/feature-detecting-support-for-svg-filters.
-  Modernizr.addTest('svgfilters', function() {
-    var result = false;
-    try {
-      result = 'SVGFEColorMatrixElement' in window &&
-        SVGFEColorMatrixElement.SVG_FECOLORMATRIX_TYPE_SATURATE == 2;
-    }
-    catch(e) {}
-    return result;
-  });
-
-/*!
-{
-  "name": "Template strings",
-  "property": "templatestrings",
-  "notes": [{
-    "name": "MDN Reference",
-    "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/template_strings#Browser_compatibility"
-  }]
-}
-!*/
-/* DOC
-Template strings are string literals allowing embedded expressions.
-*/
-
-  Modernizr.addTest('templatestrings', function() {
-    var supports;
-    try {
-      // A number of tools, including uglifyjs and require, break on a raw "`", so
-      // use an eval to get around that.
-      eval('``');
-      supports = true;
-    } catch (e) {}
-    return !!supports;
-  });
-
-/*!
-{
-  "name": "Typed arrays",
-  "property": "typedarrays",
-  "caniuse": "typedarrays",
-  "tags": ["js"],
-  "authors": ["Stanley Stuart (@fivetanley)"],
-  "notes": [{
-    "name": "MDN documentation",
-    "href": "https://developer.mozilla.org/en-US/docs/JavaScript_typed_arrays"
-  },{
-    "name": "Kronos spec",
-    "href": "http://www.khronos.org/registry/typedarray/specs/latest/"
-  }],
-  "polyfills": ["joshuabell-polyfill"]
-}
-!*/
-/* DOC
-Detects support for native binary data manipulation via Typed Arrays in JavaScript.
-
-Does not check for DataView support; use `Modernizr.dataview` for that.
-*/
-
-  // Should fail in:
-  // Internet Explorer <= 9
-  // Firefox <= 3.6
-  // Chrome <= 6.0
-  // iOS Safari < 4.2
-  // Safari < 5.1
-  // Opera < 11.6
-  // Opera Mini, <= 7.0
-  // Android Browser < 4.0
-  // Blackberry Browser < 10.0
-
-  Modernizr.addTest('typedarrays', 'ArrayBuffer' in window );
-
-/*!
-{
-  "name": "URL parser",
-  "property": "urlparser",
-  "notes": [{
-    "name": "URL",
-    "href": "https://dvcs.w3.org/hg/url/raw-file/tip/Overview.html"
-  }],
-  "polyfills": ["urlparser"],
-  "authors": ["Ron Waldon (@jokeyrhyme)"],
-  "tags": ["url"]
-}
-!*/
-/* DOC
-Check if browser implements the URL constructor for parsing URLs.
-*/
-
-  Modernizr.addTest('urlparser', function () {
-    var url;
-    try {
-      // have to actually try use it, because Safari defines a dud constructor
-      url = new URL('http://modernizr.com/');
-      return url.href === 'http://modernizr.com/';
-    } catch (e) {
-      return false;
-    }
-  });
-
-/*!
-{
-  "name": "Web Audio API",
-  "property": "webaudio",
-  "caniuse": "audio-api",
-  "polyfills": ["xaudiojs", "dynamicaudiojs", "audiolibjs"],
-  "tags": ["audio", "media"],
-  "builderAliases": ["audio_webaudio_api"],
-  "authors": ["Addy Osmani"],
-  "notes": [{
-    "name": "W3 Specification",
-    "href": "https://dvcs.w3.org/hg/audio/raw-file/tip/webaudio/specification.html"
-  }]
-}
-!*/
-/* DOC
-Detects the older non standard webaudio API, (as opposed to the standards based AudioContext API)
-*/
-
-  Modernizr.addTest('webaudio', function() {
-    var prefixed = 'webkitAudioContext' in window;
-    var unprefixed = 'AudioContext' in window;
-
-    if (Modernizr._config.usePrefixes) return prefixed || unprefixed;
-    return unprefixed;
-  });
-
-/*!
-{
-  "name": "Web SQL Database",
-  "property": "websqldatabase",
-  "caniuse": "sql-storage",
-  "tags": ["storage"]
-}
-!*/
-
-  // Chrome incognito mode used to throw an exception when using openDatabase
-  // It doesn't anymore.
-  Modernizr.addTest('websqldatabase', 'openDatabase' in window);
-
-/*!
-{
-  "name": "Web Workers",
-  "property": "webworkers",
-  "caniuse" : "webworkers",
-  "tags": ["performance", "workers"],
-  "notes": [{
-    "name": "W3C Reference",
-    "href": "http://www.w3.org/TR/workers/"
-  }, {
-    "name": "HTML5 Rocks article",
-    "href": "http://www.html5rocks.com/en/tutorials/workers/basics/"
-  }, {
-    "name": "MDN documentation",
-    "href": "https://developer.mozilla.org/en-US/docs/Web/Guide/Performance/Using_web_workers"
-  }],
-  "polyfills": ["fakeworker", "html5shims"]
-}
-!*/
-/* DOC
-Detects support for the basic `Worker` API from the Web Workers spec. Web Workers provide a simple means for web content to run scripts in background threads.
-*/
-
-  Modernizr.addTest('webworkers', 'Worker' in window);
-
-/*!
-{
-  "name": "WebSockets Support",
-  "property": "websockets",
-  "authors": ["Phread [fearphage]", "Mike Sherov [mikesherov]", "Burak Yigit Kaya [BYK]"],
-  "caniuse": "websockets",
-  "tags": ["html5"],
-  "warnings": [
-    "This test will reject any old version of WebSockets even if it is not prefixed such as in Safari 5.1"
-  ],
-  "notes": [{
-    "name": "CLOSING State and Spec",
-    "href": "http://www.w3.org/TR/websockets/#the-websocket-interface"
-  }],
-  "polyfills": [
-    "sockjs",
-    "socketio",
-    "kaazing-websocket-gateway",
-    "websocketjs",
-    "atmosphere",
-    "graceful-websocket",
-    "portal",
-    "datachannel"
-  ]
-}
-!*/
-
-  Modernizr.addTest('websockets', 'WebSocket' in window && window.WebSocket.CLOSING === 2);
-
-/*!
-{
-  "name": "XML HTTP Request Level 2 XHR2",
-  "property": "xhr2",
-  "tags": ["network"],
-  "builderAliases": ["network_xhr2"],
-  "notes": [{
-    "name": "W3 Spec",
-    "href": "http://www.w3.org/TR/XMLHttpRequest2/"
-  },{
-    "name": "Details on Related Github Issue",
-    "href": "http://github.com/Modernizr/Modernizr/issues/385"
-  }]
-}
-!*/
-/* DOC
-Tests for XHR2.
-*/
-
-  // all three of these details report consistently across all target browsers:
-  //   !!(window.ProgressEvent);
-  //   'XMLHttpRequest' in window && 'withCredentials' in new XMLHttpRequest
-  Modernizr.addTest('xhr2', 'XMLHttpRequest' in window && 'withCredentials' in new XMLHttpRequest());
-
-/*!
-{
-  "name": "XHR responseType",
-  "property": "xhrresponsetype",
-  "tags": ["network"],
-  "notes": [{
-    "name": "XMLHttpRequest Living Standard",
-    "href": "http://xhr.spec.whatwg.org/#the-responsetype-attribute"
-  }]
-}
-!*/
-/* DOC
-Tests for XMLHttpRequest xhr.responseType.
-*/
-
-  Modernizr.addTest('xhrresponsetype', (function() {
-    if (typeof XMLHttpRequest == 'undefined') {
-      return false;
-    }
-    var xhr = new XMLHttpRequest();
-    xhr.open('get', '/', true);
-    return 'response' in xhr;
-  }()));
-
-
-
-  var err = function() {};
-  var warn = function() {};
-
-  if (window.console) {
-    err = function() {
-      var method = console.error ? 'error' : 'log';
-      window.console[method].apply( window.console, Array.prototype.slice.call(arguments) );
-    };
-
-    warn = function() {
-      var method = console.warn ? 'warn' : 'log';
-      window.console[method].apply( window.console, Array.prototype.slice.call(arguments) );
-    };
-  }
-
-  ModernizrProto.load = function() {
-    if ('yepnope' in window) {
-      warn('yepnope.js (aka Modernizr.load) is no longer included as part of Modernizr. yepnope appears to be available on the page, so we’ll use it to handle this call to Modernizr.load, but please update your code to use yepnope directly.\n See http://github.com/Modernizr/Modernizr/issues/1182 for more information.');
-      window.yepnope.apply(window, [].slice.call(arguments,0));
-    } else {
-      err('yepnope.js (aka Modernizr.load) is no longer included as part of Modernizr. Get it from http://yepnopejs.com. See http://github.com/Modernizr/Modernizr/issues/1182 for more information.');
-    }
-  };
-
-
-
-  // List of property values to set for css tests. See ticket #21
-  var prefixes = (ModernizrProto._config.usePrefixes ? ' -webkit- -moz- -o- -ms- '.split(' ') : []);
-
-  // expose these for the plugin API. Look in the source for how to join() them against your input
-  ModernizrProto._prefixes = prefixes;
-
-
-
-  /**
-   * is returns a boolean for if typeof obj is exactly type.
-   */
-  function is( obj, type ) {
-    return typeof obj === type;
-  }
-  ;
-
-  // Run through all tests and detect their support in the current UA.
-  function testRunner() {
-    var featureNames;
-    var feature;
-    var aliasIdx;
-    var result;
-    var nameIdx;
-    var featureName;
-    var featureNameSplit;
-
-    for ( var featureIdx in tests ) {
-      featureNames = [];
-      feature = tests[featureIdx];
-      // run the test, throw the return value into the Modernizr,
-      //   then based on that boolean, define an appropriate className
-      //   and push it into an array of classes we'll join later.
-      //
-      //   If there is no name, it's an 'async' test that is run,
-      //   but not directly added to the object. That should
-      //   be done with a post-run addTest call.
-      if ( feature.name ) {
-        featureNames.push(feature.name.toLowerCase());
-
-        if (feature.options && feature.options.aliases && feature.options.aliases.length) {
-          // Add all the aliases into the names list
-          for (aliasIdx = 0; aliasIdx < feature.options.aliases.length; aliasIdx++) {
-            featureNames.push(feature.options.aliases[aliasIdx].toLowerCase());
-          }
-        }
-      }
-
-      // Run the test, or use the raw value if it's not a function
-      result = is(feature.fn, 'function') ? feature.fn() : feature.fn;
-
-
-      // Set each of the names on the Modernizr object
-      for (nameIdx = 0; nameIdx < featureNames.length; nameIdx++) {
-        featureName = featureNames[nameIdx];
-        // Support dot properties as sub tests. We don't do checking to make sure
-        // that the implied parent tests have been added. You must call them in
-        // order (either in the test, or make the parent test a dependency).
-        //
-        // Cap it to TWO to make the logic simple and because who needs that kind of subtesting
-        // hashtag famous last words
-        featureNameSplit = featureName.split('.');
-
-        if (featureNameSplit.length === 1) {
-          Modernizr[featureNameSplit[0]] = result;
-        } else {
-          // cast to a Boolean, if not one already
-          /* jshint -W053 */
-          if (Modernizr[featureNameSplit[0]] && !(Modernizr[featureNameSplit[0]] instanceof Boolean)) {
-            Modernizr[featureNameSplit[0]] = new Boolean(Modernizr[featureNameSplit[0]]);
-          }
-
-          Modernizr[featureNameSplit[0]][featureNameSplit[1]] = result;
-        }
-
-        classes.push((result ? '' : 'no-') + featureNameSplit.join('-'));
-      }
-    }
-  }
-
-  ;
-/*!
-{
-  "name": "ES5 String.prototype.contains",
-  "property": "contains",
-  "authors": ["Robert Kowalski"],
-  "tags": ["es6"]
-}
-!*/
-/* DOC
-Check if browser implements ECMAScript 6 `String.prototype.contains` per specification.
-*/
-
-  Modernizr.addTest('contains', is(String.prototype.contains, 'function'));
-
-
-  var docElement = document.documentElement;
-
-
-  // Pass in an and array of class names, e.g.:
-  //  ['no-webp', 'borderradius', ...]
-  function setClasses( classes ) {
-    var className = docElement.className;
-    var classPrefix = Modernizr._config.classPrefix || '';
-
-    // Change `no-js` to `js` (we do this independently of the `enableClasses`
-    // option)
-    // Handle classPrefix on this too
-    if(Modernizr._config.enableJSClass) {
-      var reJS = new RegExp('(^|\\s)'+classPrefix+'no-js(\\s|$)');
-      className = className.replace(reJS, '$1'+classPrefix+'js$2');
-    }
-
-    if(Modernizr._config.enableClasses) {
-      // Add the new classes
-      className += ' ' + classPrefix + classes.join(' ' + classPrefix);
-      docElement.className = className;
-    }
-
-  }
-
-  ;
-/*!
-{
-  "name": "classList",
-  "caniuse": "classlist",
-  "property": "classlist",
-  "tags": ["dom"],
-  "builderAliases": ["dataview_api"],
-  "notes": [{
-    "name": "MDN Docs",
-    "href": "https://developer.mozilla.org/en/DOM/element.classList"
-  }]
-}
-!*/
-
-  Modernizr.addTest('classlist', 'classList' in docElement);
-
-/*!
-{
-  "name": "Context menus",
-  "property": "contextmenu",
-  "caniuse": "menu",
-  "notes": [{
-    "name": "W3C spec",
-    "href": "http://www.w3.org/TR/html5/interactive-elements.html#context-menus"
-  },{
-    "name": "thewebrocks.com Demo",
-    "href": "http://thewebrocks.com/demos/context-menu/"
-  }],
-  "polyfills": ["jquery-contextmenu"]
-}
-!*/
-/* DOC
-Detects support for custom context menus.
-*/
-
-  Modernizr.addTest(
-    'contextmenu',
-    ('contextMenu' in docElement && 'HTMLMenuItemElement' in window)
-  );
-
-/*!
-{
-  "name": "cssall",
-  "property": "cssall",
-  "notes": [{
-    "name": "Spec",
-    "href": "http://dev.w3.org/csswg/css-cascade/#all-shorthand"
-  }]
-}
-!*/
-/* DOC
-Detects support for the `all` css property, which is a shorthand to reset all css properties (except direction and unicode-bidi) to their original value
-*/
-
-
-  Modernizr.addTest('cssall', 'all' in docElement.style);
-
-/*!
-{
-  "name": "Document Fragment",
-  "property": "documentfragment",
-  "notes": [{
-    "name": "W3C DOM Level 1 Reference",
-    "href": "http://www.w3.org/TR/REC-DOM-Level-1/level-one-core.html#ID-B63ED1A3"
-  }, {
-    "name": "SitePoint Reference",
-    "href": "http://reference.sitepoint.com/javascript/DocumentFragment"
-  }, {
-    "name": "QuirksMode Compatibility Tables",
-    "href": "http://www.quirksmode.org/m/w3c_core.html#t112"
-  }],
-  "authors": ["Ron Waldon (@jokeyrhyme)"],
-  "knownBugs": ["false-positive on Blackberry 9500, see QuirksMode note"],
-  "tags": []
-}
-!*/
-/* DOC
-Append multiple elements to the DOM within a single insertion.
-*/
-
-  Modernizr.addTest('documentfragment', function() {
-    return 'createDocumentFragment' in document &&
-      'appendChild' in docElement;
-  });
-
-/*!
-{
-  "name": "will-change",
-  "property": "willchange",
-  "notes": [{
-    "name": "Spec",
-    "href": "http://tabatkins.github.io/specs/css-will-change/"
-  }]
-}
-!*/
-/* DOC
-Detects support for the `will-change` css property, which formally signals to the
-browser that an element will be animating.
-*/
-
-  Modernizr.addTest('willchange', 'willChange' in docElement.style);
-
-
-  // hasOwnProperty shim by kangax needed for Safari 2.0 support
-  var hasOwnProp;
-
-  (function() {
-    var _hasOwnProperty = ({}).hasOwnProperty;
-    /* istanbul ignore else */
-    /* we have no way of testing IE 5.5 or safari 2,
-     * so just assume the else gets hit */
-    if ( !is(_hasOwnProperty, 'undefined') && !is(_hasOwnProperty.call, 'undefined') ) {
-      hasOwnProp = function (object, property) {
-        return _hasOwnProperty.call(object, property);
-      };
-    }
-    else {
-      hasOwnProp = function (object, property) { /* yes, this can give false positives/negatives, but most of the time we don't care about those */
-        return ((property in object) && is(object.constructor.prototype[property], 'undefined'));
-      };
-    }
-  })();
-
-
-
-  // As far as I can think of, we shouldn't need or
-  // allow 'on' for non-async tests, and you can't do
-  // async tests without this 'addTest' module.
-
-  // Listeners for async or post-run tests
-  ModernizrProto._l = {};
-
-  // 'addTest' implies a test after the core runloop,
-  // So we'll add in the events
-  ModernizrProto.on = function( test, cb ) {
-    // Create the list of listeners if it doesn't exist
-    if (!this._l[test]) {
-      this._l[test] = [];
-    }
-
-    // Push this test on to the listener list
-    this._l[test].push(cb);
-
-    // If it's already been resolved, trigger it on next tick
-    if (Modernizr.hasOwnProperty(test)) {
-      // Next Tick
-      setTimeout(function() {
-        Modernizr._trigger(test, Modernizr[test]);
-      }, 0);
-    }
-  };
-
-  ModernizrProto._trigger = function( test, res ) {
-    if (!this._l[test]) {
-      return;
-    }
-
-    var cbs = this._l[test];
-
-    // Force async
-    setTimeout(function() {
-      var i, cb;
-      for (i = 0; i < cbs.length; i++) {
-        cb = cbs[i];
-        cb(res);
-      }
-    },0);
-
-    // Don't trigger these again
-    delete this._l[test];
-  };
-
-  /**
-   * addTest allows the user to define their own feature tests
-   * the result will be added onto the Modernizr object,
-   * as well as an appropriate className set on the html element
-   *
-   * @param feature - String naming the feature
-   * @param test - Function returning true if feature is supported, false if not
-   */
-  function addTest( feature, test ) {
-    if ( typeof feature == 'object' ) {
-      for ( var key in feature ) {
-        if ( hasOwnProp( feature, key ) ) {
-          addTest( key, feature[ key ] );
-        }
-      }
-    } else {
-
-      feature = feature.toLowerCase();
-      var featureNameSplit = feature.split('.');
-      var last = Modernizr[featureNameSplit[0]];
-
-      // Again, we don't check for parent test existence. Get that right, though.
-      if (featureNameSplit.length == 2) {
-        last = last[featureNameSplit[1]];
-      }
-
-      if ( typeof last != 'undefined' ) {
-        // we're going to quit if you're trying to overwrite an existing test
-        // if we were to allow it, we'd do this:
-        //   var re = new RegExp("\\b(no-)?" + feature + "\\b");
-        //   docElement.className = docElement.className.replace( re, '' );
-        // but, no rly, stuff 'em.
-        return Modernizr;
-      }
-
-      test = typeof test == 'function' ? test() : test;
-
-      // Set the value (this is the magic, right here).
-      if (featureNameSplit.length == 1) {
-        Modernizr[featureNameSplit[0]] = test;
-      } else {
-        // cast to a Boolean, if not one already
-        /* jshint -W053 */
-        if (Modernizr[featureNameSplit[0]] && !(Modernizr[featureNameSplit[0]] instanceof Boolean)) {
-          Modernizr[featureNameSplit[0]] = new Boolean(Modernizr[featureNameSplit[0]]);
-        }
-
-        Modernizr[featureNameSplit[0]][featureNameSplit[1]] = test;
-      }
-
-      // Set a single class (either `feature` or `no-feature`)
-      /* jshint -W041 */
-      setClasses([(!!test && test != false ? '' : 'no-') + featureNameSplit.join('-')]);
-      /* jshint +W041 */
-
-      // Trigger the event
-      Modernizr._trigger(feature, test);
-    }
-
-    return Modernizr; // allow chaining.
-  }
-
-  // After all the tests are run, add self
-  // to the Modernizr prototype
-  Modernizr._q.push(function() {
-    ModernizrProto.addTest = addTest;
-  });
-
-
-/*!
-{
-  "name": "Data URI",
-  "property": "datauri",
-  "caniuse": "datauri",
-  "tags": ["url"],
-  "builderAliases": ["url_data_uri"],
-  "async": true,
-  "notes": [{
-    "name": "Wikipedia article",
-    "href": "http://en.wikipedia.org/wiki/Data_URI_scheme"
-  }],
-  "warnings": ["Support in Internet Explorer 8 is limited to images and linked resources like CSS files, not HTML files"]
-}
-!*/
-/* DOC
-Detects support for data URIs. Provides a subproperty to report support for data URIs over 32kb in size:
-
-```javascript
-Modernizr.datauri           // true
-Modernizr.datauri.over32kb  // false in IE8
-```
-*/
-
-  // https://github.com/Modernizr/Modernizr/issues/14
-  Modernizr.addAsyncTest(function() {
-    /* jshint -W053 */
-
-    // IE7 throw a mixed content warning on HTTPS for this test, so we'll
-    // just blacklist it (we know it doesn't support data URIs anyway)
-    // https://github.com/Modernizr/Modernizr/issues/362
-    if(navigator.userAgent.indexOf('MSIE 7.') !== -1) {
-      // Keep the test async
-      setTimeout(function () {
-        addTest('datauri', false);
-      }, 10);
-    }
-
-    var datauri = new Image();
-
-    datauri.onerror = function() {
-      addTest('datauri', false);
-    };
-    datauri.onload = function() {
-      if(datauri.width == 1 && datauri.height == 1) {
-        testOver32kb();
-      }
-      else {
-        addTest('datauri', false);
-      }
-    };
-
-    datauri.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
-
-    // Once we have datauri, let's check to see if we can use data URIs over
-    // 32kb (IE8 can't). https://github.com/Modernizr/Modernizr/issues/321
-    function testOver32kb(){
-
-      var datauriBig = new Image();
-
-      datauriBig.onerror = function() {
-        addTest('datauri', true);
-        Modernizr.datauri = new Boolean(true);
-        Modernizr.datauri.over32kb = false;
-      };
-      datauriBig.onload = function() {
-        addTest('datauri', true);
-        Modernizr.datauri = new Boolean(true);
-        Modernizr.datauri.over32kb = (datauriBig.width == 1 && datauriBig.height == 1);
-      };
-
-      var base64str = 'R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
-      while (base64str.length < 33000) {
-        base64str = '\r\n' + base64str;
-      }
-      datauriBig.src= 'data:image/gif;base64,' + base64str;
-    }
-
-  });
-
-/*!
-{
-  "name": "EXIF Orientation",
-  "property": "exiforientation",
-  "tags": ["image"],
-  "builderAliases": ["exif_orientation"],
-  "async": true,
-  "authors": ["Paul Sayre"],
-  "notes": [{
-    "name": "Article by Dave Perrett",
-    "href": "http://recursive-design.com/blog/2012/07/28/exif-orientation-handling-is-a-ghetto/"
-  },{
-    "name": "Article by Calvin Hass",
-    "href": "http://www.impulseadventure.com/photo/exif-orientation.html"
-  }]
-}
-!*/
-/* DOC
-Detects support for EXIF Orientation in JPEG images.
-
-iOS looks at the EXIF Orientation flag in JPEGs and rotates the image accordingly. Most desktop browsers just ignore this data.
-*/
-
-  // Bug trackers:
-  //    bugzil.la/298619 (unimplemented)
-  //    crbug.com/56845 (looks incomplete)
-  //    webk.it/19688 (available upstream but its up all ports to turn on individually)
-  Modernizr.addAsyncTest(function() {
-    var img = new Image();
-
-    img.onerror = function() {
-      addTest('exiforientation', false, { aliases: ['exif-orientation'] });
-    };
-
-    img.onload = function() {
-      addTest('exiforientation', img.width !== 2, { aliases: ['exif-orientation'] });
-    };
-
-    // There may be a way to shrink this more, it's a 1x2 white jpg with the orientation flag set to 6
-    img.src = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/4QAiRXhpZgAASUkqAAgAAAABABIBAwABAAAABgASAAAAAAD/2wBDAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/2wBDAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/wAARCAABAAIDASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWmp6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSExBhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElKU1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD+/iiiigD/2Q==';
-  });
-
-/*!
-{
-  "name": "JPEG XR (extended range)",
-  "async": true,
-  "aliases": ["jpeg-xr"],
-  "property": "jpegxr",
-  "tags": ["image"],
-  "notes": [{
-    "name": "Wikipedia Article",
-    "href": "http://en.wikipedia.org/wiki/JPEG_XR"
-  }]
-}
-!*/
-/* DOC
-Test for JPEG XR support
-*/
-
-
-  Modernizr.addAsyncTest(function() {
-    var image = new Image();
-
-    image.onload = image.onerror = function() {
-      addTest('jpegxr', image.width == 1, { aliases: ['jpeg-xr'] });
-    };
-
-    image.src = 'data:image/vnd.ms-photo;base64,SUm8AQgAAAAFAAG8AQAQAAAASgAAAIC8BAABAAAAAQAAAIG8BAABAAAAAQAAAMC8BAABAAAAWgAAAMG8BAABAAAAHwAAAAAAAAAkw91vA07+S7GFPXd2jckNV01QSE9UTwAZAYBxAAAAABP/gAAEb/8AAQAAAQAAAA==';
-  });
-
-/*!
-{
-  "authors": ["Cătălin Mariș"],
-  "caniuse": "proximity",
-  "name": "Proximity API",
-  "notes": [{
-    "name": "MDN documentation",
-    "href": "https://developer.mozilla.org/en-US/docs/Web/API/Proximity_Events"
-  },{
-    "name": "W3C specification",
-    "href": "http://www.w3.org/TR/proximity/"
-  }],
-  "property": "proximity",
-  "tags": ["events", "proximity"]
-}
-!*/
-/* DOC
-Detects support for an API that allows users to get proximity related information from the device's proximity sensor.
-*/
-
-
-  Modernizr.addAsyncTest(function () {
-
-    var timeout;
-    var timeoutTime = 300;
-
-    function advertiseSupport() {
-
-      // Clean up after ourselves
-      clearTimeout(timeout);
-      window.removeEventListener('deviceproximity', advertiseSupport);
-
-      // Advertise support as the browser supports
-      // the API and the device has a proximity sensor
-      addTest('proximity', true);
-
-    }
-
-    // Check if the browser has support for the API
-    if ( 'ondeviceproximity' in window && 'onuserproximity' in window ) {
-
-      // Check if the device has a proximity sensor
-      // ( devices without such a sensor support the events but
-      //   will never fire them resulting in a false positive )
-      window.addEventListener('deviceproximity', advertiseSupport);
-
-      // If the event doesn't fire in a reasonable amount of time,
-      // it means that the device doesn't have a proximity sensor,
-      // thus, we can advertise the "lack" of support
-      timeout = setTimeout(function() {
-        window.removeEventListener('deviceproximity', advertiseSupport);
-        addTest('proximity', false);
-      }, timeoutTime);
-
-    } else {
-      addTest('proximity', false);
-    }
-
-  });
-
-
-/*!
-{
-  "name": "SVG as an <img> tag source",
-  "property": "svgasimg",
-  "caniuse" : "svg-img",
-  "tags": ["svg"],
-  "authors": ["Chris Coyier"],
-  "notes": [{
-    "name": "HTML5 Spec",
-    "href": "http://www.w3.org/TR/html5/embedded-content-0.html#the-img-element"
-  }]
-}
-!*/
-
-
-  // Original Async test by Stu Cox
-  // https://gist.github.com/chriscoyier/8774501
-
-  // Now a Sync test based on good results here
-  // http://codepen.io/chriscoyier/pen/bADFx
-
-  // Note http://www.w3.org/TR/SVG11/feature#Image is *supposed* to represent
-  // support for the `<image>` tag in SVG, not an SVG file linked from an `<img>`
-  // tag in HTML – but it’s a heuristic which works
-  Modernizr.addTest('svgasimg', document.implementation.hasFeature('http://www.w3.org/TR/SVG11/feature#Image', '1.1'));
-
-/*!
-{
-  "name": "Webp",
-  "async": true,
-  "property": "webp",
-  "tags": ["image"],
-  "builderAliases": ["img_webp"],
-  "authors": ["Krister Kari", "@amandeep", "Rich Bradshaw", "Ryan Seddon", "Paul Irish"],
-  "notes": [{
-    "name": "Webp Info",
-    "href": "http://code.google.com/speed/webp/"
-  }, {
-    "name": "Chormium blog - Chrome 32 Beta: Animated WebP images and faster Chrome for Android touch input",
-    "href": "http://blog.chromium.org/2013/11/chrome-32-beta-animated-webp-images-and.html"
-  }, {
-    "name": "Webp Lossless Spec",
-    "href": "https://developers.google.com/speed/webp/docs/webp_lossless_bitstream_specification"
-  }, {
-    "name": "Article about WebP support on Android browsers",
-    "href": "http://www.wope-framework.com/en/2013/06/24/webp-support-on-android-browsers/"
-  }, {
-    "name": "Chormium WebP announcement",
-    "href": "http://blog.chromium.org/2011/11/lossless-and-transparency-encoding-in.html?m=1"
-  }]
-}
-!*/
-/* DOC
-Tests for lossy, non-alpha webp support.
-=======
-
-Tests for all forms of webp support (lossless, lossy, alpha, and animated)..
-
-  Modernizr.webp              // Basic support (lossy)
-  Modernizr.webp.lossless     // Lossless
-  Modernizr.webp.alpha        // Alpha (both lossy and lossless)
-  Modernizr.webp.animation    // Animated WebP
-
-*/
-
-
-  Modernizr.addAsyncTest(function() {
-
-    var webpTests = [{
-      'uri': 'data:image/webp;base64,UklGRiQAAABXRUJQVlA4IBgAAAAwAQCdASoBAAEAAwA0JaQAA3AA/vuUAAA=',
-      'name': 'webp'
-    },{
-      'uri': 'data:image/webp;base64,UklGRkoAAABXRUJQVlA4WAoAAAAQAAAAAAAAAAAAQUxQSAwAAAABBxAR/Q9ERP8DAABWUDggGAAAADABAJ0BKgEAAQADADQlpAADcAD++/1QAA==',
-      'name': 'webp.alpha'
-    },{
-      'uri': 'data:image/webp;base64,UklGRlIAAABXRUJQVlA4WAoAAAASAAAAAAAAAAAAQU5JTQYAAAD/////AABBTk1GJgAAAAAAAAAAAAAAAAAAAGQAAABWUDhMDQAAAC8AAAAQBxAREYiI/gcA',
-      'name': 'webp.animation'
-    }, {
-      'uri': 'data:image/webp;base64,UklGRh4AAABXRUJQVlA4TBEAAAAvAAAAAAfQ//73v/+BiOh/AAA=',
-      'name': 'webp.lossless'
-    }];
-
-    var webp = webpTests.shift();
-    function test(name, uri, cb) {
-
-      var image = new Image();
-
-      function addResult(event) {
-        // if the event is from 'onload', check the see if the image's width is
-        // 1 pixel (which indiciates support). otherwise, it fails
-
-        var result = event && event.type === 'load' ? image.width == 1 : false;
-        var baseTest = name === 'webp';
-
-        /* jshint -W053 */
-        addTest(name, baseTest ? new Boolean(result) : result);
-
-        if (cb) cb(event);
-      }
-
-      image.onerror = addResult;
-      image.onload = addResult;
-
-      image.src = uri;
-    }
-
-    // test for webp support in general
-    test(webp.name, webp.uri, function(e) {
-      // if the webp test loaded, test everything else.
-      if (e && e.type === 'load') {
-        for (var i = 0; i < webpTests.length; i++) {
-          test(webpTests[i].name, webpTests[i].uri);
-        }
-      }
-    });
-
-  });
-
-
-/*!
-{
-  "name": "Webp Alpha",
-  "async": true,
-  "property": "webpalpha",
-  "aliases": ["webp-alpha"],
-  "tags": ["image"],
-  "authors": ["Krister Kari", "Rich Bradshaw", "Ryan Seddon", "Paul Irish"],
-  "notes": [{
-    "name": "WebP Info",
-    "href": "http://code.google.com/speed/webp/"
-  },{
-    "name": "Article about WebP support on Android browsers",
-    "href": "http://www.wope-framework.com/en/2013/06/24/webp-support-on-android-browsers/"
-  },{
-    "name": "Chromium WebP announcement",
-    "href": "http://blog.chromium.org/2011/11/lossless-and-transparency-encoding-in.html?m=1"
-  }]
-}
-!*/
-/* DOC
-Tests for transparent webp support.
-*/
-
-  Modernizr.addAsyncTest(function(){
-    var image = new Image();
-
-    image.onerror = function() {
-      addTest('webpalpha', false, { aliases: ['webp-alpha'] });
-    };
-
-    image.onload = function() {
-      addTest('webpalpha', image.width == 1, { aliases: ['webp-alpha'] });
-    };
-
-    image.src = 'data:image/webp;base64,UklGRkoAAABXRUJQVlA4WAoAAAAQAAAAAAAAAAAAQUxQSAwAAAABBxAR/Q9ERP8DAABWUDggGAAAADABAJ0BKgEAAQADADQlpAADcAD++/1QAA==';
-  });
-
-/*!
-{
-  "name": "Webp Animation",
-  "async": true,
-  "property": "webpanimation",
-  "aliases": ["webp-animation"],
-  "tags": ["image"],
-  "authors": ["Krister Kari", "Rich Bradshaw", "Ryan Seddon", "Paul Irish"],
-  "notes": [{
-    "name": "WebP Info",
-    "href": "http://code.google.com/speed/webp/"
-  },{
-    "name": "Chromium blog - Chrome 32 Beta: Animated WebP images and faster Chrome for Android touch input",
-    "href": "http://blog.chromium.org/2013/11/chrome-32-beta-animated-webp-images-and.html"
-  }]
-}
-!*/
-/* DOC
-Tests for animated webp support.
-*/
-
-  Modernizr.addAsyncTest(function(){
-    var image = new Image();
-
-    image.onerror = function() {
-      addTest('webpanimation', false, { aliases: ['webp-animation'] });
-    };
-
-    image.onload = function() {
-      addTest('webpanimation', image.width == 1, { aliases: ['webp-animation'] });
-    };
-
-    image.src = 'data:image/webp;base64,UklGRlIAAABXRUJQVlA4WAoAAAASAAAAAAAAAAAAQU5JTQYAAAD/////AABBTk1GJgAAAAAAAAAAAAAAAAAAAGQAAABWUDhMDQAAAC8AAAAQBxAREYiI/gcA';
-  });
-
-/*!
-{
-  "name": "Webp Lossless",
-  "async": true,
-  "property": ["webplossless", "webp-lossless"],
-  "tags": ["image"],
-  "authors": ["@amandeep", "Rich Bradshaw", "Ryan Seddon", "Paul Irish"],
-  "notes": [{
-    "name": "Webp Info",
-    "href": "http://code.google.com/speed/webp/"
-  },{
-    "name": "Webp Lossless Spec",
-    "href": "https://developers.google.com/speed/webp/docs/webp_lossless_bitstream_specification"
-  }]
-}
-!*/
-/* DOC
-Tests for non-alpha lossless webp support.
-*/
-
-  Modernizr.addAsyncTest(function(){
-    var image = new Image();
-
-    image.onerror = function() {
-      addTest('webplossless', false, { aliases: ['webp-lossless'] });
-    };
-
-    image.onload = function() {
-      addTest('webplossless', image.width == 1, { aliases: ['webp-lossless'] });
-    };
-
-    image.src = 'data:image/webp;base64,UklGRh4AAABXRUJQVlA4TBEAAAAvAAAAAAfQ//73v/+BiOh/AAA=';
-  });
-
-/*!
-{
-  "name": "Workers from Blob URIs",
-  "property": "blobworkers",
-  "tags": ["performance", "workers"],
-  "builderAliases": ["workers_blobworkers"],
-  "notes": [{
-    "name": "W3C Reference",
-    "href": "http://www.w3.org/TR/workers/"
-  }],
-  "knownBugs": ["This test may output garbage to console."],
-  "authors": ["Jussi Kalliokoski"],
-  "async": true
-}
-!*/
-/* DOC
-Detects support for creating Web Workers from Blob URIs.
-*/
-
-  Modernizr.addAsyncTest(function() {
-    try {
-      // we're avoiding using Modernizr._domPrefixes as the prefix capitalization on
-      // these guys are notoriously peculiar.
-      var BlobBuilder = window.BlobBuilder;
-      var URL         = window.URL;
-      if (Modernizr._config.usePrefix) {
-        BlobBuilder = BlobBuilder || window.MozBlobBuilder || window.WebKitBlobBuilder || window.MSBlobBuilder || window.OBlobBuilder;
-        URL         = URL || window.MozURL || window.webkitURL || window.MSURL || window.OURL;
-      }
-      var data    = 'Modernizr',
-          blob,
-          bb,
-          worker,
-          url,
-          timeout,
-          scriptText = 'this.onmessage=function(e){postMessage(e.data)}';
-
-      try {
-        blob = new Blob([scriptText], {type:'text/javascript'});
-      } catch(e) {
-        // we'll fall back to the deprecated BlobBuilder
-      }
-      if (!blob) {
-        bb = new BlobBuilder();
-        bb.append(scriptText);
-        blob = bb.getBlob();
-      }
-
-      url = URL.createObjectURL(blob);
-      worker = new Worker(url);
-
-      worker.onmessage = function(e) {
-        addTest('blobworkers', data === e.data);
-        cleanup();
-      };
-
-      // Just in case...
-      worker.onerror = fail;
-      timeout = setTimeout(fail, 200);
-
-      worker.postMessage(data);
-    } catch (e) {
-      fail();
-    }
-
-    function fail() {
-      addTest('blobworkers', false);
-      cleanup();
-    }
-
-    function cleanup() {
-      if (url) {
-        URL.revokeObjectURL(url);
-      }
-      if (worker) {
-        worker.terminate();
-      }
-      if (timeout) {
-        clearTimeout(timeout);
-      }
-    }
-  });
-
-/*!
-{
-  "name": "Workers from Data URIs",
-  "property": "dataworkers",
-  "tags": ["performance", "workers"],
-  "builderAliases": ["workers_dataworkers"],
-  "notes": [{
-    "name": "W3C Reference",
-    "href": "http://www.w3.org/TR/workers/"
-  }],
-  "knownBugs": ["This test may output garbage to console."],
-  "authors": ["Jussi Kalliokoski"],
-  "async": true
-}
-!*/
-/* DOC
-Detects support for creating Web Workers from Data URIs.
-*/
-
-  Modernizr.addAsyncTest(function() {
-    try {
-      var data    = 'Modernizr',
-      worker  = new Worker('data:text/javascript;base64,dGhpcy5vbm1lc3NhZ2U9ZnVuY3Rpb24oZSl7cG9zdE1lc3NhZ2UoZS5kYXRhKX0=');
-
-      worker.onmessage = function(e) {
-        worker.terminate();
-        addTest('dataworkers', data === e.data);
-        worker = null;
-      };
-
-      // Just in case...
-      worker.onerror = function() {
-        addTest('dataworkers', false);
-        worker = null;
-      };
-
-      setTimeout(function() {
-        addTest('dataworkers', false);
-      }, 200);
-
-      worker.postMessage(data);
-    } catch (e) {
-      setTimeout(function () {
-        addTest('dataworkers', false);
-      }, 0);
-    }
-  });
-
-
-  // Helper function for converting kebab-case to camelCase,
-  // e.g. box-sizing -> boxSizing
-  function cssToDOM( name ) {
-    return name.replace(/([a-z])-([a-z])/g, function(str, m1, m2) {
-      return m1 + m2.toUpperCase();
-    }).replace(/^-/, '');
-  }
-  ;
-
-  // Following spec is to expose vendor-specific style properties as:
-  //   elem.style.WebkitBorderRadius
-  // and the following would be incorrect:
-  //   elem.style.webkitBorderRadius
-
-  // Webkit ghosts their properties in lowercase but Opera & Moz do not.
-  // Microsoft uses a lowercase `ms` instead of the correct `Ms` in IE8+
-  //   erik.eae.net/archives/2008/03/10/21.48.10/
-
-  // More here: github.com/Modernizr/Modernizr/issues/issue/21
-  var omPrefixes = 'Moz O ms Webkit';
-
-
-  var domPrefixes = (ModernizrProto._config.usePrefixes ? omPrefixes.toLowerCase().split(' ') : []);
-  ModernizrProto._domPrefixes = domPrefixes;
-
-
-  // Helper function for converting camelCase to kebab-case,
-  // e.g. boxSizing -> box-sizing
-  function domToCSS( name ) {
-    return name.replace(/([A-Z])/g, function(str, m1) {
-      return '-' + m1.toLowerCase();
-    }).replace(/^ms-/, '-ms-');
-  }
-  ;
-
-  var createElement = function() {
-    if (typeof document.createElement !== 'function') {
-      // This is the case in IE7, where the type of createElement is "object".
-      // For this reason, we cannot call apply() as Object is not a Function.
-      return document.createElement(arguments[0]);
-    } else {
-      return document.createElement.apply(document, arguments);
-    }
-  };
-
-/*!
-{
-  "name": "[hidden] Attribute",
-  "property": "hidden",
-  "tags": ["dom"],
-  "notes": [{
-    "name": "WHATWG: The hidden attribute",
-    "href": "http://developers.whatwg.org/editing.html#the-hidden-attribute"
-  }, {
-    "name": "original implementation of detect code",
-    "href": "https://github.com/aFarkas/html5shiv/blob/bf4fcc4/src/html5shiv.js#L38"
-  }],
-  "polyfills": ["html5shiv"],
-  "authors": ["Ron Waldon (@jokeyrhyme)"]
-}
-!*/
-/* DOC
-Does the browser support the HTML5 [hidden] attribute?
-*/
-
-  Modernizr.addTest('hidden', 'hidden' in createElement('a'));
-
-/*!
-{
-  "name": "a[download] Attribute",
-  "property": "adownload",
-  "caniuse" : "download",
-  "tags": ["media", "attribute"],
-  "builderAliases": ["a_download"],
-  "notes": [{
-    "name": "WhatWG Reference",
-    "href": "http://developers.whatwg.org/links.html#downloading-resources"
-  }]
-}
-!*/
-/* DOC
-When used on an `<a>`, this attribute signifies that the resource it points to should be downloaded by the browser rather than navigating to it.
-*/
-
-  Modernizr.addTest('adownload', !window.externalHost && 'download' in createElement('a'));
-
-/*!
-{
-  "name": "Audio Loop Attribute",
-  "property": "audioloop",
-  "tags": ["audio", "media"]
-}
-!*/
-/* DOC
-Detects if an audio element can automatically restart, once it has finished
-*/
-
-  Modernizr.addTest('audioloop', 'loop' in createElement('audio'));
-
-/*!
-{
-  "name": "Audio Preload Attribute",
-  "property": "audiopreload",
-  "tags": ["audio", "media"]
-}
-!*/
-/* DOC
-Detects if audio can be downloaded in the background before it starts playing in the `<audio>` element
-*/
-
-  Modernizr.addTest('audiopreload', 'preload' in createElement('audio'));
-
-/*!
-{
-  "name": "Background Position Shorthand",
-  "property": "bgpositionshorthand",
-  "tags": ["css"],
-  "builderAliases": ["css_backgroundposition_shorthand"],
-  "notes": [{
-    "name": "MDN Docs",
-    "href": "https://developer.mozilla.org/en/CSS/background-position"
-  }, {
-    "name": "W3 Spec",
-    "href": "http://www.w3.org/TR/css3-background/#background-position"
-  }, {
-    "name": "Demo",
-    "href": "http://jsfiddle.net/Blink/bBXvt/"
-  }]
-}
-!*/
-/* DOC
-Detects if you can use the shorthand method to define multiple parts of an
-element's background-position simultaniously.
-
-eg `background-position: right 10px bottom 10px`
-*/
-
-  Modernizr.addTest('bgpositionshorthand', function() {
-    var elem = createElement('a');
-    var eStyle = elem.style;
-    var val = 'right 10px bottom 10px';
-    eStyle.cssText = 'background-position: ' + val + ';';
-    return (eStyle.backgroundPosition === val);
-  });
-
-/*!
-{
-  "name": "Canvas",
-  "property": "canvas",
-  "caniuse": "canvas",
-  "tags": ["canvas", "graphics"],
-  "polyfills": ["flashcanvas", "excanvas", "slcanvas", "fxcanvas"]
-}
-!*/
-/* DOC
-Detects support for the `<canvas>` element for 2D drawing.
-*/
-
-  // On the S60 and BB Storm, getContext exists, but always returns undefined
-  // so we actually have to call getContext() to verify
-  // github.com/Modernizr/Modernizr/issues/issue/97/
-  Modernizr.addTest('canvas', function() {
-    var elem = createElement('canvas');
-    return !!(elem.getContext && elem.getContext('2d'));
-  });
-
-/*!
-{
-  "name": "Animated PNG",
-  "async": true,
-  "property": "apng",
-  "tags": ["image"],
-  "builderAliases": ["img_apng"],
-  "notes": [{
-    "name": "Wikipedia Article",
-    "href": "http://en.wikipedia.org/wiki/APNG"
-  }]
-}
-!*/
-/* DOC
-Test for animated png support.
-*/
-
-  Modernizr.addAsyncTest(function () {
-    if (!Modernizr.canvas) {
-      return false;
-    }
-
-    var image = new Image();
-    var canvas = createElement('canvas');
-    var ctx = canvas.getContext('2d');
-
-    image.onload = function () {
-      addTest('apng', function () {
-        if (typeof canvas.getContext == 'undefined') {
-          return false;
-        }
-        else {
-          ctx.drawImage(image, 0, 0);
-          return ctx.getImageData(0, 0, 1, 1).data[3] === 0;
-        }
-      });
-    };
-
-    image.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACGFjVEwAAAABAAAAAcMq2TYAAAANSURBVAiZY2BgYPgPAAEEAQB9ssjfAAAAGmZjVEwAAAAAAAAAAQAAAAEAAAAAAAAAAAD6A+gBAbNU+2sAAAARZmRBVAAAAAEImWNgYGBgAAAABQAB6MzFdgAAAABJRU5ErkJggg==';
-  });
-
-/*!
-{
-  "name": "Canvas text",
-  "property": "canvastext",
-  "caniuse": "canvas-text",
-  "tags": ["canvas", "graphics"],
-  "polyfills": ["canvastext"]
-}
-!*/
-/* DOC
-Detects support for the text APIs for `<canvas>` elements.
-*/
-
-  Modernizr.addTest('canvastext',  function() {
-    if (Modernizr.canvas  === false) return false;
-    return typeof createElement('canvas').getContext('2d').fillText == 'function';
-  });
-
-/*!
-{
-  "name": "canvas blending support",
-  "property": "canvasblending",
-  "tags": ["canvas"],
-  "async" : false,
-  "notes": [{
-      "name": "HTML5 Spec",
-      "href": "https://dvcs.w3.org/hg/FXTF/rawfile/tip/compositing/index.html#blending"
-    },
-    {
-      "name": "Article",
-      "href": "http://blogs.adobe.com/webplatform/2013/01/28/blending-features-in-canvas"
-    }]
-}
-!*/
-/* DOC
-Detects if Photoshop style blending modes are available in canvas.
-*/
-
-
-  Modernizr.addTest('canvasblending', function() {
-    if (Modernizr.canvas === false) return false;
-    var ctx = createElement('canvas').getContext('2d');
-
-    ctx.globalCompositeOperation = 'screen';
-    return ctx.globalCompositeOperation === 'screen';
-  });
-
-
-/*!
-{
-  "name": "canvas winding support",
-  "property": ["canvaswinding"],
-  "tags": ["canvas"],
-  "async" : false,
-  "notes": [{
-    "name": "Article",
-    "href": "http://blogs.adobe.com/webplatform/2013/01/30/winding-rules-in-canvas/"
-  }]
-}
-!*/
-/* DOC
-Determines if winding rules, which controls if a path can go clockwise or counterclockwise
-*/
-
-
-  Modernizr.addTest('canvaswinding', function() {
-    if (Modernizr.canvas === false) return false;
-    var ctx = createElement('canvas').getContext('2d');
-
-    ctx.rect(0, 0, 10, 10);
-    ctx.rect(2, 2, 6, 6);
-    return ctx.isPointInPath(5, 5, 'evenodd') === false;
-  });
-
-
-/*!
-{
-  "name": "canvas.toDataURL type support",
-  "property": ["todataurljpeg", "todataurlpng", "todataurlwebp"],
-  "tags": ["canvas"],
-  "builderAliases": ["canvas_todataurl_type"],
-  "async" : false,
-  "notes": [{
-    "name": "MDN article",
-    "href": "https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement.toDataURL"
-  }]
-}
-!*/
-
-
-  var canvas = createElement('canvas');
-
-  Modernizr.addTest('todataurljpeg', function() {
-    return !!Modernizr.canvas && canvas.toDataURL('image/jpeg').indexOf('data:image/jpeg') === 0;
-  });
-  Modernizr.addTest('todataurlpng', function() {
-    return !!Modernizr.canvas && canvas.toDataURL('image/png').indexOf('data:image/png') === 0;
-  });
-  Modernizr.addTest('todataurlwebp', function() {
-    return !!Modernizr.canvas && canvas.toDataURL('image/webp').indexOf('data:image/webp') === 0;
-  });
-
-
-/*!
-{
-  "name": "Content Editable",
-  "property": "contenteditable",
-  "caniuse": "contenteditable",
-  "notes": [{
-    "name": "WHATWG spec",
-    "href": "http://www.whatwg.org/specs/web-apps/current-work/multipage/editing.html#contenteditable"
-  }]
-}
-!*/
-/* DOC
-Detects support for the `contenteditable` attribute of elements, allowing their DOM text contents to be edited directly by the user.
-*/
-
-  Modernizr.addTest('contenteditable', function() {
-    // early bail out
-    if (!('contentEditable' in docElement)) return;
-
-    // some mobile browsers (android < 3.0, iOS < 5) claim to support
-    // contentEditable, but but don't really. This test checks to see
-    // confirms whether or not it actually supports it.
-
-    var div = createElement('div');
-    div.contentEditable = true;
-    return div.contentEditable === 'true';
-  });
-
-/*!
-{
-  "name": "createElement with Attributes",
-  "property": ["createelementattrs", "createelement-attrs"],
-  "tags": ["dom"],
-  "builderAliases": ["dom_createElement_attrs"],
-  "authors": ["James A. Rosen"],
-  "notes": [{
-    "name": "Related Github Issue",
-    "href": "https://github.com/Modernizr/Modernizr/issues/258"
-  }]
-}
-!*/
-
-  Modernizr.addTest('createelementattrs', function() {
-    try {
-      return createElement('<input name="test" />').getAttribute('name') == 'test';
-    } catch( e ) {
-      return false;
-    }
-  }, {
-    aliases: ['createelement-attrs']
-  });
-
-/*!
-{
-  "name": "CSS Calc",
-  "property": "csscalc",
-  "caniuse": "calc",
-  "tags": ["css"],
-  "builderAliases": ["css_calc"],
-  "authors": ["@calvein"]
-}
-!*/
-/* DOC
-Method of allowing calculated values for length units. For example:
-
-```css
-#elem {
-  width: calc(100% - 3em);
-}
-```
-*/
-
-  Modernizr.addTest('csscalc', function() {
-    var prop = 'width:';
-    var value = 'calc(10px);';
-    var el = createElement('div');
-
-    el.style.cssText = prop + prefixes.join(value + prop);
-
-    return !!el.style.length;
-  });
-
-/*!
-{
-  "name": "CSS Cubic Bezier Range",
-  "property": "cubicbezierrange",
-  "tags": ["css"],
-  "builderAliases": ["css_cubicbezierrange"],
-  "doc" : null,
-  "authors": ["@calvein"],
-  "warnings": ["cubic-bezier values can't be > 1 for Webkit until [bug #45761](https://bugs.webkit.org/show_bug.cgi?id=45761) is fixed"],
-  "notes": [{
-    "name": "Comprehensive Compat Chart",
-    "href": "http://muddledramblings.com/table-of-css3-border-radius-compliance"
-  }]
-}
-!*/
-
-  Modernizr.addTest('cubicbezierrange', function() {
-    var el = createElement('div');
-    el.style.cssText = prefixes.join('transition-timing-function:cubic-bezier(1,0,0,1.1); ');
-    return !!el.style.length;
-  });
-
-/*!
-{
-  "name": "CSS Filters",
-  "property": "cssfilters",
-  "caniuse": "css-filters",
-  "polyfills": ["polyfilter"],
-  "tags": ["css"],
-  "builderAliases": ["css_filters"],
-  "notes": [{
-    "name": "MDN article on CSS filters",
-    "href": "https://developer.mozilla.org/en-US/docs/Web/CSS/filter"
-  }]
-}
-!*/
-
-  // https://github.com/Modernizr/Modernizr/issues/615
-  // documentMode is needed for false positives in oldIE, please see issue above
-  Modernizr.addTest('cssfilters', function() {
-    var el = createElement('div');
-    el.style.cssText = prefixes.join('filter:blur(2px); ');
-    if (Modernizr.supports) {
-      var supports = 'CSS' in window ?
-        window.CSS.supports('filter', 'url()') :
-        window.supportsCSS('filter', 'url()');
-
-      // older firefox only supports `url` filters;
-      return supports;
-    } else {
-      return !!el.style.length && ((document.documentMode === undefined || document.documentMode > 9));
-    }
-  });
-
-
-/*!
-{
-  "name": "CSS Font rem Units",
-  "caniuse": "rem",
-  "authors": ["nsfmc"],
-  "property": "cssremunit",
-  "tags": ["css"],
-  "builderAliases": ["css_remunit"],
-  "notes": [{
-    "name": "W3C Spec",
-    "href": "http://www.w3.org/TR/css3-values/#relative0"
-  },{
-    "name": "Font Size with rem by Jonathan Snook",
-    "href": "http://snook.ca/archives/html_and_css/font-size-with-rem"
-  }]
-}
-!*/
-
-  // "The 'rem' unit ('root em') is relative to the computed
-  // value of the 'font-size' value of the root element."
-  // you can test by checking if the prop was ditched
-
-  Modernizr.addTest('cssremunit', function() {
-    var div = createElement('div');
-    try {
-      div.style.fontSize = '3rem';
-    }
-    catch( er ) {}
-    return (/rem/).test(div.style.fontSize);
-  });
-
-/*!
-{
-  "name": "CSS Gradients",
-  "caniuse": "css-gradients",
-  "property": "cssgradients",
-  "tags": ["css"],
-  "knownBugs": ["False-positives on webOS (https://github.com/Modernizr/Modernizr/issues/202)"],
-  "notes": [{
-    "name": "Webkit Gradient Syntax",
-    "href": "http://webkit.org/blog/175/introducing-css-gradients/"
-  },{
-    "name": "Mozilla Linear Gradient Syntax",
-    "href": "http://developer.mozilla.org/en/CSS/-moz-linear-gradient"
-  },{
-    "name": "Mozilla Radial Gradient Syntax",
-    "href": "http://developer.mozilla.org/en/CSS/-moz-radial-gradient"
-  },{
-    "name": "W3C Gradient Spec",
-    "href": "dev.w3.org/csswg/css3-images/#gradients-"
-  }]
-}
-!*/
-
-
-  Modernizr.addTest('cssgradients', function() {
-
-    var str1 = 'background-image:';
-    var str2 = 'gradient(linear,left top,right bottom,from(#9f9),to(white));';
-    var str3 = 'linear-gradient(left top,#9f9, white);';
-
-    // standard syntax             // trailing 'background-image:'
-    var css = str1 + prefixes.join(str3 + str1).slice(0, -str1.length);
-    if (Modernizr._config.usePrefixes) {
-    // legacy webkit syntax (FIXME: remove when syntax not in use anymore)
-      css += str1 + '-webkit-' + str2;
-    }
-
-    var elem = createElement('div');
-    var style = elem.style;
-    style.cssText = css;
-
-    // IE6 returns undefined so cast to string
-    return ('' + style.backgroundImage).indexOf('gradient') > -1;
-  });
-
-/*!
-{
-  "name": "CSS Opacity",
-  "caniuse": "css-opacity",
-  "property": "opacity",
-  "tags": ["css"]
-}
-!*/
-
-  // Browsers that actually have CSS Opacity implemented have done so
-  // according to spec, which means their return values are within the
-  // range of [0.0,1.0] - including the leading zero.
-
-  Modernizr.addTest('opacity', function() {
-    var elem = createElement('div');
-    var style = elem.style;
-    style.cssText = prefixes.join('opacity:.55;');
-
-    // The non-literal . in this regex is intentional:
-    // German Chrome returns this value as 0,55
-    // github.com/Modernizr/Modernizr/issues/#issue/59/comment/516632
-    return (/^0.55$/).test(style.opacity);
-  });
-
-/*!
-{
-  "name": "CSS position: sticky",
-  "property": "csspositionsticky",
-  "tags": ["css"],
-  "builderAliases": ["css_positionsticky"],
-  "notes": [{
-    "name": "Chrome bug report",
-    "href":"https://code.google.com/p/chromium/issues/detail?id=322972"
-  }],
-  "warnings": [ "using position:sticky on anything but top aligned elements is buggy in Chrome < 37 and iOS <=7+" ]
-}
-!*/
-
-  // Sticky positioning - constrains an element to be positioned inside the
-  // intersection of its container box, and the viewport.
-  Modernizr.addTest('csspositionsticky', function() {
-    var prop = 'position:';
-    var value = 'sticky';
-    var el = createElement('modernizr');
-    var mStyle = el.style;
-
-    mStyle.cssText = prop + prefixes.join(value + ';' + prop).slice(0, -prop.length);
-
-    return mStyle.position.indexOf(value) !== -1;
-  });
-
-/*!
-{
-  "name": "CSS Multiple Backgrounds",
-  "caniuse": "multibackgrounds",
-  "property": "multiplebgs",
-  "tags": ["css"]
-}
-!*/
-
-  // Setting multiple images AND a color on the background shorthand property
-  // and then querying the style.background property value for the number of
-  // occurrences of "url(" is a reliable method for detecting ACTUAL support for this!
-
-  Modernizr.addTest('multiplebgs', function() {
-    var elem = createElement('div');
-    var style = elem.style;
-    style.cssText = 'background:url(https://),url(https://),red url(https://)';
-
-    // If the UA supports multiple backgrounds, there should be three occurrences
-    // of the string "url(" in the return value for elemStyle.background
-    return (/(url\s*\(.*?){3}/).test(style.background);
-  });
-
-/*!
-{
-  "name": "CSS Pointer Events",
-  "caniuse": "pointer-events",
-  "property": "csspointerevents",
-  "authors": ["ausi"],
-  "tags": ["css"],
-  "builderAliases": ["css_pointerevents"],
-  "notes": [
-    {
-      "name": "MDN Docs",
-      "href": "http://developer.mozilla.org/en/CSS/pointer-events"
-    },{
-      "name": "Test Project Page",
-      "href": "http://ausi.github.com/Feature-detection-technique-for-pointer-events/"
-    },{
-      "name": "Test Project Wiki",
-      "href": "http://github.com/ausi/Feature-detection-technique-for-pointer-events/wiki"
-    },
-    {
-      "name": "Related Github Issue",
-      "href": "http://github.com/Modernizr/Modernizr/issues/80"
-    }
-  ]
-}
-!*/
-
-  Modernizr.addTest('csspointerevents', function() {
-    var element = createElement('x');
-    element.style.cssText = 'pointer-events:auto';
-    return element.style.pointerEvents === 'auto';
-  });
-
-/*!
-{
-  "name": "CSS Regions",
-  "caniuse": "css-regions",
-  "authors": ["Mihai Balan"],
-  "property": "regions",
-  "tags": ["css"],
-  "builderAliases": ["css_regions"],
-  "notes": [{
-    "name": "W3C Specification",
-    "href": "http://www.w3.org/TR/css3-regions/"
-  }]
-}
-!*/
-
-  // We start with a CSS parser test then we check page geometry to see if it's affected by regions
-  // Later we might be able to retire the second part, as WebKit builds with the false positives die out
-
-  Modernizr.addTest('regions', function() {
-
-    /* Get the 'flowFrom' property name available in the browser. Either default or vendor prefixed.
-       If the property name can't be found we'll get Boolean 'false' and fail quickly */
-    var flowFromProperty = Modernizr.prefixed('flowFrom');
-    var flowIntoProperty = Modernizr.prefixed('flowInto');
-    var result = false;
-
-    if (!flowFromProperty || !flowIntoProperty){
-      return result;
-    }
-
-    /* If CSS parsing is there, try to determine if regions actually work. */
-    var iframeContainer = createElement('iframe');
-    var container = createElement('div');
-    var content = createElement('div');
-    var region = createElement('div');
-
-    /* we create a random, unlikely to be generated flow number to make sure we don't
-       clash with anything more vanilla, like 'flow', or 'article', or 'f1' */
-    var flowName = 'modernizr_flow_for_regions_check';
-
-    /* First create a div with two adjacent divs inside it. The first will be the
-       content, the second will be the region. To be able to distinguish between the two,
-       we'll give the region a particular padding */
-    content.innerText = 'M';
-    container.style.cssText = 'top: 150px; left: 150px; padding: 0px;';
-    region.style.cssText = 'width: 50px; height: 50px; padding: 42px;';
-
-    region.style[flowFromProperty] = flowName;
-    container.appendChild(content);
-    container.appendChild(region);
-    docElement.appendChild(container);
-
-    /* Now compute the bounding client rect, before and after attempting to flow the
-       content div in the region div. If regions are enabled, the after bounding rect
-       should reflect the padding of the region div.*/
-    var flowedRect, delta;
-    var plainRect = content.getBoundingClientRect();
-
-
-    content.style[flowIntoProperty] = flowName;
-    flowedRect = content.getBoundingClientRect();
-
-    delta = parseInt(flowedRect.left - plainRect.left, 10);
-    docElement.removeChild(container);
-
-    if (delta == 42) {
-      result = true;
-    } else {
-      /* IE only allows for the content to come from iframes. This has the
-       * side effect of automatic collapsing of iframes once they get the flow-into
-       * property set. checking for a change on the height allows us to detect this
-       * in a sync way, without having to wait for a frame to load */
-
-      docElement.appendChild(iframeContainer);
-      plainRect = iframeContainer.getBoundingClientRect();
-      iframeContainer.style[flowIntoProperty] = flowName;
-      flowedRect = iframeContainer.getBoundingClientRect();
-
-      if (plainRect.height > 0 && plainRect.height !== flowedRect.height && flowedRect.height === 0) {
-        result = true;
-      }
-    }
-
-    content = region = container = iframeContainer = undefined;
-
-    return result;
-  });
-
-/*!
-{
-  "name": "CSS rgba",
-  "caniuse": "css3-colors",
-  "property": "rgba",
-  "tags": ["css"],
-  "notes": [{
-    "name": "CSSTricks Tutorial",
-    "href": "http://css-tricks.com/rgba-browser-support/"
-  }]
-}
-!*/
-
-  Modernizr.addTest('rgba', function() {
-    var elem = createElement('div');
-    var style = elem.style;
-    style.cssText = 'background-color:rgba(150,255,150,.5)';
-
-    return ('' + style.backgroundColor).indexOf('rgba') > -1;
-  });
-
-/*!
-{
-  "name": "dataset API",
-  "caniuse": "dataset",
-  "property": "dataset",
-  "tags": ["dom"],
-  "builderAliases": ["dom_dataset"],
-  "authors": ["@phiggins42"]
-}
-!*/
-
-  // dataset API for data-* attributes
-  Modernizr.addTest('dataset', function() {
-    var n = createElement('div');
-    n.setAttribute('data-a-b', 'c');
-    return !!(n.dataset && n.dataset.aB === 'c');
-  });
-
-/*!
-{
-  "name": "Drag & Drop",
-  "property": "draganddrop",
-  "caniuse": "dragndrop",
-  "knownBugs": ["Mobile browsers like Android, iOS < 6, and Firefox OS technically support the APIs, but don't expose it to the end user, resulting in a false positive."],
-  "notes": [{
-    "name": "W3C spec",
-    "href": "http://www.w3.org/TR/2010/WD-html5-20101019/dnd.html"
-  }],
-  "polyfills": ["dropfile", "moxie", "fileapi"]
-}
-!*/
-/* DOC
-Detects support for native drag & drop of elements.
-*/
-
-  Modernizr.addTest('draganddrop', function() {
-    var div = createElement('div');
-    return ('draggable' in div) || ('ondragstart' in div && 'ondrop' in div);
-  });
-
-/*!
-{
-  "name": "Emoji",
-  "property": "emoji"
-}
-!*/
-/* DOC
-Detects support for emoji character sets.
-*/
-
-  Modernizr.addTest('emoji', function() {
-    if (!Modernizr.canvastext) return false;
-    var pixelRatio = window.devicePixelRatio || 1;
-    var offset = 12 * pixelRatio;
-    var node = createElement('canvas');
-    var ctx = node.getContext('2d');
-    ctx.fillStyle = '#f00';
-    ctx.textBaseline = 'top';
-    ctx.font = '32px Arial';
-    ctx.fillText('\ud83d\udc28', 0, 0); // U+1F428 KOALA
-    return ctx.getImageData(offset, offset, 1, 1).data[0] !== 0;
-  });
-
-/*!
-{
-  "name" : "HTML5 Audio Element",
-  "property": "audio",
-  "tags" : ["html5", "audio", "media"]
-}
-!*/
-/* DOC
-Detects the audio element
-*/
-
-  // This tests evaluates support of the audio element, as well as
-  // testing what types of content it supports.
-  //
-  // We're using the Boolean constructor here, so that we can extend the value
-  // e.g.  Modernizr.audio     // true
-  //       Modernizr.audio.ogg // 'probably'
-  //
-  // Codec values from : github.com/NielsLeenheer/html5test/blob/9106a8/index.html#L845
-  //                     thx to NielsLeenheer and zcorpan
-
-  // Note: in some older browsers, "no" was a return value instead of empty string.
-  //   It was live in FF3.5.0 and 3.5.1, but fixed in 3.5.2
-  //   It was also live in Safari 4.0.0 - 4.0.4, but fixed in 4.0.5
-  Modernizr.addTest('audio', function() {
-    /* jshint -W053 */
-    var elem = createElement('audio');
-    var bool = false;
-
-    try {
-      if ( bool = !!elem.canPlayType ) {
-        bool      = new Boolean(bool);
-        bool.ogg  = elem.canPlayType('audio/ogg; codecs="vorbis"').replace(/^no$/,'');
-        bool.mp3  = elem.canPlayType('audio/mpeg;')               .replace(/^no$/,'');
-        bool.opus  = elem.canPlayType('audio/ogg; codecs="opus"') .replace(/^no$/,'');
-
-        // Mimetypes accepted:
-        //   developer.mozilla.org/En/Media_formats_supported_by_the_audio_and_video_elements
-        //   bit.ly/iphoneoscodecs
-        bool.wav  = elem.canPlayType('audio/wav; codecs="1"')     .replace(/^no$/,'');
-        bool.m4a  = ( elem.canPlayType('audio/x-m4a;')            ||
-                     elem.canPlayType('audio/aac;'))             .replace(/^no$/,'');
-      }
-    } catch(e) { }
-
-    return bool;
-  });
-
-/*!
-{
-  "name": "HTML5 Video",
-  "property": "video",
-  "caniuse": "video",
-  "tags": ["html5"],
-  "knownBugs": [
-    "Without QuickTime, `Modernizr.video.h264` will be `undefined`; http://github.com/Modernizr/Modernizr/issues/546"
-  ],
-  "polyfills": [
-    "html5media",
-    "mediaelementjs",
-    "sublimevideo",
-    "videojs",
-    "leanbackplayer",
-    "videoforeverybody"
-  ]
-}
-!*/
-/* DOC
-Detects support for the video element, as well as testing what types of content it supports.
-
-Subproperties are provided to describe support for `ogg`, `h264` and `webm` formats, e.g.:
-
-```javascript
-Modernizr.video         // true
-Modernizr.video.ogg     // 'probably'
-```
-*/
-
-  // Codec values from : github.com/NielsLeenheer/html5test/blob/9106a8/index.html#L845
-  //                     thx to NielsLeenheer and zcorpan
-
-  // Note: in some older browsers, "no" was a return value instead of empty string.
-  //   It was live in FF3.5.0 and 3.5.1, but fixed in 3.5.2
-  //   It was also live in Safari 4.0.0 - 4.0.4, but fixed in 4.0.5
-
-  Modernizr.addTest('video', function() {
-    /* jshint -W053 */
-    var elem = createElement('video');
-    var bool = false;
-
-    // IE9 Running on Windows Server SKU can cause an exception to be thrown, bug #224
-    try {
-      if ( bool = !!elem.canPlayType ) {
-        bool = new Boolean(bool);
-        bool.ogg = elem.canPlayType('video/ogg; codecs="theora"').replace(/^no$/,'');
-
-        // Without QuickTime, this value will be `undefined`. github.com/Modernizr/Modernizr/issues/546
-        bool.h264 = elem.canPlayType('video/mp4; codecs="avc1.42E01E"').replace(/^no$/,'');
-
-        bool.webm = elem.canPlayType('video/webm; codecs="vp8, vorbis"').replace(/^no$/,'');
-
-        bool.vp9 = elem.canPlayType('video/webm; codecs="vp9"').replace(/^no$/,'');
-
-        bool.hls = elem.canPlayType('application/x-mpegURL; codecs="avc1.42E01E"').replace(/^no$/,'');
-      }
-    } catch(e){}
-
-    return bool;
-  });
-
-/*!
-{
-  "name": "IE User Data API",
-  "property": "userdata",
-  "tags": ["storage"],
-  "authors": ["@stereobooster"],
-  "notes": [{
-    "name": "MSDN Documentation",
-    "href": "http://msdn.microsoft.com/en-us/library/ms531424(v=vs.85).aspx"
-  }]
-}
-!*/
-/* DOC
-Detects support for IE userData for persisting data, an API similar to localStorage but supported since IE5.
-*/
-
-  Modernizr.addTest('userdata', !!createElement('div').addBehavior);
-
-/*!
-{
-  "name": "iframe[sandbox] Attribute",
-  "property": "sandbox",
-  "tags": ["iframe"],
-  "builderAliases": ["iframe_sandbox"],
-  "notes": [
-  {
-    "name": "WhatWG Spec",
-    "href": "http://www.whatwg.org/specs/web-apps/current-work/multipage/the-iframe-element.html#attr-iframe-sandbox"
-  }],
-  "knownBugs": [ "False-positive on Firefox < 29" ]
-}
-!*/
-/* DOC
-Test for `sandbox` attribute in iframes.
-*/
-
-  Modernizr.addTest('sandbox', 'sandbox' in createElement('iframe'));
-
-/*!
-{
-  "name": "iframe[seamless] Attribute",
-  "property": "seamless",
-  "tags": ["iframe"],
-  "builderAliases": ["iframe_seamless"],
-  "notes": [{
-    "name": "WhatWG Spec",
-    "href": "http://www.whatwg.org/specs/web-apps/current-work/multipage/the-iframe-element.html#attr-iframe-seamless"
-  }]
-}
-!*/
-/* DOC
-Test for `seamless` attribute in iframes.
-*/
-
-  Modernizr.addTest('seamless', 'seamless' in createElement('iframe'));
-
-/*!
-{
-  "name": "iframe[srcdoc] Attribute",
-  "property": "srcdoc",
-  "tags": ["iframe"],
-  "builderAliases": ["iframe_srcdoc"],
-  "notes": [{
-    "name": "WhatWG Spec",
-    "href": "http://www.whatwg.org/specs/web-apps/current-work/multipage/the-iframe-element.html#attr-iframe-srcdoc"
-  }]
-}
-!*/
-/* DOC
-Test for `srcdoc` attribute in iframes.
-*/
-
-  Modernizr.addTest('srcdoc', 'srcdoc' in createElement('iframe'));
-
-/*!
-{
-  "name": "Inline SVG",
-  "property": "inlinesvg",
-  "caniuse": "svg-html5",
-  "tags": ["svg"],
-  "notes": [{
-    "name": "Test page",
-    "href": "http://paulirish.com/demo/inline-svg"
-  }],
-  "polyfills": ["inline-svg-polyfill"]
-}
-!*/
-/* DOC
-Detects support for inline SVG in HTML (not within XHTML).
-*/
-
-  Modernizr.addTest('inlinesvg', function() {
-    var div = createElement('div');
-    div.innerHTML = '<svg/>';
-    return (div.firstChild && div.firstChild.namespaceURI) == 'http://www.w3.org/2000/svg';
-  });
-
-/*!
-{
-  "name": "input formenctype",
-  "property": "inputformenctype",
-  "aliases": ["input-formenctype"],
-  "notes": [{
-    "name": "WHATWG Spec",
-    "href": "http://www.whatwg.org/specs/web-apps/current-work/multipage/association-of-controls-and-forms.html#attr-fs-formenctype"
-  }, {
-    "name": "Wufoo demo",
-    "href": "http://www.wufoo.com/html5/attributes/16-formenctype.html"
-  }],
-  "polyfills": [
-    "html5formshim"
-  ]
-}
-!*/
-/* DOC
-Detect support for the formenctype attribute on form inputs, which overrides the form enctype attribute
-*/
-
-  Modernizr.addTest('inputformenctype', !!('formEnctype' in createElement('input')), { aliases: ['input-formenctype'] });
-
-/*!
-{
-  "name": "input formaction",
-  "property": "inputformaction",
-  "aliases": ["input-formaction"],
-  "notes": [{
-    "name": "WHATWG Spec",
-    "href": "http://www.whatwg.org/specs/web-apps/current-work/multipage/association-of-controls-and-forms.html#attr-fs-formaction"
-  }, {
-    "name": "Wufoo demo",
-    "href": "http://www.wufoo.com/html5/attributes/13-formaction.html"
-  }],
-  "polyfills": [
-    "webshims"
-  ]
-}
-!*/
-/* DOC
-Detect support for the formaction attribute on form inputs
-*/
-
-  Modernizr.addTest('inputformaction', !!('formAction' in createElement('input')), { aliases: ['input-formaction'] });
-
-/*!
-{
-  "name": "input formmethod",
-  "property": "inputformmethod",
-  "notes": [{
-    "name": "WHATWG Spec",
-    "href": "http://www.whatwg.org/specs/web-apps/current-work/multipage/association-of-controls-and-forms.html#attr-fs-formmethod"
-  }, {
-    "name": "Wufoo demo",
-    "href": "http://www.wufoo.com/html5/attributes/14-formmethod.html"
-  }],
-  "polyfills": [
-    "webshims"
-  ]
-}
-!*/
-/* DOC
-Detect support for the formmethod attribute on form inputs
-*/
-
-  Modernizr.addTest('inputformmethod', !!('formMethod' in createElement('input')));
-
-/*!
-{
-  "name": "input formtarget",
-  "property": "inputformtarget",
-  "aliases": ["input-formtarget"],
-  "notes": [{
-    "name": "WHATWG Spec",
-    "href": "http://www.whatwg.org/specs/web-apps/current-work/multipage/association-of-controls-and-forms.html#attr-fs-formtarget"
-  }, {
-    "name": "Wufoo demo",
-    "href": "http://www.wufoo.com/html5/attributes/15-formtarget.html"
-  }],
-  "polyfills": [
-    "html5formshim"
-  ]
-}
-!*/
-/* DOC
-Detect support for the formtarget attribute on form inputs, which overrides the form target attribute
-*/
-
-  Modernizr.addTest('inputformtarget', !!('formtarget' in createElement('input')), { aliases: ['input-formtarget'] });
-
-/*!
-{
-  "name": "input[file] Attribute",
-  "property": "fileinput",
-  "caniuse" : "forms",
-  "tags": ["file", "forms", "input"],
-  "builderAliases": ["forms_fileinput"]
-}
-!*/
-/* DOC
-Detects whether input type="file" is available on the platform
-
-E.g. iOS < 6 and some android version don't support this
-*/
-
-  Modernizr.addTest('fileinput', function() {
-    if(navigator.userAgent.match(/(Android (1.0|1.1|1.5|1.6|2.0|2.1))|(Windows Phone (OS 7|8.0))|(XBLWP)|(ZuneWP)|(w(eb)?OSBrowser)|(webOS)|(Kindle\/(1.0|2.0|2.5|3.0))/)) {
-      return false;
-    }
-    var elem = createElement('input');
-    elem.type = 'file';
-    return !elem.disabled;
-  });
-
-/*!
-{
-  "name": "input[directory] Attribute",
-  "property": "directory",
-  "authors": ["silverwind"],
-  "tags": ["file", "input", "attribute"]
-}
-!*/
-/* DOC
-When used on an `<input type="file">`, the `directory` attribute instructs
-the user agent to present a directory selection dialog instead of the usual
-file selection dialog.
-*/
-
-  Modernizr.addTest('fileinputdirectory', function() {
-    var elem = createElement('input'), dir = 'directory';
-    elem.type = 'file';
-    if (dir in elem) {
-      return true;
-    } else {
-      for (var i = 0, len = domPrefixes.length; i < len; i++) {
-        if (domPrefixes[i] + dir in elem) {
-          return true;
-        }
-      }
-    }
-    return false;
-  });
-
-/*!
-{
-  "name": "input[form] Attribute",
-  "property": "formattribute",
-  "tags": ["attribute", "forms", "input"],
-  "builderAliases": ["forms_formattribute"]
-}
-!*/
-/* DOC
-Detects whether input form="form_id" is available on the platform
-E.g. IE 10 (and below), don't support this
-*/
-
-
-  Modernizr.addTest('formattribute', function() {
-    var form = createElement('form');
-    var input = createElement('input');
-    var div = createElement('div');
-    var id = 'formtest' + (new Date()).getTime();
-    var attr;
-    var bool = false;
-
-    form.id = id;
-
-    //IE6/7 confuses the form idl attribute and the form content attribute, so we use document.createAttribute
-    try {
-      input.setAttribute('form', id);
-    }
-    catch( e ) {
-      if( document.createAttribute ) {
-        attr = document.createAttribute('form');
-        attr.nodeValue = id;
-        input.setAttributeNode(attr);
-      }
-    }
-
-    div.appendChild(form);
-    div.appendChild(input);
-
-    docElement.appendChild(div);
-
-    bool = form.elements.length === 1 && input.form == form;
-
-    div.parentNode.removeChild(div);
-    return bool;
-  });
-
-/*!
-{
-  "name": "input[capture] Attribute",
-  "property": "capture",
-  "tags": ["video", "image", "audio", "media", "attribute"],
-  "notes": [{
-    "name": "W3C draft: HTML Media Capture",
-    "href": "http://www.w3.org/TR/html-media-capture/"
-  }]
-}
-!*/
-/* DOC
-When used on an `<input>`, this attribute signifies that the resource it takes should be generated via device's camera, camcorder, sound recorder.
-*/
-
-  // testing for capture attribute in inputs
-  Modernizr.addTest('capture', ('capture' in createElement('input')));
-
-/*!
-{
-  "name": "output Element",
-  "property": "outputelem",
-  "tags": ["elem"],
-  "builderAliases": ["elem_output"],
-  "notes": [{
-    "name": "WhatWG Spec",
-    "href": "http://www.whatwg.org/specs/web-apps/current-work/multipage/the-button-element.html#the-output-element"
-  }]
-}
-!*/
-
-  Modernizr.addTest('outputelem', 'value' in createElement('output'));
-
-/*!
-{
-  "name": "placeholder attribute",
-  "property": "placeholder",
-  "tags": ["forms", "attribute"],
-  "builderAliases": ["forms_placeholder"]
-}
-!*/
-/* DOC
-Tests for placeholder attribute in inputs and textareas
-*/
-
-  Modernizr.addTest('placeholder', ('placeholder' in createElement('input') && 'placeholder' in createElement('textarea')));
-
-/*!
-{
-  "name": "progress Element",
-  "caniuse": "progressmeter",
-  "property": ["progressbar", "meter"],
-  "tags": ["elem"],
-  "builderAliases": ["elem_progress_meter"],
-  "authors": ["Stefan Wallin"]
-}
-!*/
-
-  // Tests for progressbar-support. All browsers that don't support progressbar returns undefined =)
-  Modernizr.addTest('progressbar', createElement('progress').max !== undefined);
-
-  // Tests for meter-support. All browsers that don't support meters returns undefined =)
-  Modernizr.addTest('meter', createElement('meter').max !== undefined);
-
-/*!
-{
-  "name": "Reverse Ordered Lists",
-  "property": "olreversed",
-  "notes": [{
-    "name": "Impressive Webs article",
-    "href": "http://impressivewebs.com/reverse-ordered-lists-html5"
-  }],
-  "builderAliases": ["lists_reversed"]
-}
-!*/
-/* DOC
-Detects support for the `reversed` attribute on the `<ol>` element.
-*/
-
-  Modernizr.addTest('olreversed', 'reversed' in createElement('ol'));
-
-/*!
-{
-  "name": "ruby, rp, rt Elements",
-  "caniuse": "ruby",
-  "property": "ruby",
-  "tags": ["elem"],
-  "builderAliases": ["elem_ruby"],
-  "authors": ["Cătălin Mariș"],
-  "notes": [{
-    "name": "WHATWG Specification",
-    "href": "http://www.whatwg.org/specs/web-apps/current-work/multipage/text-level-semantics.html#the-ruby-element"
-  }]
-}
-!*/
-
-  Modernizr.addTest('ruby', function () {
-
-    var ruby = createElement('ruby');
-    var rt = createElement('rt');
-    var rp = createElement('rp');
-    var displayStyleProperty = 'display';
-    // 'fontSize' - because it`s only used for IE6 and IE7
-    var fontSizeStyleProperty = 'fontSize';
-
-    ruby.appendChild(rp);
-    ruby.appendChild(rt);
-    docElement.appendChild(ruby);
-
-    // browsers that support <ruby> hide the <rp> via "display:none"
-    if ( getStyle(rp, displayStyleProperty) == 'none' ||                                                        // for non-IE browsers
-         // but in IE browsers <rp> has "display:inline" so, the test needs other conditions:
-         getStyle(ruby, displayStyleProperty) == 'ruby' && getStyle(rt, displayStyleProperty) == 'ruby-text' || // for IE8+
-         getStyle(rp, fontSizeStyleProperty) == '6pt' && getStyle(rt, fontSizeStyleProperty) == '6pt' ) {       // for IE6 & IE7
-
-      cleanUp();
-      return true;
-
-    } else {
-      cleanUp();
-      return false;
-    }
-
-    function getStyle( element, styleProperty ) {
-      var result;
-
-      if ( window.getComputedStyle ) {     // for non-IE browsers
-        result = document.defaultView.getComputedStyle(element,null).getPropertyValue(styleProperty);
-      } else if ( element.currentStyle ) { // for IE
-        result = element.currentStyle[styleProperty];
-      }
-
-      return result;
-    }
-
-    function cleanUp() {
-      docElement.removeChild(ruby);
-      // the removed child node still exists in memory, so ...
-      ruby = null;
-      rt = null;
-      rp = null;
-    }
-
-  });
-
-
-/*!
-{
-  "name": "script[async]",
-  "property": "scriptasync",
-  "caniuse": "script-async",
-  "tags": ["script"],
-  "builderAliases": ["script_async"],
-  "authors": ["Theodoor van Donge"]
-}
-!*/
-/* DOC
-Detects support for the `async` attribute on the `<script>` element.
-*/
-
-  Modernizr.addTest('scriptasync', 'async' in createElement('script'));
-
-/*!
-{
-  "name": "script[defer]",
-  "property": "scriptdefer",
-  "caniuse": "script-defer",
-  "tags": ["script"],
-  "builderAliases": ["script_defer"],
-  "authors": ["Theodoor van Donge"],
-  "warnings": ["Browser implementation of the `defer` attribute vary: http://stackoverflow.com/questions/3952009/defer-attribute-chrome#answer-3982619"],
-  "knownBugs": ["False positive in Opera 12"]
-}
-!*/
-/* DOC
-Detects support for the `defer` attribute on the `<script>` element.
-*/
-
-  Modernizr.addTest('scriptdefer', 'defer' in createElement('script'));
-
-/*!
-{
-  "name": "sizes attribute",
-  "property": "sizes",
-  "tags": ["image"],
-  "authors": ["Mat Marquis"],
-  "notes": [{
-    "name": "Spec",
-    "href": "http://picture.responsiveimages.org/#parse-sizes-attr"
-    },{
-    "name": "Usage Details",
-    "href": "http://ericportis.com/posts/2014/srcset-sizes/"
-    }]
-}
-!*/
-/* DOC
-Test for the `sizes` attribute on images
-*/
-
-  Modernizr.addTest('sizes', 'sizes' in createElement('img'));
-
-/*!
-{
-  "name": "srcset attribute",
-  "property": "srcset",
-  "tags": ["image"],
-  "notes": [{
-    "name": "Smashing Magazine Article",
-    "href": "http://en.wikipedia.org/wiki/APNG"
-    },{
-    "name": "Generate multi-resolution images for srcset with Grunt",
-    "href": "http://addyosmani.com/blog/generate-multi-resolution-images-for-srcset-with-grunt/"
-    }]
-}
-!*/
-/* DOC
-Test for the srcset attribute of images
-*/
-
-  Modernizr.addTest('srcset', 'srcset' in createElement('img'));
-
-/*!
-{
-  "name": "style[scoped]",
-  "property": "stylescoped",
-  "caniuse": "style-scoped",
-  "tags": ["dom"],
-  "builderAliases": ["style_scoped"],
-  "authors": ["Cătălin Mariș"],
-  "notes": [{
-    "name": "WHATWG Specification",
-    "href": "http://www.whatwg.org/specs/web-apps/current-work/multipage/semantics.html#attr-style-scoped"
-  }],
-  "polyfills": ["scoped-styles"]
-}
-!*/
-/* DOC
-Support for the `scoped` attribute of the `<style>` element.
-*/
-
-  Modernizr.addTest('stylescoped', 'scoped' in createElement('style'));
-
-/*!
-{
-  "name": "Template Tag",
-  "property": "template",
-  "tags": ["elem"],
-  "notes": [{
-    "name": "HTML5Rocks Article",
-    "href": "http://www.html5rocks.com/en/tutorials/webcomponents/template/"
-  },{
-    "name": "W3 Spec",
-    "href": "https://dvcs.w3.org/hg/webcomponents/raw-file/tip/spec/templates/index.html"
-  }]
-}
-!*/
-
-  Modernizr.addTest('template', 'content' in createElement('template'));
-
-/*!
-{
-  "name": "textarea maxlength",
-  "property": "textareamaxlength",
-  "aliases": ["textarea-maxlength"],
-  "notes": [{
-    "name": "MDN documentation",
-    "href": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/textarea"
-  }],
-  "polyfills": [
-    "maxlength"
-  ]
-}
-!*/
-/* DOC
-Detect support for the maxlength attribute of a textarea element
-*/
-
-  Modernizr.addTest('textareamaxlength', !!('maxLength' in createElement('textarea')));
-
-/*!
-{
-  "name": "time Element",
-  "property": "time",
-  "tags": ["elem"],
-  "builderAliases": ["elem_time"],
-  "notes": [{
-    "name": "WhatWG Spec",
-    "href": "http://www.whatwg.org/specs/web-apps/current-work/multipage/text-level-semantics.html#the-time-element"
-  }]
-}
-!*/
-
-  Modernizr.addTest('time', 'valueAsDate' in createElement('time'));
-
-/*!
-{
-  "name": "Track element and Timed Text Track",
-  "property": ["texttrackapi", "track"],
-  "tags": ["elem"],
-  "builderAliases": ["elem_track"],
-  "authors": ["Addy Osmani"],
-  "notes": [{
-    "name": "W3 track Element Spec",
-    "href": "http://www.w3.org/TR/html5/video.html#the-track-element"
-  },{
-    "name": "W3 track API Spec",
-    "href": "http://www.w3.org/TR/html5/media-elements.html#text-track-api"
-  }],
-  "warnings": ["While IE10 has implemented the track element, IE10 does not expose the underlying APIs to create timed text tracks by JS (really sad)"]
-}
-!*/
-
-  Modernizr.addTest('texttrackapi', typeof (createElement('video').addTextTrack) === 'function');
-
-  // a more strict test for track including UI support: document.createElement('track').kind === 'subtitles'
-  Modernizr.addTest('track', 'kind' in createElement('track'));
-
-/*!
-{
-  "name": "Unknown Elements",
-  "property": "unknownelements",
-  "tags": ["elem"],
-  "notes": [{
-    "name": "The Story of the HTML5 Shiv",
-    "href": "http://www.paulirish.com/2011/the-history-of-the-html5-shiv/"
-  }, {
-    "name": "original implementation of detect code",
-    "href": "https://github.com/aFarkas/html5shiv/blob/bf4fcc4/src/html5shiv.js#L36"
-  }],
-  "polyfills": ["html5shiv"],
-  "authors": ["Ron Waldon (@jokeyrhyme)"]
-}
-!*/
-/* DOC
-Does the browser support HTML with non-standard / new elements?
-*/
-
-  Modernizr.addTest('unknownelements', function () {
-    var a = createElement('a');
-    a.innerHTML = '<xyz></xyz>';
-    return a.childNodes.length === 1;
-  });
-
-/*!
-{
-  "name": "Video Autoplay",
-  "property": "videoautoplay",
-  "tags": ["video"],
-  "async" : true,
-  "warnings": ["This test is very large – only include it if you absolutely need it"],
-  "knownBugs": ["crashes with an alert on iOS7 when added to homescreen"]
-}
-!*/
-/* DOC
-Checks for support of the autoplay attribute of the video element.
-*/
-
-
-  Modernizr.addAsyncTest(function() {
-    var timeout;
-    var waitTime = 300;
-    var elem = createElement('video');
-    var elemStyle = elem.style;
-    var testAutoplay = function(arg) {
-      clearTimeout(timeout);
-      elem.removeEventListener('playing', testAutoplay);
-      addTest('videoautoplay', arg && arg.type === 'playing' || elem.currentTime !== 0);
-      elem.parentNode.removeChild(elem);
-    };
-
-    //skip the test if video itself, or the autoplay
-    //element on it isn't supported
-    if (!Modernizr.video || !('autoplay' in elem)) {
-      addTest('videoautoplay', false);
-      return;
-    }
-
-    elemStyle.position = 'absolute';
-    elemStyle.height = 0;
-    elemStyle.width = 0;
-
-    try {
-      if (Modernizr.video.ogg) {
-        elem.src = 'data:video/ogg;base64,T2dnUwACAAAAAAAAAABmnCATAAAAAHDEixYBKoB0aGVvcmEDAgEAAQABAAAQAAAQAAAAAAAFAAAAAQAAAAAAAAAAAGIAYE9nZ1MAAAAAAAAAAAAAZpwgEwEAAAACrA7TDlj///////////////+QgXRoZW9yYSsAAABYaXBoLk9yZyBsaWJ0aGVvcmEgMS4xIDIwMDkwODIyIChUaHVzbmVsZGEpAQAAABoAAABFTkNPREVSPWZmbXBlZzJ0aGVvcmEtMC4yOYJ0aGVvcmG+zSj3uc1rGLWpSUoQc5zmMYxSlKQhCDGMYhCEIQhAAAAAAAAAAAAAEW2uU2eSyPxWEvx4OVts5ir1aKtUKBMpJFoQ/nk5m41mUwl4slUpk4kkghkIfDwdjgajQYC8VioUCQRiIQh8PBwMhgLBQIg4FRba5TZ5LI/FYS/Hg5W2zmKvVoq1QoEykkWhD+eTmbjWZTCXiyVSmTiSSCGQh8PB2OBqNBgLxWKhQJBGIhCHw8HAyGAsFAiDgUCw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDw8PDAwPEhQUFQ0NDhESFRUUDg4PEhQVFRUOEBETFBUVFRARFBUVFRUVEhMUFRUVFRUUFRUVFRUVFRUVFRUVFRUVEAwLEBQZGxwNDQ4SFRwcGw4NEBQZHBwcDhATFhsdHRwRExkcHB4eHRQYGxwdHh4dGxwdHR4eHh4dHR0dHh4eHRALChAYKDM9DAwOExo6PDcODRAYKDlFOA4RFh0zV1A+EhYlOkRtZ00YIzdAUWhxXDFATldneXhlSFxfYnBkZ2MTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTExMTEhIVGRoaGhoSFBYaGhoaGhUWGRoaGhoaGRoaGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhoaGhESFh8kJCQkEhQYIiQkJCQWGCEkJCQkJB8iJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQREhgvY2NjYxIVGkJjY2NjGBo4Y2NjY2MvQmNjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRUVFRISEhUXGBkbEhIVFxgZGxwSFRcYGRscHRUXGBkbHB0dFxgZGxwdHR0YGRscHR0dHhkbHB0dHR4eGxwdHR0eHh4REREUFxocIBERFBcaHCAiERQXGhwgIiUUFxocICIlJRcaHCAiJSUlGhwgIiUlJSkcICIlJSUpKiAiJSUlKSoqEBAQFBgcICgQEBQYHCAoMBAUGBwgKDBAFBgcICgwQEAYHCAoMEBAQBwgKDBAQEBgICgwQEBAYIAoMEBAQGCAgAfF5cdH1e3Ow/L66wGmYnfIUbwdUTe3LMRbqON8B+5RJEvcGxkvrVUjTMrsXYhAnIwe0dTJfOYbWrDYyqUrz7dw/JO4hpmV2LsQQvkUeGq1BsZLx+cu5iV0e0eScJ91VIQYrmqfdVSK7GgjOU0oPaPOu5IcDK1mNvnD+K8LwS87f8Jx2mHtHnUkTGAurWZlNQa74ZLSFH9oF6FPGxzLsjQO5Qe0edcpttd7BXBSqMCL4k/4tFrHIPuEQ7m1/uIWkbDMWVoDdOSuRQ9286kvVUlQjzOE6VrNguN4oRXYGkgcnih7t13/9kxvLYKQezwLTrO44sVmMPgMqORo1E0sm1/9SludkcWHwfJwTSybR4LeAz6ugWVgRaY8mV/9SluQmtHrzsBtRF/wPY+X0JuYTs+ltgrXAmlk10xQHmTu9VSIAk1+vcvU4ml2oNzrNhEtQ3CysNP8UeR35wqpKUBdGdZMSjX4WVi8nJpdpHnbhzEIdx7mwf6W1FKAiucMXrWUWVjyRf23chNtR9mIzDoT/6ZLYailAjhFlZuvPtSeZ+2oREubDoWmT3TguY+JHPdRVSLKxfKH3vgNqJ/9emeEYikGXDFNzaLjvTeGAL61mogOoeG3y6oU4rW55ydoj0lUTSR/mmRhPmF86uwIfzp3FtiufQCmppaHDlGE0r2iTzXIw3zBq5hvaTldjG4CPb9wdxAme0SyedVKczJ9AtYbgPOzYKJvZZImsN7ecrxWZg5dR6ZLj/j4qpWsIA+vYwE+Tca9ounMIsrXMB4Stiib2SPQtZv+FVIpfEbzv8ncZoLBXc3YBqTG1HsskTTotZOYTG+oVUjLk6zhP8bg4RhMUNtfZdO7FdpBuXzhJ5Fh8IKlJG7wtD9ik8rWOJxy6iQ3NwzBpQ219mlyv+FLicYs2iJGSE0u2txzed++D61ZWCiHD/cZdQVCqkO2gJpdpNaObhnDfAPrT89RxdWFZ5hO3MseBSIlANppdZNIV/Rwe5eLTDvkfWKzFnH+QJ7m9QWV1KdwnuIwTNtZdJMoXBf74OhRnh2t+OTGL+AVUnIkyYY+QG7g9itHXyF3OIygG2s2kud679ZWKqSFa9n3IHD6MeLv1lZ0XyduRhiDRtrNnKoyiFVLcBm0ba5Yy3fQkDh4XsFE34isVpOzpa9nR8iCpS4HoxG2rJpnRhf3YboVa1PcRouh5LIJv/uQcPNd095ickTaiGBnWLKVWRc0OnYTSyex/n2FofEPnDG8y3PztHrzOLK1xo6RAml2k9owKajOC0Wr4D5x+3nA0UEhK2m198wuBHF3zlWWVKWLN1CHzLClUfuoYBcx4b1llpeBKmbayaR58njtE9onD66lUcsg0Spm2snsb+8HaJRn4dYcLbCuBuYwziB8/5U1C1DOOz2gZjSZtrLJk6vrLF3hwY4Io9xuT/ruUFRSBkNtUzTOWhjh26irLEPx4jPZL3Fo3QrReoGTTM21xYTT9oFdhTUIvjqTkfkvt0bzgVUjq/hOYY8j60IaO/0AzRBtqkTS6R5ellZd5uKdzzhb8BFlDdAcrwkE0rbXTOPB+7Y0FlZO96qFL4Ykg21StJs8qIW7h16H5hGiv8V2Cflau7QVDepTAHa6Lgt6feiEvJDM21StJsmOH/hynURrKxvUpQ8BH0JF7BiyG2qZpnL/7AOU66gt+reLEXY8pVOCQvSsBtqZTNM8bk9ohRcwD18o/WVkbvrceVKRb9I59IEKysjBeTMmmbA21xu/6iHadLRxuIzkLpi8wZYmmbbWi32RVAUjruxWlJ//iFxE38FI9hNKOoCdhwf5fDe4xZ81lgREhK2m1j78vW1CqkuMu/AjBNK210kzRUX/B+69cMMUG5bYrIeZxVSEZISmkzbXOi9yxwIfPgdsov7R71xuJ7rFcACjG/9PzApqFq7wEgzNJm2suWESPuwrQvejj7cbnQxMkxpm21lUYJL0fKmogPPqywn7e3FvB/FCNxPJ85iVUkCE9/tLKx31G4CgNtWTTPFhMvlu8G4/TrgaZttTChljfNJGgOT2X6EqpETy2tYd9cCBI4lIXJ1/3uVUllZEJz4baqGF64yxaZ+zPLYwde8Uqn1oKANtUrSaTOPHkhvuQP3bBlEJ/LFe4pqQOHUI8T8q7AXx3fLVBgSCVpMba55YxN3rv8U1Dv51bAPSOLlZWebkL8vSMGI21lJmmeVxPRwFlZF1CpqCN8uLwymaZyjbXHCRytogPN3o/n74CNykfT+qqRv5AQlHcRxYrC5KvGmbbUwmZY/29BvF6C1/93x4WVglXDLFpmbapmF89HKTogRwqqSlGbu+oiAkcWFbklC6Zhf+NtTLFpn8oWz+HsNRVSgIxZWON+yVyJlE5tq/+GWLTMutYX9ekTySEQPLVNQQ3OfycwJBM0zNtZcse7CvcKI0V/zh16Dr9OSA21MpmmcrHC+6pTAPHPwoit3LHHqs7jhFNRD6W8+EBGoSEoaZttTCZljfduH/fFisn+dRBGAZYtMzbVMwvul/T/crK1NQh8gN0SRRa9cOux6clC0/mDLFpmbarmF8/e6CopeOLCNW6S/IUUg3jJIYiAcDoMcGeRbOvuTPjXR/tyo79LK3kqqkbxkkMRAOB0GODPItnX3Jnxro/25Ud+llbyVVSN4ySGIgHA6DHBnkWzr7kz410f7cqO/Syt5KqpFVJwn6gBEvBM0zNtZcpGOEPiysW8vvRd2R0f7gtjhqUvXL+gWVwHm4XJDBiMpmmZtrLfPwd/IugP5+fKVSysH1EXreFAcEhelGmbbUmZY4Xdo1vQWVnK19P4RuEnbf0gQnR+lDCZlivNM22t1ESmopPIgfT0duOfQrsjgG4tPxli0zJmF5trdL1JDUIUT1ZXSqQDeR4B8mX3TrRro/2McGeUvLtwo6jIEKMkCUXWsLyZROd9P/rFYNtXPBli0z398iVUlVKAjFlY437JXImUTm2r/4ZYtMy61hf16RPJIU9nZ1MABAwAAAAAAAAAZpwgEwIAAABhp658BScAAAAAAADnUFBQXIDGXLhwtttNHDhw5OcpQRMETBEwRPduylKVB0HRdF0A';
-      }
-      else if (Modernizr.video.h264) {
-        elem.src = 'data:video/mp4;base64,AAAAHGZ0eXBtcDQyAAAAAG1wNDJpc29tYXZjMQAAAz5tb292AAAAbG12aGQAAAAAzaNacc2jWnEAAV+QAAFfkAABAAABAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAGGlvZHMAAAAAEICAgAcAT////3//AAACQ3RyYWsAAABcdGtoZAAAAAHNo1pxzaNacQAAAAEAAAAAAAFfkAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAEAAAAAAEAAAABAAAAAAAd9tZGlhAAAAIG1kaGQAAAAAzaNacc2jWnEAAV+QAAFfkFXEAAAAAAAhaGRscgAAAAAAAAAAdmlkZQAAAAAAAAAAAAAAAAAAAAGWbWluZgAAABR2bWhkAAAAAQAAAAAAAAAAAAAAJGRpbmYAAAAcZHJlZgAAAAAAAAABAAAADHVybCAAAAABAAABVnN0YmwAAACpc3RzZAAAAAAAAAABAAAAmWF2YzEAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAEAAQAEgAAABIAAAAAAAAAAEOSlZUL0FWQyBDb2RpbmcAAAAAAAAAAAAAAAAAAAAAAAAY//8AAAAxYXZjQwH0AAr/4QAZZ/QACq609NQYBBkAAAMAAQAAAwAKjxImoAEABWjOAa8gAAAAEmNvbHJuY2xjAAYAAQAGAAAAGHN0dHMAAAAAAAAAAQAAAAUAAEZQAAAAKHN0c3oAAAAAAAAAAAAAAAUAAAIqAAAACAAAAAgAAAAIAAAACAAAAChzdHNjAAAAAAAAAAIAAAABAAAABAAAAAEAAAACAAAAAQAAAAEAAAAYc3RjbwAAAAAAAAACAAADYgAABaQAAAAUc3RzcwAAAAAAAAABAAAAAQAAABFzZHRwAAAAAAREREREAAAAb3VkdGEAAABnbWV0YQAAAAAAAAAhaGRscgAAAAAAAAAAbWRpcgAAAAAAAAAAAAAAAAAAAAA6aWxzdAAAADKpdG9vAAAAKmRhdGEAAAABAAAAAEhhbmRCcmFrZSAwLjkuOCAyMDEyMDcxODAwAAACUm1kYXQAAAHkBgX/4NxF6b3m2Ui3lizYINkj7u94MjY0IC0gY29yZSAxMjAgLSBILjI2NC9NUEVHLTQgQVZDIGNvZGVjIC0gQ29weWxlZnQgMjAwMy0yMDExIC0gaHR0cDovL3d3dy52aWRlb2xhbi5vcmcveDI2NC5odG1sIC0gb3B0aW9uczogY2FiYWM9MCByZWY9MSBkZWJsb2NrPTE6MDowIGFuYWx5c2U9MHgxOjAgbWU9ZXNhIHN1Ym1lPTkgcHN5PTAgbWl4ZWRfcmVmPTAgbWVfcmFuZ2U9NCBjaHJvbWFfbWU9MSB0cmVsbGlzPTAgOHg4ZGN0PTAgY3FtPTAgZGVhZHpvbmU9MjEsMTEgZmFzdF9wc2tpcD0wIGNocm9tYV9xcF9vZmZzZXQ9MCB0aHJlYWRzPTYgc2xpY2VkX3RocmVhZHM9MCBucj0wIGRlY2ltYXRlPTEgaW50ZXJsYWNlZD0wIGJsdXJheV9jb21wYXQ9MCBjb25zdHJhaW5lZF9pbnRyYT0wIGJmcmFtZXM9MCB3ZWlnaHRwPTAga2V5aW50PTUwIGtleWludF9taW49NSBzY2VuZWN1dD00MCBpbnRyYV9yZWZyZXNoPTAgcmM9Y3FwIG1idHJlZT0wIHFwPTAAgAAAAD5liISscR8A+E4ACAACFoAAITAAAgsAAPgYCoKgoC+L4vi+KAvi+L4YfAEAACMzgABF9AAEUGUgABDJiXnf4AAAAARBmiKUAAAABEGaQpQAAAAEQZpilAAAAARBmoKU';
-      }
-      else {
-        addTest('videoautoplay', false);
-        return;
-      }
-    }
-
-    catch (e) {
-      addTest('videoautoplay', false);
-      return;
-    }
-
-    elem.setAttribute('autoplay','');
-    elem.style = 'display:none';
-    docElement.appendChild(elem);
-    // wait for the next tick to add the listener, otherwise the element may
-    // not have time to play in high load situations (e.g. the test suite)
-    setTimeout(function() {
-      elem.addEventListener('playing', testAutoplay);
-      timeout = setTimeout(testAutoplay, waitTime);
-    }, 0);
-  });
-
-/*!
-{
-  "name": "Video Preload Attribute",
-  "property": "videopreload",
-  "tags": ["video", "media"]
-}
-!*/
-
-  Modernizr.addTest('videopreload', 'preload' in createElement('video'));
-
-/*!
-{
-  "name": "Video Loop Attribute",
-  "property": "videoloop",
-  "tags": ["video", "media"]
-}
-!*/
-
-  Modernizr.addTest('videoloop', 'loop' in createElement('video'));
-
-/*!
-{
-  "name": "VML",
-  "property": "vml",
-  "caniuse": "vml",
-  "tags": ["vml"],
-  "authors": ["Craig Andrews (@candrews)"],
-  "notes": [{
-    "name" : "W3C VML reference",
-    "href": "http://www.w3.org/TR/NOTE-VML"
-  },{
-    "name" : "Microsoft VML reference",
-    "href": "http://msdn.microsoft.com/en-us/library/bb263898%28VS.85%29.aspx"
-  }]
-}
-!*/
-/* DOC
-Detects support for VML.
-*/
-
-  Modernizr.addTest('vml', function() {
-    var containerDiv = createElement('div');
-    containerDiv.innerHTML = '<v:shape id="vml_flag1" adj="1" />';
-    var shape = containerDiv.firstChild;
-    shape.style.behavior = 'url(#default#VML)';
-    var supportsVml = shape ? typeof shape.adj == 'object': true;
-    return supportsVml;
-  });
-
-/*!
-{
-  "name": "Web Animation API",
-  "property": "animation",
-  "tags": ["webanimations"],
-  "polyfills": ["webanimationsjs"],
-  "notes": [{
-    "name": "Introducing Web Animations",
-    "href": "http://brian.sol1.net/svg/2013/06/26/introducing-web-animations/"
-  }]
-}
-!*/
-/* DOC
-Detects support for the Web Animation API, a way to create css animations in js
-*/
-
-  Modernizr.addTest('webanimations', 'animate' in createElement('div'));
-
-/*!
-{
-  "name": "WebGL",
-  "property": "webgl",
-  "caniuse": "webgl",
-  "tags": ["webgl", "graphics"],
-  "polyfills": ["jebgl", "cwebgl", "iewebgl"]
-}
-!*/
-
-  Modernizr.addTest('webgl', function() {
-    var canvas = createElement('canvas');
-    var supports = 'probablySupportsContext' in canvas ? 'probablySupportsContext' :  'supportsContext';
-    if (supports in canvas) {
-      return canvas[supports]('webgl') || canvas[supports]('experimental-webgl');
-    }
-    return 'WebGLRenderingContext' in window;
-  });
-
-/*!
-{
-  "name": "WebGL Extensions",
-  "property": "webglextensions",
-  "tags": ["webgl", "graphics"],
-  "builderAliases": ["webgl_extensions"],
-  "async" : true,
-  "authors": ["Ilmari Heikkinen"],
-  "knownBugs": [],
-  "notes": [{
-    "name": "Kronos extensions registry",
-    "href": "http://www.khronos.org/registry/webgl/extensions/"
-  }]
-}
-!*/
-/* DOC
-Detects support for OpenGL extensions in WebGL. It's `true` if the [WebGL extensions API](https://developer.mozilla.org/en-US/docs/Web/WebGL/Using_Extensions) is supported, then exposes the supported extensions as subproperties, e.g.:
-
-```javascript
-if (Modernizr.webglextensions) {
-  // WebGL extensions API supported
-}
-if ('OES_vertex_array_object' in Modernizr.webglextensions) {
-  // Vertex Array Objects extension supported
-}
-```
-*/
-
-  // based on code from ilmari heikkinen
-  // code.google.com/p/graphics-detect/source/browse/js/detect.js
-
-  // Not Async but handles it's own self
-  Modernizr.addAsyncTest(function() {
-    /* jshint -W053 */
-
-    // Not a good candidate for css classes, so we avoid addTest stuff
-    Modernizr.webglextensions = new Boolean(false);
-
-    if (!Modernizr.webgl) {
-      return;
-    }
-
-    var canvas;
-    var ctx;
-    var exts;
-
-    try {
-      canvas = createElement('canvas');
-      ctx = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-      exts = ctx.getSupportedExtensions();
-    }
-    catch (e) {
-      return;
-    }
-
-    if (ctx !== undefined) {
-      Modernizr.webglextensions = new Boolean(true);
-    }
-
-    for (var i = -1, len = exts.length; ++i < len; ){
-      Modernizr.webglextensions[exts[i]] = true;
-    }
-
-    canvas = undefined;
-  });
-
-
-  // isEventSupported determines if the given element supports the given event
-  // kangax.github.com/iseventsupported/
-  // github.com/Modernizr/Modernizr/pull/636
-  //
-  // Known incorrects:
-  //   Modernizr.hasEvent("webkitTransitionEnd", elem) // false negative
-  //   Modernizr.hasEvent("textInput") // in Webkit. github.com/Modernizr/Modernizr/issues/333
-  var isEventSupported = (function (undefined) {
-
-    // Detect whether event support can be detected via `in`. Test on a DOM element
-    // using the "blur" event b/c it should always exist. bit.ly/event-detection
-    var needsFallback = !('onblur' in document.documentElement);
-
-    /**
-     * @param  {string|*}           eventName  is the name of an event to test for (e.g. "resize")
-     * @param  {(Object|string|*)=} element    is the element|document|window|tagName to test on
-     * @return {boolean}
-     */
-    function isEventSupportedInner( eventName, element ) {
-
-      var isSupported;
-      if ( !eventName ) { return false; }
-      if ( !element || typeof element === 'string' ) {
-        element = createElement(element || 'div');
-      }
-
-      // Testing via the `in` operator is sufficient for modern browsers and IE.
-      // When using `setAttribute`, IE skips "unload", WebKit skips "unload" and
-      // "resize", whereas `in` "catches" those.
-      eventName = 'on' + eventName;
-      isSupported = eventName in element;
-
-      // Fallback technique for old Firefox - bit.ly/event-detection
-      if ( !isSupported && needsFallback ) {
-        if ( !element.setAttribute ) {
-          // Switch to generic element if it lacks `setAttribute`.
-          // It could be the `document`, `window`, or something else.
-          element = createElement('div');
-        }
-
-        element.setAttribute(eventName, '');
-        isSupported = typeof element[eventName] === 'function';
-
-        if ( element[eventName] !== undefined ) {
-          // If property was created, "remove it" by setting value to `undefined`.
-          element[eventName] = undefined;
-        }
-        element.removeAttribute(eventName);
-      }
-
-      return isSupported;
-    }
-    return isEventSupportedInner;
-  })();
-
-
-
-  // Modernizr.hasEvent() detects support for a given event, with an optional element to test on
-  // Modernizr.hasEvent('gesturestart', elem)
-  var hasEvent = ModernizrProto.hasEvent = isEventSupported;
-
-/*!
-{
-  "name": "Ambient Light Events",
-  "property": "ambientlight",
-  "notes": [{
-    "name": "W3C Ambient Light Events",
-    "href": "http://www.w3.org/TR/ambient-light/"
-  }]
-}
-!*/
-/* DOC
-Detects support for the API that provides information about the ambient light levels, as detected by the device's light detector, in terms of lux units.
-*/
-
-  Modernizr.addTest('ambientlight', hasEvent('devicelight', window));
-
-/*!
-{
-  "name": "DOM Pointer Events API",
-  "property": "pointerevents",
-  "tags": ["input"],
-  "authors": ["Stu Cox"],
-  "notes": [
-    {
-      "name": "W3C spec",
-      "href": "http://www.w3.org/TR/pointerevents/"
-    }
-  ],
-  "warnings": ["This property name now refers to W3C DOM PointerEvents: https://github.com/Modernizr/Modernizr/issues/548#issuecomment-12812099"],
-  "polyfills": ["handjs"]
-}
-!*/
-/* DOC
-Detects support for the DOM Pointer Events API, which provides a unified event interface for pointing input devices, as implemented in IE10+.
-*/
-
-  // **Test name hijacked!**
-  // Now refers to W3C DOM PointerEvents spec rather than the CSS pointer-events property.
-  Modernizr.addTest('pointerevents', function () {
-    // Cannot use `.prefixed()` for events, so test each prefix
-    var bool = false,
-    i = domPrefixes.length;
-
-    // Don't forget un-prefixed...
-    bool = Modernizr.hasEvent('pointerdown');
-
-    while (i-- && !bool) {
-      if (hasEvent(domPrefixes[i] + 'pointerdown')) {
-        bool = true;
-      }
-    }
-    return bool;
-  });
-
-/*!
-{
-  "name": "Hashchange event",
-  "property": "hashchange",
-  "caniuse": "hashchange",
-  "tags": ["history"],
-  "notes": [{
-    "name": "MDN documentation",
-    "href": "https://developer.mozilla.org/en-US/docs/Web/API/window.onhashchange"
-  }],
-  "polyfills": [
-    "jquery-hashchange",
-    "moo-historymanager",
-    "jquery-ajaxy",
-    "hasher",
-    "shistory"
-  ]
-}
-!*/
-/* DOC
-Detects support for the `hashchange` event, fired when the current location fragment changes.
-*/
-
-  Modernizr.addTest('hashchange', function() {
-    if (hasEvent('hashchange', window) === false) {
-      return false;
-    }
-
-    // documentMode logic from YUI to filter out IE8 Compat Mode
-    //   which false positives.
-    return (document.documentMode === undefined || document.documentMode > 7);
-  });
-
-/*!
-{
-  "name": "input[search] search event",
-  "property": "search",
-  "tags": ["input","search"],
-  "authors": ["Calvin Webster"],
-  "notes": [{
-    "name": "Wufoo demo",
-    "href": "http://www.wufoo.com/html5/types/5-search.html?"
-  }, {
-    "name": "CSS Tricks",
-    "href": "http://css-tricks.com/webkit-html5-search-inputs/"
-  }]
-}
-!*/
-/* DOC
-There is a custom `search` event implemented in webkit browsers when using an `input[search]` element.
-*/
-
-  Modernizr.addTest('inputsearchevent',  hasEvent('search'));
-
-
-  /**
-   * Create our "modernizr" element that we do most feature tests on.
-   */
-  var modElem = {
-    elem : createElement('modernizr')
-  };
-
-  // Clean up this element
-  Modernizr._q.push(function() {
-    delete modElem.elem;
-  });
-
-
-/*!
-{
-  "name": "CSS Font ch Units",
-  "authors": ["Ron Waldon (@jokeyrhyme)"],
-  "property": "csschunit",
-  "tags": ["css"],
-  "notes": [{
-    "name": "W3C Spec",
-    "href": "http://www.w3.org/TR/css3-values/#font-relative-lengths"
-  }]
-}
-!*/
-
-  Modernizr.addTest('csschunit', function () {
-    var elemStyle = modElem.elem.style;
-    try {
-      elemStyle.fontSize = '3ch';
-    } catch (e) { }
-    return elemStyle.fontSize.indexOf('ch') !== -1;
-  });
-
-/*!
-{
-  "name": "CSS Font ex Units",
-  "authors": ["Ron Waldon (@jokeyrhyme)"],
-  "property": "cssexunit",
-  "tags": ["css"],
-  "notes": [{
-    "name": "W3C Spec",
-    "href": "http://www.w3.org/TR/css3-values/#font-relative-lengths"
-  }]
-}
-!*/
-
-  Modernizr.addTest('cssexunit', function () {
-    var elemStyle = modElem.elem.style;
-    try {
-      elemStyle.fontSize = '3ex';
-    } catch (e) { }
-    return elemStyle.fontSize.indexOf('ex') !== -1;
-  });
-
-
-  /**
-   * contains returns a boolean for if substr is found within str.
-   */
-  function contains( str, substr ) {
-    return !!~('' + str).indexOf(substr);
-  }
-
-  ;
-/*!
-{
-  "name": "CSS HSLA Colors",
-  "caniuse": "css3-colors",
-  "property": "hsla",
-  "tags": ["css"]
-}
-!*/
-
-  Modernizr.addTest('hsla', function() {
-    var elem = createElement('div');
-    var style = elem.style;
-    style.cssText = 'background-color:hsla(120,40%,100%,.5)';
-    return contains(style.backgroundColor, 'rgba') || contains(style.backgroundColor, 'hsla');
-  });
-
-
-  // Change the function's scope.
-  function roundedEquals(a, b) {
-    return a - 1 === b || a === b || a + 1 === b;
-  }
-
-  ;
-
-  function getBody() {
-    // After page load injecting a fake body doesn't work so check if body exists
-    var body = document.body;
-
-    if(!body) {
-      // Can't use the real body create a fake one.
-      body = createElement('body');
-      body.fake = true;
-    }
-
-    return body;
-  }
-
-  ;
-/*!
-  {
-  "name": "Flash",
-  "property": "flash",
-  "tags": ["flash"],
-  "polyfills": ["shumway"]
-  }
-  !*/
-/* DOC
-Detects support flash, as well as flash blocking plugins
-*/
-
-  Modernizr.addAsyncTest(function() {
-    /* jshint -W053 */
-
-    var removeFakeBody = function (body) {
-      // If we’re rockin’ an attached fake body, clean it up
-      if (body.fake && body.parentNode) {
-        body.parentNode.removeChild(body);
-      }
-    };
-    var runTest = function(result, embed) {
-      var bool = !!result;
-      if (bool) {
-        bool = new Boolean(bool);
-        bool.blocked = (result === 'blocked');
-      }
-      addTest('flash', function() { return bool; });
-      if (embed && body.contains(embed)) {
-        body.removeChild(embed);
-      }
-    };
-    var easy_detect;
-    var activex;
-    // we wrap activex in a try/catch because when flash is disabled through
-    // ActiveX controls, it throws an error.
-    try {
-      // Pan is an API that exists for flash objects.
-      activex = 'ActiveXObject' in window && 'Pan' in new window.ActiveXObject('ShockwaveFlash.ShockwaveFlash');
-    } catch(e) {}
-
-    easy_detect = !( ( 'plugins' in navigator && 'Shockwave Flash' in navigator.plugins ) || activex );
-
-    if (easy_detect) {
-      runTest(false);
-    }
-    else {
-      // flash seems to be installed, but it might be blocked. We have to
-      // actually create an element to see what happens to it.
-      var embed = createElement('embed');
-      var body = getBody();
-      var blockedDetect;
-      var inline_style;
-
-      embed.type = 'application/x-shockwave-flash';
-
-      // Need to do this in the body (fake or otherwise) otherwise IE8 complains
-      body.appendChild(embed);
-      docElement.appendChild(body);
-
-      // Pan doesn't exist in the embed if its IE (its on the ActiveXObjeect)
-      // so this check is for all other browsers.
-      if (!('Pan' in embed) && !activex) {
-        runTest('blocked', embed);
-        removeFakeBody(body);
-        return;
-      }
-
-      blockedDetect = function() {
-        // if we used a fake body originally, we need to restart this test, since
-        // we haven't been attached to the DOM, and therefore none of the blockers
-        // have had time to work.
-        if (!docElement.contains(body)) {
-          body = document.body || body;
-          embed = document.createElement('embed');
-          embed.type = 'application/x-shockwave-flash';
-          body.appendChild(embed);
-          return setTimeout(blockedDetect, 1000);
-        }
-        if (!docElement.contains(embed)) {
-          runTest('blocked');
-        }
-        else {
-          inline_style = embed.style.cssText;
-          if (inline_style !== '') {
-            // the style of the element has changed automatically. This is a
-            // really poor heuristic, but for lower end flash blocks, it the
-            // only change they can make.
-            runTest('blocked', embed);
-          }
-          else {
-            runTest(true, embed);
-          }
-        }
-        removeFakeBody(body);
-      };
-
-      // If we have got this far, there is still a chance a userland plugin
-      // is blocking us (either changing the styles, or automatically removing
-      // the element). Both of these require us to take a step back for a moment
-      // to allow for them to get time of the thread, hence a setTimeout.
-      //
-      setTimeout(blockedDetect, 10);
-    }
-  });
-
-
-  // Inject element with style element and some CSS rules
-  function injectElementWithStyles( rule, callback, nodes, testnames ) {
-    var mod = 'modernizr';
-    var style;
-    var ret;
-    var node;
-    var docOverflow;
-    var div = createElement('div');
-    var body = getBody();
-
-    if ( parseInt(nodes, 10) ) {
-      // In order not to give false positives we create a node for each test
-      // This also allows the method to scale for unspecified uses
-      while ( nodes-- ) {
-        node = createElement('div');
-        node.id = testnames ? testnames[nodes] : mod + (nodes + 1);
-        div.appendChild(node);
-      }
-    }
-
-    // <style> elements in IE6-9 are considered 'NoScope' elements and therefore will be removed
-    // when injected with innerHTML. To get around this you need to prepend the 'NoScope' element
-    // with a 'scoped' element, in our case the soft-hyphen entity as it won't mess with our measurements.
-    // msdn.microsoft.com/en-us/library/ms533897%28VS.85%29.aspx
-    // Documents served as xml will throw if using &shy; so use xml friendly encoded version. See issue #277
-    style = ['&#173;','<style id="s', mod, '">', rule, '</style>'].join('');
-    div.id = mod;
-    // IE6 will false positive on some tests due to the style element inside the test div somehow interfering offsetHeight, so insert it into body or fakebody.
-    // Opera will act all quirky when injecting elements in documentElement when page is served as xml, needs fakebody too. #270
-    (!body.fake ? div : body).innerHTML += style;
-    body.appendChild(div);
-    if ( body.fake ) {
-      //avoid crashing IE8, if background image is used
-      body.style.background = '';
-      //Safari 5.13/5.1.4 OSX stops loading if ::-webkit-scrollbar is used and scrollbars are visible
-      body.style.overflow = 'hidden';
-      docOverflow = docElement.style.overflow;
-      docElement.style.overflow = 'hidden';
-      docElement.appendChild(body);
-    }
-
-    ret = callback(div, rule);
-    // If this is done after page load we don't want to remove the body so check if body exists
-    if ( body.fake ) {
-      body.parentNode.removeChild(body);
-      docElement.style.overflow = docOverflow;
-      // Trigger layout so kinetic scrolling isn't disabled in iOS6+
-      docElement.offsetHeight;
-    } else {
-      div.parentNode.removeChild(div);
-    }
-
-    return !!ret;
-
-  }
-
-  ;
-
-  var testStyles = ModernizrProto.testStyles = injectElementWithStyles;
-
-/*!
-{
-  "name": "@font-face",
-  "property": "fontface",
-  "authors": ["Diego Perini", "Mat Marquis"],
-  "tags": ["css"],
-  "knownBugs": [
-    "False Positive: WebOS http://github.com/Modernizr/Modernizr/issues/342",
-    "False Postive: WP7 http://github.com/Modernizr/Modernizr/issues/538"
-  ],
-  "notes": [{
-    "name": "@font-face detection routine by Diego Perini",
-    "href": "http://javascript.nwbox.com/CSSSupport/"
-  },{
-    "name": "Filament Group @font-face compatibility research",
-    "href": "https://docs.google.com/presentation/d/1n4NyG4uPRjAA8zn_pSQ_Ket0RhcWC6QlZ6LMjKeECo0/edit#slide=id.p"
-  },{
-    "name": "Filament Grunticon/@font-face device testing results",
-    "href": "https://docs.google.com/spreadsheet/ccc?key=0Ag5_yGvxpINRdHFYeUJPNnZMWUZKR2ItMEpRTXZPdUE#gid=0"
-  },{
-    "name": "CSS fonts on Android",
-    "href": "http://stackoverflow.com/questions/3200069/css-fonts-on-android"
-  },{
-    "name": "@font-face and Android",
-    "href": "http://archivist.incutio.com/viewlist/css-discuss/115960"
-  }]
-}
-!*/
-
-  var blacklist = (function() {
-    var ua = navigator.userAgent;
-    var wkvers = ua.match( /applewebkit\/([0-9]+)/gi ) && parseFloat( RegExp.$1 );
-    var webos = ua.match( /w(eb)?osbrowser/gi );
-    var wppre8 = ua.match( /windows phone/gi ) && ua.match( /iemobile\/([0-9])+/gi ) && parseFloat( RegExp.$1 ) >= 9;
-    var oldandroid = wkvers < 533 && ua.match( /android/gi );
-    return webos || oldandroid || wppre8;
-  }());
-  if( blacklist ) {
-    Modernizr.addTest('fontface', false);
-  } else {
-    testStyles('@font-face {font-family:"font";src:url("https://")}', function( node, rule ) {
-      var style = document.getElementById('smodernizr');
-      var sheet = style.sheet || style.styleSheet;
-      var cssText = sheet ? (sheet.cssRules && sheet.cssRules[0] ? sheet.cssRules[0].cssText : sheet.cssText || '') : '';
-      var bool = /src/i.test(cssText) && cssText.indexOf(rule.split(' ')[0]) === 0;
-      Modernizr.addTest('fontface', bool);
-    });
-  }
-;
-/*!
-{
-  "name": "CSS :last-child pseudo-selector",
-  "caniuse": "css-sel3",
-  "property": "lastchild",
-  "tags": ["css"],
-  "builderAliases": ["css_lastchild"],
-  "notes": [{
-    "name": "Related Github Issue",
-    "href": "https://github.com/Modernizr/Modernizr/pull/304"
-  }]
-}
-!*/
-
-  testStyles('#modernizr div {width:100px} #modernizr :last-child{width:200px;display:block}', function( elem ) {
-    Modernizr.addTest('lastchild', elem.lastChild.offsetWidth > elem.firstChild.offsetWidth);
-  }, 2);
-
-/*!
-{
-  "name": "CSS :nth-child pseudo-selector",
-  "caniuse": "css-sel3",
-  "property": "nthchild",
-  "tags": ["css"],
-  "notes": [
-    {
-      "name": "Related Github Issue",
-      "href": "https://github.com/Modernizr/Modernizr/pull/685"
-    },
-    {
-      "name": "Sitepoint :nth-child documentation",
-      "href": "http://reference.sitepoint.com/css/pseudoclass-nthchild"
-    }
-  ],
-  "authors": ["@emilchristensen"],
-  "warnings": ["Known false negative in Safari 3.1 and Safari 3.2.2"]
-}
-!*/
-/* DOC
-Detects support for the ':nth-child()' CSS pseudo-selector.
-*/
-
-  // 5 `<div>` elements with `1px` width are created.
-  // Then every other element has its `width` set to `2px`.
-  // A Javascript loop then tests if the `<div>`s have the expected width
-  // using the modulus operator.
-  testStyles('#modernizr div {width:1px} #modernizr div:nth-child(2n) {width:2px;}', function( elem ) {
-    Modernizr.addTest('nthchild', function() {
-      var elems = elem.getElementsByTagName('div'),
-      test = true;
-
-      for (var i = 0; i < 5; i++) {
-        test = test && elems[i].offsetWidth === i % 2 + 1;
-      }
-
-      return test;
-    });
-  }, 5);
-
-/*!
-{
-  "name": "CSS :valid pseudo-class",
-  "property": "cssvalid",
-  "notes": [{
-    "name": "MDN documentation",
-    "href": "https://developer.mozilla.org/en-US/docs/Web/CSS/:valid"
-  }]
-}
-!*/
-/* DOC
-  Detects support for the ':valid' CSS pseudo-class.
-*/
-
-  Modernizr.addTest('cssvalid', function() {
-    return testStyles('#modernizr input{height:0;border:0;padding:0;margin:0;width:10px} #modernizr input:valid{width:50px}', function(elem) {
-      var input = createElement('input');
-      elem.appendChild(input);
-      return input.clientWidth > 10;
-    });
-  });
-
-/*!
-{
-  "name": "CSS :checked pseudo-selector",
-  "caniuse": "css-sel3",
-  "property": "checked",
-  "tags": ["css"],
-  "notes": [{
-    "name": "Related Github Issue",
-    "href": "https://github.com/Modernizr/Modernizr/pull/879"
-  }]
-}
-!*/
-
-  Modernizr.addTest('checked', function(){
-    return testStyles('#modernizr {position:absolute} #modernizr input {margin-left:10px} #modernizr :checked {margin-left:20px;display:block}', function( elem ){
-      var cb = createElement('input');
-      cb.setAttribute('type', 'checkbox');
-      cb.setAttribute('checked', 'checked');
-      elem.appendChild(cb);
-      return cb.offsetLeft === 20;
-    });
-  });
-
-/*!
-{
-  "name": "CSS :invalid pseudo-class",
-  "property": "cssinvalid",
-  "notes": [{
-    "name": "MDN documentation",
-    "href": "https://developer.mozilla.org/en-US/docs/Web/CSS/:invalid"
-  }]
-}
-!*/
-/* DOC
-  Detects support for the ':invalid' CSS pseudo-class.
-*/
-
-  Modernizr.addTest('cssinvalid', function() {
-    return testStyles('#modernizr input{height:0;border:0;padding:0;margin:0;width:10px} #modernizr input:invalid{width:50px}', function(elem) {
-      var input = createElement('input');
-      input.required = true;
-      elem.appendChild(input);
-      return input.clientWidth > 10;
-    });
-  });
-
-/*!
-{
-  "name": "CSS Display table",
-  "property": "displaytable",
-  "caniuse": "css-table",
-  "authors": ["scottjehl"],
-  "tags": ["css"],
-  "builderAliases": ["css_displaytable"],
-  "notes": [{
-    "name": "Detects for all additional table display values",
-    "href": "http://pastebin.com/Gk9PeVaQ"
-  }]
-}
-!*/
-/* DOC
-`display: table` and `table-cell` test. (both are tested under one name `table-cell` )
-*/
-
-  // If a document is in rtl mode this test will fail so we force ltr mode on the injeced
-  // element https://github.com/Modernizr/Modernizr/issues/716
-  testStyles('#modernizr{display: table; direction: ltr}#modernizr div{display: table-cell; padding: 10px}', function( elem ) {
-    var ret;
-    var child = elem.children;
-    ret = child[0].offsetLeft < child[1].offsetLeft;
-    Modernizr.addTest('displaytable', ret, { aliases: ['display-table'] });
-  },2);
-
-/*!
-{
-  "name": "CSS Generated Content",
-  "property": "generatedcontent",
-  "tags": ["css"],
-  "warnings": ["Android won't return correct height for anything below 7px #738"],
-  "notes": [{
-    "name": "W3C CSS Selectors Level 3 spec",
-    "href": "http://www.w3.org/TR/css3-selectors/#gen-content"
-  },{
-    "name": "MDN article on :before",
-    "href": "https://developer.mozilla.org/en-US/docs/Web/CSS/::before"
-  },{
-    "name": "MDN article on :after",
-    "href": "https://developer.mozilla.org/en-US/docs/Web/CSS/::before"
-  }]
-}
-!*/
-
-  testStyles('#modernizr{font:0/0 a}#modernizr:after{content:":)";visibility:hidden;font:7px/1 a}', function( node ) {
-    Modernizr.addTest('generatedcontent', node.offsetHeight >= 7);
-  });
-
-/*!
-{
-  "name": "CSS general sibling selector",
-  "caniuse": "css-sel3",
-  "property": "siblinggeneral",
-  "tags": ["css"],
-  "notes": [{
-    "name": "Related Github Issue",
-    "href": "https://github.com/Modernizr/Modernizr/pull/889"
-  }]
-}
-!*/
-
-  Modernizr.addTest('siblinggeneral', function(){
-    return testStyles('#modernizr div {width:100px} #modernizr div ~ div {width:200px;display:block}', function( elem ) {
-      return elem.lastChild.offsetWidth == 200;
-    }, 2);
-  });
-
-/*!
-{
-  "name": "CSS Subpixel Fonts",
-  "property": "subpixelfont",
-  "tags": ["css"],
-  "builderAliases": ["css_subpixelfont"],
-  "authors": [
-    "@derSchepp",
-    "@gerritvanaaken",
-    "@rodneyrehm",
-    "@yatil",
-    "@ryanseddon"
-  ],
-  "notes": [{
-    "name": "Origin Test",
-    "href": "https://github.com/gerritvanaaken/subpixeldetect"
-  }]
-}
-!*/
-
-  /*
-   * (to infer if GDI or DirectWrite is used on Windows)
-   */
-  testStyles(
-    '#modernizr{position: absolute; top: -10em; visibility:hidden; font: normal 10px arial;}#subpixel{float: left; font-size: 33.3333%;}',
-  function( elem ) {
-    var subpixel = elem.firstChild;
-    subpixel.innerHTML = 'This is a text written in Arial';
-    Modernizr.addTest('subpixelfont', window.getComputedStyle ?
-      window.getComputedStyle(subpixel, null).getPropertyValue('width') !== '44px'
-    : false);
-  }, 1, ['subpixel']);
-
-/*!
-{
-  "name": "CSS Stylable Scrollbars",
-  "property": "cssscrollbar",
-  "tags": ["css"],
-  "builderAliases": ["css_scrollbars"]
-}
-!*/
-
-  testStyles('#modernizr{overflow: scroll; width: 40px; height: 40px; }#' + prefixes
-    .join('scrollbar{width:0px}'+' #modernizr::')
-    .split('#')
-    .slice(1)
-    .join('#') + 'scrollbar{width:0px}',
-  function( node ) {
-    Modernizr.addTest('cssscrollbar', node.scrollWidth == 40);
-  });
-
-/*!
-{
-  "name": "CSS vh unit",
-  "property": "cssvhunit",
-  "caniuse": "viewport-units",
-  "tags": ["css"],
-  "builderAliases": ["css_vhunit"],
-  "notes": [{
-    "name": "Related Modernizr Issue",
-    "href": "https://github.com/Modernizr/Modernizr/issues/572"
-  },{
-    "name": "Similar JSFiddle",
-    "href": "http://jsfiddle.net/FWeinb/etnYC/"
-  }]
-}
-!*/
-
-  testStyles('#modernizr { height: 50vh; }', function( elem ) {
-    var height = parseInt(window.innerHeight/2,10);
-    var compStyle = parseInt((window.getComputedStyle ?
-                              getComputedStyle(elem, null) :
-                              elem.currentStyle)['height'],10);
-    Modernizr.addTest('cssvhunit', compStyle == height);
-  });
-
-/*!
-{
-  "name": "CSS vmax unit",
-  "property": "cssvmaxunit",
-  "caniuse": "viewport-units",
-  "tags": ["css"],
-  "builderAliases": ["css_vmaxunit"],
-  "notes": [{
-    "name": "Related Modernizr Issue",
-    "href": "https://github.com/Modernizr/Modernizr/issues/572"
-  },{
-    "name": "JSFiddle Example",
-    "href": "http://jsfiddle.net/glsee/JDsWQ/4/"
-  }]
-}
-!*/
-
-  testStyles('#modernizr1{width: 50vmax}#modernizr2{width:50px;height:50px;overflow:scroll}', function() {
-    var elem = document.getElementById('modernizr1');
-    var scroller = document.getElementById('modernizr2');
-    var scrollbarWidth = parseInt((scroller.offsetWidth - scroller.clientWidth) / 2, 10);
-
-    var one_vw = docElement.clientWidth/100;
-    var one_vh = docElement.clientHeight/100;
-    var expectedWidth = parseInt(Math.max(one_vw, one_vh) * 50, 10);
-    var compWidth = parseInt((window.getComputedStyle ?
-                          getComputedStyle(elem, null) :
-                          elem.currentStyle)['width'],10);
-
-    Modernizr.addTest('cssvmaxunit', roundedEquals(expectedWidth, compWidth) || roundedEquals(expectedWidth, compWidth - scrollbarWidth));
-  }, 2);
-
-/*!
-{
-  "name": "details Element",
-  "caniuse": "details",
-  "property": "details",
-  "tags": ["elem"],
-  "builderAliases": ["elem_details"],
-  "authors": ["@mathias"],
-  "notes": [{
-    "name": "Mathias' Original",
-    "href": "http://mths.be/axh"
-  }]
-}
-!*/
-
-  Modernizr.addTest('details', function() {
-    var el = createElement('details');
-    var diff;
-
-    // return early if possible; thanks @aFarkas!
-    if (!('open' in el)) {
-      return false;
-    }
-
-    testStyles('#modernizr details{display:block}', function( node ) {
-      node.appendChild(el);
-      el.innerHTML = '<summary>a</summary>b';
-      diff = el.offsetHeight;
-      el.open = true;
-      diff = diff != el.offsetHeight;
-    });
-
-
-    return diff;
-  });
-
-/*!
-{
-  "name": "Form Validation",
-  "property": "formvalidation",
-  "tags": ["forms", "validation", "attribute"],
-  "builderAliases": ["forms_validation"]
-}
-!*/
-/* DOC
-This implementation only tests support for interactive form validation.
-To check validation for a specific type or a specific other constraint,
-the test can be combined:
-
-- `Modernizr.inputtypes.number && Modernizr.formvalidation` (browser supports rangeOverflow, typeMismatch etc. for type=number)
-- `Modernizr.input.required && Modernizr.formvalidation` (browser supports valueMissing)
-*/
-
-  Modernizr.addTest('formvalidation', function() {
-    var form = createElement('form');
-    if ( !('checkValidity' in form) || !('addEventListener' in form) ) {
-      return false;
-    }
-    if ('reportValidity' in form) {
-      return true;
-    }
-    var invalidFired = false;
-    var input;
-
-    Modernizr.formvalidationapi =  true;
-
-    // Prevent form from being submitted
-    form.addEventListener('submit', function(e) {
-      //Opera does not validate form, if submit is prevented
-      if ( !window.opera ) {
-        e.preventDefault();
-      }
-      e.stopPropagation();
-    }, false);
-
-    // Calling form.submit() doesn't trigger interactive validation,
-    // use a submit button instead
-    //older opera browsers need a name attribute
-    form.innerHTML = '<input name="modTest" required><button></button>';
-
-    testStyles('#modernizr form{position:absolute;top:-99999em}', function( node ) {
-      node.appendChild(form);
-
-      input = form.getElementsByTagName('input')[0];
-
-      // Record whether "invalid" event is fired
-      input.addEventListener('invalid', function(e) {
-        invalidFired = true;
-        e.preventDefault();
-        e.stopPropagation();
-      }, false);
-
-      //Opera does not fully support the validationMessage property
-      Modernizr.formvalidationmessage = !!input.validationMessage;
-
-      // Submit form by clicking submit button
-      form.getElementsByTagName('button')[0].click();
-    });
-
-    return invalidFired;
-  });
-
-/*!
-{
-  "name": "Hidden Scrollbar",
-  "property": "hiddenscroll",
-  "authors": ["Oleg Korsunsky"]
-}
-!*/
-/* DOC
-Detects whether scrollbars on overflowed blocks are hidden (a-la iPhone)
-*/
-
-  Modernizr.addTest('hiddenscroll', function() {
-    return testStyles('#modernizr {width:100px;height:100px;overflow:scroll}', function(elem) {
-      return elem.offsetWidth === elem.clientWidth;
-    });
-  });
-
-/*!
-{
-  "name": "MathML",
-  "property": "mathml",
-  "caniuse": "mathml",
-  "authors": ["Addy Osmani", "Davide P. Cervone", "David Carlisle"],
-  "notes": [{
-    "name": "W3C spec",
-    "href": "http://www.w3.org/Math/"
-  }],
-  "polyfills": ["mathjax"]
-}
-!*/
-/* DOC
-Detects support for MathML, for mathematic equations in web pages.
-*/
-
-  // Based on work by Davide (@dpvc) and David (@davidcarlisle)
-  // in https://github.com/mathjax/MathJax/issues/182
-
-  Modernizr.addTest('mathml', function() {
-    var ret;
-
-    testStyles('#modernizr{position:absolute;display:inline-block}', function(node){
-      node.innerHTML += '<math><mfrac><mi>xx</mi><mi>yy</mi></mfrac></math>';
-
-      ret = node.offsetHeight > node.offsetWidth;
-    });
-
-    return ret;
-  });
-
-/*!
-{
-  "name": "onInput Event",
-  "property": "oninput",
-  "notes": [{
-    "name": "MDN article",
-    "href": "https://developer.mozilla.org/en-US/docs/Web/API/GlobalEventHandlers.oninput"
-  },{
-    "name": "WHATWG spec",
-    "href": "http://www.whatwg.org/specs/web-apps/current-work/multipage/common-input-element-attributes.html#common-event-behaviors"
-  },{
-    "name": "Detecting onInput support",
-    "href": "http://danielfriesen.name/blog/2010/02/16/html5-browser-maze-oninput-support"
-  }],
-  "authors": ["Patrick Kettner"],
-  "tags": ["event"]
-}
-!*/
-/* DOC
-`oninput` tests if the browser is able to detect the input event
-*/
-
-
-  Modernizr.addTest('oninput', function() {
-    var input = createElement('input');
-    var supportsOnInput;
-    input.setAttribute('oninput', 'return');
-
-    if (hasEvent('oninput', docElement) || typeof input.oninput == 'function') {
-      return true;
-    }
-
-    // IE doesn't support onInput, so we wrap up the non IE APIs
-    // (createEvent, addEventListener) in a try catch, rather than test for
-    // their trident equivalent.
-    try {
-      // Older Firefox didn't map oninput attribute to oninput property
-      var testEvent  = document.createEvent('KeyboardEvent');
-      supportsOnInput = false;
-      var handler = function(e) {
-        supportsOnInput = true;
-        e.preventDefault();
-        e.stopPropagation();
-      };
-
-      testEvent.initKeyEvent('keypress', true, true, window, false, false, false, false, 0, 'e'.charCodeAt(0));
-      docElement.appendChild(input);
-      input.addEventListener('input', handler, false);
-      input.focus();
-      input.dispatchEvent(testEvent);
-      input.removeEventListener('input', handler, false);
-      docElement.removeChild(input);
-    } catch (e) {
-      supportsOnInput = false;
-    }
-      return supportsOnInput;
-  });
-
-/*!
-{
-  "name": "Touch Events",
-  "property": "touchevents",
-  "caniuse" : "touch",
-  "tags": ["media", "attribute"],
-  "notes": [{
-    "name": "Touch Events spec",
-    "href": "http://www.w3.org/TR/2013/WD-touch-events-20130124/"
-  }],
-  "warnings": [
-    "Indicates if the browser supports the Touch Events spec, and does not necessarily reflect a touchscreen device"
-  ],
-  "knownBugs": [
-    "False-positive on some configurations of Nokia N900",
-    "False-positive on some BlackBerry 6.0 builds – https://github.com/Modernizr/Modernizr/issues/372#issuecomment-3112695"
-  ]
-}
-!*/
-/* DOC
-Indicates if the browser supports the W3C Touch Events API.
-
-This *does not* necessarily reflect a touchscreen device:
-
-* Older touchscreen devices only emulate mouse events
-* Modern IE touch devices implement the Pointer Events API instead: use `Modernizr.pointerevents` to detect support for that
-* Some browsers & OS setups may enable touch APIs when no touchscreen is connected
-* Future browsers may implement other event models for touch interactions
-
-See this article: [You Can't Detect A Touchscreen](http://www.stucox.com/blog/you-cant-detect-a-touchscreen/).
-
-It's recommended to bind both mouse and touch/pointer events simultaneously – see [this HTML5 Rocks tutorial](http://www.html5rocks.com/en/mobile/touchandmouse/).
-
-This test will also return `true` for Firefox 4 Multitouch support.
-*/
-
-  // Chrome (desktop) used to lie about its support on this, but that has since been rectified: http://crbug.com/36415
-  Modernizr.addTest('touchevents', function() {
-    var bool;
-    if(('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch) {
-      bool = true;
-    } else {
-      var query = ['@media (',prefixes.join('touch-enabled),('),'heartz',')','{#modernizr{top:9px;position:absolute}}'].join('');
-      testStyles(query, function( node ) {
-        bool = node.offsetTop === 9;
-      });
-    }
-    return bool;
-  });
-
-/*!
-{
-  "name": "Unicode characters",
-  "property": "unicode",
-  "tags": ["encoding"],
-  "warnings": [
-    "positive Unicode support doesn't mean you can use it inside <title>, this seems more related to OS & Language packs"
-  ]
-}
-!*/
-/* DOC
-Detects if unicode characters are supported in the current document.
-*/
-
-  /**
-   * Unicode special character support
-   *
-   * Detection is made by testing missing glyph box rendering against star character
-   * If widths are the same, this "probably" means the browser didn't support the star character and rendered a glyph box instead
-   * Just need to ensure the font characters have different widths
-   */
-  Modernizr.addTest('unicode', function() {
-    var bool;
-    var missingGlyph = createElement('span');
-    var star = document.createElement('span');
-
-    testStyles('#modernizr{font-family:Arial,sans;font-size:300em;}', function( node ) {
-
-      missingGlyph.innerHTML = '&#5987';
-      star.innerHTML = '&#9734';
-
-      node.appendChild(missingGlyph);
-      node.appendChild(star);
-
-      bool = 'offsetWidth' in missingGlyph && missingGlyph.offsetWidth !== star.offsetWidth;
-    });
-
-    return bool;
-
-  });
-
-/*!
-{
-  "name": "Unicode Range",
-  "property": "unicoderange",
-  "notes": [{
-    "name" : "W3C reference",
-    "href": "http://www.w3.org/TR/2013/CR-css-fonts-3-20131003/#descdef-unicode-range"
-  }, {
-    "name" : "24 Way article",
-    "href": "http://24ways.org/2011/creating-custom-font-stacks-with-unicode-range"
-  }]
-}
-!*/
-
-  Modernizr.addTest('unicoderange', function () {
-
-    return Modernizr.testStyles('@font-face{font-family:"unicodeRange";src:local("Arial");unicode-range:U+0020,U+002E}#modernizr span{font-size:10px;display:inline-block;font-family:"unicodeRange",monospace}#modernizr .mono{font-family:monospace}', function (elem) {
-
-      // we use specify a unicode-range of 002E (the `.` glyph,
-      // and a monospace font as the fallback. If the first of
-      // these test glyphs is a different width than the other
-      // the other three (which are all monospace), then we
-      // have a winner.
-      var testGlyphs = ['.', '.', 'm', 'm'];
-
-      for (var i = 0; i < testGlyphs.length; i++) {
-        var elm = createElement('span');
-        elm.innerHTML = testGlyphs[i];
-        elm.className = i % 2 ? 'mono' : '';
-        elem.appendChild(elm);
-        testGlyphs[i] = elm.clientWidth;
-      }
-
-      return (testGlyphs[0] !== testGlyphs[1] && testGlyphs[2] === testGlyphs[3]);
-    });
-  });
-
-
-  // adapted from matchMedia polyfill
-  // by Scott Jehl and Paul Irish
-  // gist.github.com/786768
-  var testMediaQuery = (function () {
-    var matchMedia = window.matchMedia || window.msMatchMedia;
-    if ( matchMedia ) {
-      return function ( mq ) {
-        var mql = matchMedia(mq);
-        return mql && mql.matches || false;
-      };
-    }
-
-    return function ( mq ) {
-      var bool = false;
-
-      injectElementWithStyles('@media ' + mq + ' { #modernizr { position: absolute; } }', function( node ) {
-        bool = (window.getComputedStyle ?
-                window.getComputedStyle(node, null) :
-                node.currentStyle)['position'] == 'absolute';
-      });
-
-      return bool;
-    };
-  })();
-
-
-
-  /** Modernizr.mq tests a given media query, live against the current state of the window
-   * A few important notes:
-        * If a browser does not support media queries at all (eg. oldIE) the mq() will always return false
-        * A max-width or orientation query will be evaluated against the current state, which may change later.
-        * You must specify values. Eg. If you are testing support for the min-width media query use:
-              Modernizr.mq('(min-width:0)')
-   * usage:
-   * Modernizr.mq('only screen and (max-width:768)')
-   */
-  var mq = ModernizrProto.mq = testMediaQuery;
-
-/*!
-{
-  "name": "CSS Media Queries",
-  "caniuse": "css-mediaqueries",
-  "property": "mediaqueries",
-  "tags": ["css"],
-  "builderAliases": ["css_mediaqueries"]
-}
-!*/
-
-  Modernizr.addTest('mediaqueries', mq('only all'));
-
-
-  var inputElem = createElement('input');
-
-
-  var inputtypes = 'search tel url email datetime date month week time datetime-local number range color'.split(' ');
-
-
-  var inputs = {};
-
-
-  var smile = ':)';
-
-/*!
-{
-  "name": "Form input types",
-  "property": "inputtypes",
-  "caniuse": "forms",
-  "tags": ["forms"],
-  "authors": ["Mike Taylor"],
-  "polyfills": [
-    "jquerytools",
-    "webshims",
-    "h5f",
-    "webforms2",
-    "nwxforms",
-    "fdslider",
-    "html5slider",
-    "galleryhtml5forms",
-    "jscolor",
-    "html5formshim",
-    "selectedoptionsjs",
-    "formvalidationjs"
-  ]
-}
-!*/
-/* DOC
-Detects support for HTML5 form input types and exposes Boolean subproperties with the results:
-
-```javascript
-Modernizr.inputtypes.color
-Modernizr.inputtypes.date
-Modernizr.inputtypes.datetime
-Modernizr.inputtypes['datetime-local']
-Modernizr.inputtypes.email
-Modernizr.inputtypes.month
-Modernizr.inputtypes.number
-Modernizr.inputtypes.range
-Modernizr.inputtypes.search
-Modernizr.inputtypes.tel
-Modernizr.inputtypes.time
-Modernizr.inputtypes.url
-Modernizr.inputtypes.week
-```
-*/
-
-  // Run through HTML5's new input types to see if the UA understands any.
-  //   This is put behind the tests runloop because it doesn't return a
-  //   true/false like all the other tests; instead, it returns an object
-  //   containing each input type with its corresponding true/false value
-
-  // Big thanks to @miketaylr for the html5 forms expertise. miketaylr.com/
-  Modernizr['inputtypes'] = (function(props) {
-    var bool;
-    var inputElemType;
-    var defaultView;
-    var len = props.length;
-
-    for ( var i = 0; i < len; i++ ) {
-
-      inputElem.setAttribute('type', inputElemType = props[i]);
-      bool = inputElem.type !== 'text';
-
-      // We first check to see if the type we give it sticks..
-      // If the type does, we feed it a textual value, which shouldn't be valid.
-      // If the value doesn't stick, we know there's input sanitization which infers a custom UI
-      if ( bool ) {
-
-        inputElem.value         = smile;
-        inputElem.style.cssText = 'position:absolute;visibility:hidden;';
-
-        if ( /^range$/.test(inputElemType) && inputElem.style.WebkitAppearance !== undefined ) {
-
-          docElement.appendChild(inputElem);
-          defaultView = document.defaultView;
-
-          // Safari 2-4 allows the smiley as a value, despite making a slider
-          bool =  defaultView.getComputedStyle &&
-            defaultView.getComputedStyle(inputElem, null).WebkitAppearance !== 'textfield' &&
-            // Mobile android web browser has false positive, so must
-            // check the height to see if the widget is actually there.
-            (inputElem.offsetHeight !== 0);
-
-          docElement.removeChild(inputElem);
-
-        } else if ( /^(search|tel)$/.test(inputElemType) ){
-          // Spec doesn't define any special parsing or detectable UI
-          //   behaviors so we pass these through as true
-
-          // Interestingly, opera fails the earlier test, so it doesn't
-          //  even make it here.
-
-        } else if ( /^(url|email|number)$/.test(inputElemType) ) {
-          // Real url and email support comes with prebaked validation.
-          bool = inputElem.checkValidity && inputElem.checkValidity() === false;
-
-        } else {
-          // If the upgraded input compontent rejects the :) text, we got a winner
-          bool = inputElem.value != smile;
-        }
-      }
-
-      inputs[ props[i] ] = !!bool;
-    }
-    return inputs;
-  })(inputtypes);
-
-/*!
-{
-  "name": "input[type=\"number\"] Localization",
-  "property": "localizednumber",
-  "tags": ["forms", "localization", "attribute"],
-  "authors": ["Peter Janes"],
-  "notes": [{
-    "name": "Webkit Bug Tracker Listing",
-    "href": "https://bugs.webkit.org/show_bug.cgi?id=42484"
-  },{
-    "name": "Based on This",
-    "href": "http://trac.webkit.org/browser/trunk/LayoutTests/fast/forms/script-tests/input-number-keyoperation.js?rev=80096#L9"
-  }],
-  "knownBugs": ["Only ever returns true if the browser/OS is configured to use comma as a decimal separator. This is probably fine for most use cases."]
-}
-!*/
-/* DOC
-Detects whether input type="number" is capable of receiving and displaying localized numbers, e.g. with comma separator.
-*/
-
-  Modernizr.addTest('localizednumber', function() {
-    // this extends our testing of input[type=number], so bomb out if that's missing
-    if (!Modernizr.inputtypes.number) { return false; }
-    // we rely on checkValidity later, so bomb out early if we don't have it
-    if (!Modernizr.formvalidation) { return false; }
-
-    var el = createElement('div');
-    var diff;
-    var body = getBody();
-
-    var root = (function() {
-      return docElement.insertBefore(body, docElement.firstElementChild || docElement.firstChild);
-    }());
-    el.innerHTML = '<input type="number" value="1.0" step="0.1"/>';
-    var input = el.childNodes[0];
-    root.appendChild(el);
-    input.focus();
-    try {
-      document.execCommand('InsertText', false, '1,1');
-    } catch(e) { // prevent warnings in IE
-    }
-    diff = input.type === 'number' && input.valueAsNumber === 1.1 && input.checkValidity();
-    root.removeChild(el);
-    body.fake && root.parentNode.removeChild(root);
-    return diff;
-  });
-
-
-
-  var attrs = {};
-
-
-  var inputattrs = 'autocomplete autofocus list placeholder max min multiple pattern required step'.split(' ');
-
-/*!
-{
-  "name": "Input attributes",
-  "property": "input",
-  "tags": ["forms"],
-  "authors": ["Mike Taylor"],
-  "notes": [{
-    "name": "WHATWG spec",
-    "href": "http://www.whatwg.org/specs/web-apps/current-work/multipage/the-input-element.html#input-type-attr-summary"
-  }],
-  "knownBugs": ["Some blackberry devices report false positive for input.multiple"]
-}
-!*/
-/* DOC
-Detects support for HTML5 `<input>` element attributes and exposes Boolean subproperties with the results:
-
-```javascript
-Modernizr.input.autocomplete
-Modernizr.input.autofocus
-Modernizr.input.list
-Modernizr.input.max
-Modernizr.input.min
-Modernizr.input.multiple
-Modernizr.input.pattern
-Modernizr.input.placeholder
-Modernizr.input.required
-Modernizr.input.step
-```
-*/
-
-  // Run through HTML5's new input attributes to see if the UA understands any.
-  // Mike Taylr has created a comprehensive resource for testing these attributes
-  //   when applied to all input types:
-  //   miketaylr.com/code/input-type-attr.html
-
-  // Only input placeholder is tested while textarea's placeholder is not.
-  // Currently Safari 4 and Opera 11 have support only for the input placeholder
-  // Both tests are available in feature-detects/forms-placeholder.js
-  Modernizr['input'] = (function( props ) {
-    for ( var i = 0, len = props.length; i < len; i++ ) {
-      attrs[ props[i] ] = !!(props[i] in inputElem);
-    }
-    if (attrs.list){
-      // safari false positive's on datalist: webk.it/74252
-      // see also github.com/Modernizr/Modernizr/issues/146
-      attrs.list = !!(createElement('datalist') && window.HTMLDataListElement);
-    }
-    return attrs;
-  })(inputattrs);
-
-/*!
-{
-  "name": "datalist Element",
-  "caniuse": "datalist",
-  "property": "datalistelem",
-  "tags": ["elem"],
-  "builderAliases": ["elem_datalist"],
-  "warnings": ["This test is a dupe of Modernizr.input.list. Only around for legacy reasons."],
-  "notes": [{
-    "name": "CSS Tricks Article",
-    "href": "http://css-tricks.com/15346-relevant-dropdowns-polyfill-for-datalist/"
-  },{
-    "name": "Mike Taylor Test",
-    "href": "http://miketaylr.com/test/datalist.html"
-  },{
-    "name": "Mike Taylor Code",
-    "href": "http://miketaylr.com/code/datalist.html"
-  }]
-}
-!*/
-
-  // lol. we already have a test for datalist built in! silly you.
-  // Leaving it around in case anyone's using it
-
-  Modernizr.addTest('datalistelem', Modernizr.input.list );
-
-
-  var toStringFn = ({}).toString;
-
-/*!
-{
-  "name": "SVG foreignObject",
-  "property": "svgforeignobject",
-  "tags": ["svg"],
-  "notes": [{
-    "name": "W3C Spec",
-    "href": "http://www.w3.org/TR/SVG11/extend.html"
-  }]
-}
-!*/
-/* DOC
-Detects support for foreignObject tag in SVG.
-*/
-
-  Modernizr.addTest('svgforeignobject', function() {
-    return !!document.createElementNS &&
-      /SVGForeignObject/.test(toStringFn.call(document.createElementNS('http://www.w3.org/2000/svg', 'foreignObject')));
-  });
-
-/*!
-{
-  "name": "SVG clip paths",
-  "property": "svgclippaths",
-  "tags": ["svg"],
-  "notes": [{
-    "name": "Demo",
-    "href": "http://srufaculty.sru.edu/david.dailey/svg/newstuff/clipPath4.svg"
-  }]
-}
-!*/
-/* DOC
-Detects support for clip paths in SVG (only, not on HTML content).
-
-See [this discussion](http://github.com/Modernizr/Modernizr/issues/213) regarding applying SVG clip paths to HTML content.
-*/
-
-  Modernizr.addTest('svgclippaths', function() {
-    return !!document.createElementNS &&
-      /SVGClipPath/.test(toStringFn.call(document.createElementNS('http://www.w3.org/2000/svg', 'clipPath')));
-  });
-
-/*!
-{
-  "name": "SVG SMIL animation",
-  "property": "smil",
-  "caniuse": "svg-smil",
-  "tags": ["svg"],
-  "notes": [{
-  "name": "W3C Synchronised Multimedia spec",
-  "href": "http://www.w3.org/AudioVideo/"
-  }]
-}
-!*/
-
-  // SVG SMIL animation
-  Modernizr.addTest('smil', function() {
-    return !!document.createElementNS &&
-      /SVGAnimate/.test(toStringFn.call(document.createElementNS('http://www.w3.org/2000/svg', 'animate')));
-  });
-
-
-  // http://mathiasbynens.be/notes/xhr-responsetype-json#comment-4
-  /* istanbul ignore next */
-  var testXhrType = function(type) {
-    if (typeof XMLHttpRequest == 'undefined') {
-      return false;
-    }
-    var xhr = new XMLHttpRequest();
-    xhr.open('get', '/', true);
-    try {
-      xhr.responseType = type;
-    } catch(error) {
-      return false;
-    }
-    return 'response' in xhr && xhr.responseType == type;
-  };
-
-
-/*!
-{
-  "name": "XHR responseType='arraybuffer'",
-  "property": "xhrresponsetypearraybuffer",
-  "tags": ["network"],
-  "notes": [{
-    "name": "XMLHttpRequest Living Standard",
-    "href": "http://xhr.spec.whatwg.org/#the-responsetype-attribute"
-  }]
-}
-!*/
-/* DOC
-Tests for XMLHttpRequest xhr.responseType='arraybuffer'.
-*/
-
-  Modernizr.addTest('xhrresponsetypearraybuffer', testXhrType('arraybuffer'));
-
-/*!
-{
-  "name": "XHR responseType='blob'",
-  "property": "xhrresponsetypeblob",
-  "tags": ["network"],
-  "notes": [{
-    "name": "XMLHttpRequest Living Standard",
-    "href": "http://xhr.spec.whatwg.org/#the-responsetype-attribute"
-  }]
-}
-!*/
-/* DOC
-Tests for XMLHttpRequest xhr.responseType='blob'.
-*/
-
-  Modernizr.addTest('xhrresponsetypeblob', testXhrType('blob'));
-
-/*!
-{
-  "name": "XHR responseType='document'",
-  "property": "xhrresponsetypedocument",
-  "tags": ["network"],
-  "notes": [{
-    "name": "XMLHttpRequest Living Standard",
-    "href": "http://xhr.spec.whatwg.org/#the-responsetype-attribute"
-  }]
-}
-!*/
-/* DOC
-Tests for XMLHttpRequest xhr.responseType='document'.
-*/
-
-  Modernizr.addTest('xhrresponsetypedocument', testXhrType('document'));
-
-/*!
-{
-  "name": "XHR responseType='json'",
-  "property": "xhrresponsetypejson",
-  "tags": ["network"],
-  "notes": [{
-    "name": "XMLHttpRequest Living Standard",
-    "href": "http://xhr.spec.whatwg.org/#the-responsetype-attribute"
-  },{
-    "name": "Explanation of xhr.responseType='json'",
-    "href": "http://mathiasbynens.be/notes/xhr-responsetype-json"
-  }]
-}
-!*/
-/* DOC
-Tests for XMLHttpRequest xhr.responseType='json'.
-*/
-
-  Modernizr.addTest('xhrresponsetypejson', testXhrType('json'));
-
-/*!
-{
-  "name": "XHR responseType='text'",
-  "property": "xhrresponsetypetext",
-  "tags": ["network"],
-  "notes": [{
-    "name": "XMLHttpRequest Living Standard",
-    "href": "http://xhr.spec.whatwg.org/#the-responsetype-attribute"
-  }]
-}
-!*/
-/* DOC
-Tests for XMLHttpRequest xhr.responseType='text'.
-*/
-
-  Modernizr.addTest('xhrresponsetypetext', testXhrType('text'));
-
-
-  var cssomPrefixes = (ModernizrProto._config.usePrefixes ? omPrefixes.split(' ') : []);
-  ModernizrProto._cssomPrefixes = cssomPrefixes;
-
-
-  /**
-   * atRule returns a given CSS property at-rule (eg @keyframes), possibly in
-   * some prefixed form, or false, in the case of an unsupported rule
-   *
-   * @param prop - String naming the property to test
-   */
-
-  var atRule = function(prop) {
-    var length = prefixes.length;
-    var cssrule = window.CSSRule;
-    var rule;
-
-    if (typeof cssrule === 'undefined') {
-      return undefined;
-    }
-
-    if (!prop) {
-      return false;
-    }
-
-    // remove literal @ from beginning of provided property
-    prop = prop.replace(/^@/,'');
-
-    // CSSRules use underscores instead of dashes
-    rule = prop.replace(/-/g,'_').toUpperCase() + '_RULE';
-
-    if (rule in cssrule) {
-      return '@' + prop;
-    }
-
-    for ( var i = 0; i < length; i++ ) {
-      // prefixes gives us something like -o-, and we want O_
-      var prefix = prefixes[i];
-      var thisRule = prefix.toUpperCase() + '_' + rule;
-
-      if (thisRule in cssrule) {
-        return '@-' + prefix.toLowerCase() + '-' + prop;
-      }
-    }
-
-    return false;
-  };
-
-
-
-  var mStyle = {
-    style : modElem.elem.style
-  };
-
-  // kill ref for gc, must happen before
-  // mod.elem is removed, so we unshift on to
-  // the front of the queue.
-  Modernizr._q.unshift(function() {
-    delete mStyle.style;
-  });
-
-
-
-  // Function to allow us to use native feature detection functionality if available.
-  // Accepts a list of property names and a single value
-  // Returns `undefined` if native detection not available
-  function nativeTestProps ( props, value ) {
-    var i = props.length;
-    // Start with the JS API: http://www.w3.org/TR/css3-conditional/#the-css-interface
-    if ('CSS' in window && 'supports' in window.CSS) {
-      // Try every prefixed variant of the property
-      while (i--) {
-        if (window.CSS.supports(domToCSS(props[i]), value)) {
-          return true;
-        }
-      }
-      return false;
-    }
-    // Otherwise fall back to at-rule (for Opera 12.x)
-    else if ('CSSSupportsRule' in window) {
-      // Build a condition string for every prefixed variant
-      var conditionText = [];
-      while (i--) {
-        conditionText.push('(' + domToCSS(props[i]) + ':' + value + ')');
-      }
-      conditionText = conditionText.join(' or ');
-      return injectElementWithStyles('@supports (' + conditionText + ') { #modernizr { position: absolute; } }', function( node ) {
-        return getComputedStyle(node, null).position == 'absolute';
-      });
-    }
-    return undefined;
-  }
-  ;
-
-  // testProps is a generic CSS / DOM property test.
-
-  // In testing support for a given CSS property, it's legit to test:
-  //    `elem.style[styleName] !== undefined`
-  // If the property is supported it will return an empty string,
-  // if unsupported it will return undefined.
-
-  // We'll take advantage of this quick test and skip setting a style
-  // on our modernizr element, but instead just testing undefined vs
-  // empty string.
-
-  // Property names can be provided in either camelCase or kebab-case.
-
-  function testProps( props, prefixed, value, skipValueTest ) {
-    skipValueTest = is(skipValueTest, 'undefined') ? false : skipValueTest;
-
-    // Try native detect first
-    if (!is(value, 'undefined')) {
-      var result = nativeTestProps(props, value);
-      if(!is(result, 'undefined')) {
-        return result;
-      }
-    }
-
-    // Otherwise do it properly
-    var afterInit, i, propsLength, prop, before;
-
-    // If we don't have a style element, that means
-    // we're running async or after the core tests,
-    // so we'll need to create our own elements to use
-    if ( !mStyle.style ) {
-      afterInit = true;
-      mStyle.modElem = createElement('modernizr');
-      mStyle.style = mStyle.modElem.style;
-    }
-
-    // Delete the objects if we
-    // we created them.
-    function cleanElems() {
-      if (afterInit) {
-        delete mStyle.style;
-        delete mStyle.modElem;
-      }
-    }
-
-    propsLength = props.length;
-    for ( i = 0; i < propsLength; i++ ) {
-      prop = props[i];
-      before = mStyle.style[prop];
-
-      if (contains(prop, '-')) {
-        prop = cssToDOM(prop);
-      }
-
-      if ( mStyle.style[prop] !== undefined ) {
-
-        // If value to test has been passed in, do a set-and-check test.
-        // 0 (integer) is a valid property value, so check that `value` isn't
-        // undefined, rather than just checking it's truthy.
-        if (!skipValueTest && !is(value, 'undefined')) {
-
-          // Needs a try catch block because of old IE. This is slow, but will
-          // be avoided in most cases because `skipValueTest` will be used.
-          try {
-            mStyle.style[prop] = value;
-          } catch (e) {}
-
-          // If the property value has changed, we assume the value used is
-          // supported. If `value` is empty string, it'll fail here (because
-          // it hasn't changed), which matches how browsers have implemented
-          // CSS.supports()
-          if (mStyle.style[prop] != before) {
-            cleanElems();
-            return prefixed == 'pfx' ? prop : true;
-          }
-        }
-        // Otherwise just return true, or the property name if this is a
-        // `prefixed()` call
-        else {
-          cleanElems();
-          return prefixed == 'pfx' ? prop : true;
-        }
-      }
-    }
-    cleanElems();
-    return false;
-  }
-
-  ;
-
-  // Modernizr.testProp() investigates whether a given style property is recognized
-  // Property names can be provided in either camelCase or kebab-case.
-  // Modernizr.testProp('pointerEvents')
-  // Also accepts optional 2nd arg, of a value to use for native feature detection, e.g.:
-  // Modernizr.testProp('pointerEvents', 'none')
-  var testProp = ModernizrProto.testProp = function( prop, value, useValue ) {
-    return testProps([prop], undefined, value, useValue);
-  };
-
-/*!
-{
-  "name": "CSS textshadow",
-  "property": "textshadow",
-  "caniuse": "css-textshadow",
-  "tags": ["css"],
-  "knownBugs": ["FF3.0 will false positive on this test"]
-}
-!*/
-
-  Modernizr.addTest('textshadow', testProp('textShadow', '1px 1px'));
-
-
-  // Change the function's scope.
-  function fnBind(fn, that) {
-    return function() {
-      return fn.apply(that, arguments);
-    };
-  }
-
-  ;
-
-  /**
-   * testDOMProps is a generic DOM property test; if a browser supports
-   *   a certain property, it won't return undefined for it.
-   */
-  function testDOMProps( props, obj, elem ) {
-    var item;
-
-    for ( var i in props ) {
-      if ( props[i] in obj ) {
-
-        // return the property name as a string
-        if (elem === false) return props[i];
-
-        item = obj[props[i]];
-
-        // let's bind a function
-        if (is(item, 'function')) {
-          // bind to obj unless overriden
-          return fnBind(item, elem || obj);
-        }
-
-        // return the unbound function or obj or value
-        return item;
-      }
-    }
-    return false;
-  }
-
-  ;
-
-  /**
-   * testPropsAll tests a list of DOM properties we want to check against.
-   *     We specify literally ALL possible (known and/or likely) properties on
-   *     the element including the non-vendor prefixed one, for forward-
-   *     compatibility.
-   */
-  function testPropsAll( prop, prefixed, elem, value, skipValueTest ) {
-
-    var ucProp = prop.charAt(0).toUpperCase() + prop.slice(1),
-    props = (prop + ' ' + cssomPrefixes.join(ucProp + ' ') + ucProp).split(' ');
-
-    // did they call .prefixed('boxSizing') or are we just testing a prop?
-    if(is(prefixed, 'string') || is(prefixed, 'undefined')) {
-      return testProps(props, prefixed, value, skipValueTest);
-
-      // otherwise, they called .prefixed('requestAnimationFrame', window[, elem])
-    } else {
-      props = (prop + ' ' + (domPrefixes).join(ucProp + ' ') + ucProp).split(' ');
-      return testDOMProps(props, prefixed, elem);
-    }
-  }
-
-  // Modernizr.testAllProps() investigates whether a given style property,
-  //     or any of its vendor-prefixed variants, is recognized
-  // Note that the property names must be provided in the camelCase variant.
-  // Modernizr.testAllProps('boxSizing')
-  ModernizrProto.testAllProps = testPropsAll;
-
-
-
-  // Modernizr.prefixed() returns the prefixed or nonprefixed property name variant of your input
-  // Modernizr.prefixed('boxSizing') // 'MozBoxSizing'
-
-  // Properties can be passed as DOM-style camelCase or CSS-style kebab-case.
-  // Return values will always be in camelCase; if you want kebab-case, use Modernizr.prefixedCSS().
-
-  // If you're trying to ascertain which transition end event to bind to, you might do something like...
-  //
-  //     var transEndEventNames = {
-  //         'WebkitTransition' : 'webkitTransitionEnd',// Saf 6, Android Browser
-  //         'MozTransition'    : 'transitionend',      // only for FF < 15
-  //         'transition'       : 'transitionend'       // IE10, Opera, Chrome, FF 15+, Saf 7+
-  //     },
-  //     transEndEventName = transEndEventNames[ Modernizr.prefixed('transition') ];
-
-  var prefixed = ModernizrProto.prefixed = function( prop, obj, elem ) {
-    if (prop.indexOf('@') === 0) {
-      return atRule(prop);
-    }
-
-    if (prop.indexOf('-') != -1) {
-      // Convert kebab-case to camelCase
-      prop = cssToDOM(prop);
-    }
-    if (!obj) {
-      return testPropsAll(prop, 'pfx');
-    } else {
-      // Testing DOM property e.g. Modernizr.prefixed('requestAnimationFrame', window) // 'mozRequestAnimationFrame'
-      return testPropsAll(prop, obj, elem);
-    }
-  };
-
-
-
-  // Modernizr.prefixedCSS() is like Modernizr.prefixed(), but returns the result in
-  // hyphenated form, e.g.:
-  // Modernizr.prefixedCSS('transition') // '-moz-transition'
-
-  // It’s only suitable for style properties.
-
-  // Properties can be passed as DOM-style camelCase or CSS-style kebab-case.
-  // Return values will always be the hyphenated variant, or `false` if not supported
-  var prefixedCSS = ModernizrProto.prefixedCSS = function(prop) {
-    var prefixedProp = prefixed(prop);
-    return prefixedProp && domToCSS(prefixedProp);
-  };
-
-/*!
-{
-  "name": "Battery API",
-  "property": "batteryapi",
-  "aliases": ["battery-api"],
-  "builderAliases": ["battery_api"],
-  "tags": ["device", "media"],
-  "authors": ["Paul Sayre"],
-  "notes": [{
-    "name": "MDN documentation",
-    "href": "https://developer.mozilla.org/en/DOM/window.navigator.mozBattery"
-  }]
-}
-!*/
-/* DOC
-Detect support for the Battery API, for accessing information about the system's battery charge level.
-*/
-
-  Modernizr.addTest('batteryapi', !!prefixed('battery', navigator), { aliases: ['battery-api'] });
-
-/*!
-{
-  "name": "Blob URLs",
-  "property": "bloburls",
-  "caniuse": "bloburls",
-  "notes": [{
-    "name": "W3C Working Draft",
-    "href": "http://www.w3.org/TR/FileAPI/#creating-revoking"
-  }],
-  "tags": ["file", "url"],
-  "authors": ["Ron Waldon (@jokeyrhyme)"]
-}
-!*/
-/* DOC
-Detects support for creating Blob URLs
-*/
-
-  var url = prefixed('URL', window, false);
-  url = url && window[url];
-  Modernizr.addTest('bloburls', url && 'revokeObjectURL' in url && 'createObjectURL' in url);
-
-/*!
-{
-  "name": "Transferables Objects",
-  "property": "transferables",
-  "tags": ["performance", "workers"],
-  "builderAliases": ["transferables"],
-  "notes": [{
-    "name": "HTML5 Rocks article",
-    "href": "http://updates.html5rocks.com/2011/12/Transferable-Objects-Lightning-Fast"
-  }],
-  "async": true
-}
-!*/
-/* DOC
-Detects whether web workers can use `transferables` objects.
-*/
-
-  Modernizr.addAsyncTest(function() {
-    var prerequisites = !!(Modernizr.blobconstructor &&
-                           Modernizr.bloburls &&
-                           Modernizr.webworkers &&
-                           Modernizr.typedarrays);
-
-    // Early exit
-    if (!prerequisites) {
-      return addTest('transferables', false);
-    }
-
-    // Proper test if prerequisites are met
-    try {
-      var buffer,
-          scriptText = 'var hello = "world"',
-          blob = new Blob([scriptText], {type: 'text/javascript'}),
-          url = URL.createObjectURL(blob),
-          worker = new Worker(url),
-          timeout;
-
-      // Just in case...
-      worker.onerror = fail;
-      timeout = setTimeout(fail, 200);
-
-      // Building an minimal array buffer to send to the worker
-      buffer = new ArrayBuffer(1);
-
-      // Sending the buffer to the worker
-      worker.postMessage(buffer, [buffer]);
-
-      // If length of buffer is now 0, transferables are working
-      addTest('transferables', buffer.byteLength === 0);
-      cleanup();
-    } catch (e) {
-      fail();
-    }
-
-    function fail() {
-      addTest('transferables', false);
-      cleanup();
-    }
-
-    function cleanup() {
-      if (url) {
-        URL.revokeObjectURL(url);
-      }
-      if (worker) {
-        worker.terminate();
-      }
-      if (timeout) {
-        clearTimeout(timeout);
-      }
-    }
-  });
-
-/*!
-{
-  "name": "CSS Background Blend Mode",
-  "property": "backgroundblendmode",
-  "caniuse": "css-backgroundblendmode",
-  "tags": ["css"],
-  "notes": [
-    {
-      "name": "CSS Blend Modes could be the next big thing in Web Design",
-      "href": " https://medium.com/@bennettfeely/css-blend-modes-could-be-the-next-big-thing-in-web-design-6b51bf53743a"
-    }, {
-      "name": "Demo",
-      "href": "http://bennettfeely.com/gradients/"
-    }
-  ]
-}
-!*/
-/* DOC
-Detects the ability for the browser to composite backgrounds using blending modes similar to ones found in Photoshop or Illustrator.
-*/
-
-  Modernizr.addTest('backgroundblendmode', prefixed('backgroundBlendMode', 'text'));
-
-/*!
-{
-  "name": "CSS Object Fit",
-  "caniuse": "object-fit",
-  "property": "objectfit",
-  "tags": ["css"],
-  "builderAliases": ["css_objectfit"],
-  "notes": [{
-    "name": "Opera Article on Object Fit",
-    "href": "http://dev.opera.com/articles/view/css3-object-fit-object-position/"
-  }]
-}
-!*/
-
-  Modernizr.addTest('objectfit', !!prefixed('objectFit'), { aliases: ['object-fit'] });
-
-/*!
-{
-  "name": "CSS wrap-flow",
-  "property": "wrapflow",
-  "tags": ["css"],
-  "notes": [
-    {
-      "name": "W3C Exclusions spec",
-      "href": "http://www.w3.org/TR/css3-exclusions"
-    },
-    {
-      "name": "Example by Adobe",
-      "href": "http://html.adobe.com/webstandards/cssexclusions"
-    }
-  ]
-}
-!*/
-
-  Modernizr.addTest('wrapflow', function () {
-    var prefixedProperty = prefixed('wrapFlow');
-    if (!prefixedProperty)
-      return false;
-
-    var wrapFlowProperty = prefixedProperty.replace(/([A-Z])/g, function (str, m1) { return '-' + m1.toLowerCase(); }).replace(/^ms-/, '-ms-');
-
-    /* If the CSS parsing is there we need to determine if wrap-flow actually works to avoid false positive cases, e.g. the browser parses
-       the property, but it hasn't got the implementation for the functionality yet. */
-    var container = createElement('div');
-    var exclusion = createElement('div');
-    var content = createElement('span');
-
-    /* First we create a div with two adjacent divs inside it. The first div will be the content, the second div will be the exclusion area.
-       We use the "wrap-flow: end" property to test the actual behavior. (http://dev.w3.org/csswg/css3-exclusions/#wrap-flow-property)
-       The wrap-flow property is applied to the exclusion area what has a 50px left offset and a 100px width.
-       If the wrap-flow property is working correctly then the content should start after the exclusion area, so the content's left offset should be 150px. */
-    exclusion.style.cssText = 'position: absolute; left: 50px; width: 100px; height: 20px;' + wrapFlowProperty + ':end;';
-    content.innerText = 'X';
-
-    container.appendChild(exclusion);
-    container.appendChild(content);
-    docElement.appendChild(container);
-
-    var leftOffset = content.offsetLeft;
-
-    docElement.removeChild(container);
-    exclusion = content = container = undefined;
-
-    return (leftOffset == 150);
-  });
-
-/*!
-{
-  "name": "Dart",
-  "property": "dart",
-  "authors": ["Theodoor van Donge"],
-  "notes": [{
-    "name": "Language website",
-    "href": "http://www.dartlang.org/"
-  }]
-}
-!*/
-/* DOC
-Detects native support for the Dart programming language.
-*/
-
-  Modernizr.addTest('dart', !!prefixed('startDart', navigator));
-
-/*!
-{
-  "name": "Filesystem API",
-  "property": "filesystem",
-  "caniuse": "filesystem",
-  "notes": [{
-    "name": "W3 Draft",
-    "href": "dev.w3.org/2009/dap/file-system/file-dir-sys.html"
-  }],
-  "authors": ["Eric Bidelman (@ebidel)"],
-  "tags": ["file"],
-  "builderAliases": ["file_filesystem"],
-  "knownBugs": ["The API will be present in Chrome incognito, but will throw an exception. See crbug.com/93417"]
-}
-!*/
-
-  Modernizr.addTest('filesystem', !!prefixed('requestFileSystem', window));
-
-/*!
-{
-  "name": "Fullscreen API",
-  "property": "fullscreen",
-  "caniuse": "fullscreen",
-  "notes": [{
-    "name": "MDN documentation",
-    "href": "https://developer.mozilla.org/en/API/Fullscreen"
-  }],
-  "polyfills": ["screenfulljs"],
-  "builderAliases": ["fullscreen_api"]
-}
-!*/
-/* DOC
-Detects support for the ability to make the current website take over the user's entire screen
-*/
-
-  // github.com/Modernizr/Modernizr/issues/739
-  Modernizr.addTest('fullscreen', !!(prefixed('exitFullscreen', document, false) || prefixed('cancelFullScreen', document, false)));
-
-/*!
-{
-  "name": "form#requestAutocomplete()",
-  "property": "requestautocomplete",
-  "tags": ["form", "forms", "requestAutocomplete", "payments"],
-  "notes": [{
-    "name": "WHATWG proposed spec",
-    "href": "http://wiki.whatwg.org/wiki/RequestAutocomplete"
-  }]
-}
-!*/
-/* DOC
-When used with input[autocomplete] to annotate a form, form.requestAutocomplete() shows a dialog in Chrome that speeds up
-checkout flows (payments specific for now).
-*/
-
-  Modernizr.addTest('requestautocomplete', !!prefixed('requestAutocomplete', createElement('form')));
-
-/*!
-{
-  "name": "getUserMedia",
-  "property": "getusermedia",
-  "caniuse": "stream",
-  "tags": ["webrtc"],
-  "authors": ["Eric Bidelman"],
-  "notes": [{
-    "name": "W3C Media Capture and Streams spec",
-    "href": "http://www.w3.org/TR/mediacapture-streams/"
-  }],
-  "polyfills": ["getusermedia"]
-}
-!*/
-
-  Modernizr.addTest('getusermedia', !!prefixed('getUserMedia', navigator));
-
-/*!
-{
-  "name": "GamePad API",
-  "property": "gamepads",
-  "authors": ["Eric Bidelman"],
-  "tags": ["media"],
-  "notes": [{
-    "name": "W3C spec",
-    "href": "http://www.w3.org/TR/gamepad/"
-  },{
-    "name": "HTML5 Rocks tutorial",
-    "href": "http://www.html5rocks.com/en/tutorials/doodles/gamepad/#toc-featuredetect"
-  }],
-  "warnings": [],
-  "polyfills": []
-}
-!*/
-/* DOC
-Detects support for the Gamepad API, for access to gamepads and controllers.
-*/
-
-  // FF has Gamepad API support only in special builds, but not in any release (even behind a flag)
-  // Their current implementation has no way to feature detect, only events to bind to, but a patch
-  // will bring them up to date with the spec when it lands (and they'll pass this test)
-  //   https://bugzilla.mozilla.org/show_bug.cgi?id=690935
-
-  Modernizr.addTest('gamepads', !!prefixed('getGamepads', navigator));
-
-/*!
-{
-  "name": "IndexedDB",
-  "property": "indexeddb",
-  "caniuse": "indexeddb",
-  "tags": ["storage"],
-  "polyfills": ["indexeddb"]
-}
-!*/
-/* DOC
-Detects support for the IndexedDB client-side storage API (final spec).
-*/
-
-  // Vendors had inconsistent prefixing with the experimental Indexed DB:
-  // - Webkit's implementation is accessible through webkitIndexedDB
-  // - Firefox shipped moz_indexedDB before FF4b9, but since then has been mozIndexedDB
-  // For speed, we don't test the legacy (and beta-only) indexedDB
-
-  var indexeddb = prefixed('indexedDB', window);
-  Modernizr.addTest('indexeddb', !!indexeddb);
-
-  if (!!indexeddb) {
-    Modernizr.addTest('indexeddb.deletedatabase', 'deleteDatabase' in indexeddb);
-  }
-;
-/*!
-{
-  "name": "IndexedDB Blob",
-  "property": "indexeddbblob"
-}
-!*/
-/* DOC
-Detects if the browser can save File/Blob objects to IndexedDB
-*/
-
-  // Vendors had inconsistent prefixing with the experimental Indexed DB:
-  // - Webkit's implementation is accessible through webkitIndexedDB
-  // - Firefox shipped moz_indexedDB before FF4b9, but since then has been mozIndexedDB
-  // For speed, we don't test the legacy (and beta-only) indexedDB
-
-  Modernizr.addAsyncTest(function() {
-    /* jshint -W053 */
-    var indexeddb = prefixed('indexedDB', window);
-    var dbname = 'detect-blob-support';
-    var supportsBlob = false;
-    var request;
-    var db;
-
-    if (!(Modernizr.indexeddb && Modernizr.indexeddb.deleteDatabase)) return false;
-
-    // Calling `deleteDatabase` in a try…catch because some contexts (e.g. data URIs)
-    // will throw a `SecurityError`
-    try {
-      indexeddb.deleteDatabase(dbname).onsuccess = function () {
-        request = indexeddb.open(dbname, 1);
-        request.onupgradeneeded = function() {
-          request.result.createObjectStore('store');
-        };
-        request.onsuccess = function() {
-          db = request.result;
-          try {
-            db.transaction('store', 'readwrite').objectStore('store').put(new Blob(), 'key');
-            supportsBlob = true;
-          }
-          catch (e) {
-            supportsBlob = false;
-          }
-          finally {
-            addTest('indexeddbblob', supportsBlob);
-            db.close();
-            indexeddb.deleteDatabase(dbname);
-          }
-        };
-      };
-    }
-    catch (e) {
-      addTest('indexeddbblob', false);
-    }
-  });
-
-/*!
- {
- "name": "Internationalization API",
- "property": "intl",
- "notes": [{
- "name": "MDN documentation",
- "href": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl"
- },{
- "name": "ECMAScript spec",
- "href": "http://www.ecma-international.org/ecma-402/1.0/"
- }]
- }
- !*/
-/* DOC
-Detects support for the Internationalization API which allow easy formatting of number and dates and sorting string
-based on a locale
-*/
-
-  Modernizr.addTest('intl', !!prefixed('Intl', window));
-
-/*!
-{
-  "name": "Low Battery Level",
-  "property": "lowbattery",
-  "tags": ["hardware", "mobile"],
-  "builderAliases": ["battery_level"],
-  "authors": ["Paul Sayre"],
-  "notes": [{
-    "name": "MDN Docs",
-    "href": "http://developer.mozilla.org/en/DOM/window.navigator.mozBattery"
-  }]
-}
-!*/
-/* DOC
-Enable a developer to remove CPU intensive CSS/JS when battery is low
-*/
-
-  Modernizr.addTest('lowbattery', function() {
-    var minLevel = 0.20;
-    var battery = prefixed('battery', navigator);
-    return !!(battery && !battery.charging && battery.level <= minLevel);
-  });
-
-/*!
-{
-  "name": "Navigation Timing API",
-  "property": "performance",
-  "caniuse": "nav-timing",
-  "tags": ["performance"],
-  "authors": ["Scott Murphy (@uxder)"],
-  "notes": [{
-    "name": "W3C Spec",
-    "href": "http://www.w3.org/TR/navigation-timing/"
-  },{
-    "name": "HTML5 Rocks article",
-    "href": "http://www.html5rocks.com/en/tutorials/webperformance/basics/"
-  }],
-  "polyfills": ["perfnow"]
-}
-!*/
-/* DOC
-Detects support for the Navigation Timing API, for measuring browser and connection performance.
-*/
-
-  Modernizr.addTest('performance', !!prefixed('performance', window));
-
-/*!
-{
-  "name": "Page Visibility API",
-  "property": "pagevisibility",
-  "caniuse": "pagevisibility",
-  "tags": ["performance"],
-  "notes": [{
-    "name": "MDN documentation",
-    "href": "https://developer.mozilla.org/en-US/docs/DOM/Using_the_Page_Visibility_API"
-  },{
-    "name": "W3C spec",
-    "href": "http://www.w3.org/TR/2011/WD-page-visibility-20110602/"
-  },{
-    "name": "HTML5 Rocks tutorial",
-    "href": "http://www.html5rocks.com/en/tutorials/pagevisibility/intro/"
-  }],
-  "polyfills": ["visibilityjs", "visiblyjs", "jquery-visibility"]
-}
-!*/
-/* DOC
-Detects support for the Page Visibility API, which can be used to disable unnecessary actions and otherwise improve user experience.
-*/
-
-  Modernizr.addTest('pagevisibility', !!prefixed('hidden', document, false));
-
-/*!
-{
-  "name": "Pointer Lock API",
-  "property": "pointerlock",
-  "notes": [{
-    "name": "MDN documentation",
-    "href": "https://developer.mozilla.org/en-US/docs/API/Pointer_Lock_API"
-  }],
-  "builderAliases": ["pointerlock_api"]
-}
-!*/
-/* DOC
-Detects support the pointer lock API which allows you to lock the mouse cursor to the browser window.
-*/
-
-  // https://developer.mozilla.org/en-US/docs/API/Pointer_Lock_API
-  Modernizr.addTest('pointerlock', !!prefixed('exitPointerLock', document));
-
-/*!
-{
-  "name": "requestAnimationFrame",
-  "property": "requestanimationframe",
-  "aliases": ["raf"],
-  "caniuse": "requestanimationframe",
-  "tags": ["animation"],
-  "authors": ["Addy Osmani"],
-  "notes": [{
-    "name": "W3C spec",
-    "href": "http://www.w3.org/TR/animation-timing/"
-  }],
-  "polyfills": ["raf"]
-}
-!*/
-/* DOC
-Detects support for the `window.requestAnimationFrame` API, for offloading animation repainting to the browser for optimized performance.
-*/
-
-  Modernizr.addTest('requestanimationframe', !!prefixed('requestAnimationFrame', window), { aliases: ['raf'] });
-
-/*!
-{
-  "name": "Quota Storage Management API",
-  "property": "quotamanagement",
-  "tags": ["storage"],
-  "builderAliases": ["quota_management_api"],
-  "notes": [{
-    "name": "W3C Spec",
-    "href": "http://www.w3.org/TR/quota-api/"
-  }]
-}
-!*/
-/* DOC
-Detects the ability to request a specific amount of space for filesystem access
-*/
-
-  Modernizr.addTest('quotamanagement', function() {
-    var tempStorage = prefixed('temporaryStorage', navigator);
-    var persStorage = prefixed('persistentStorage', navigator);
-
-    return !!(tempStorage && persStorage);
-  });
-
-/*!
-{
-  "name": "RTC Peer Connection",
-  "property": "peerconnection",
-  "tags": ["webrtc"],
-  "authors": ["Ankur Oberoi"],
-  "notes": [{
-    "name": "W3C Web RTC spec",
-    "href": "http://www.w3.org/TR/webrtc/"
-  }]
-}
-!*/
-
-  Modernizr.addTest('peerconnection', !!prefixed('RTCPeerConnection', window));
-
-/*!
-{
-  "name": "RTC Data Channel",
-  "property": "datachannel",
-  "notes": [{
-    "name": "HTML5 Rocks! Article",
-    "href": "http://www.html5rocks.com/en/tutorials/webrtc/datachannels/"
-  }]
-}
-!*/
-/* DOC
-Detect for the RTCDataChannel API that allows for transfer data directly from one peer to another
-*/
-
-
-  Modernizr.addTest('datachannel', function() {
-    if (!Modernizr.peerconnection) {
-      return false;
-    }
-    for (var i = 0, l = domPrefixes.length; i < l; i++) {
-      var peerConnectionConstructor = window[domPrefixes[i] + 'RTCPeerConnection'];
-
-      if (peerConnectionConstructor) {
-        var peerConnection = new peerConnectionConstructor({
-          'iceServers': [{ 'url': 'stun:0' }]
-        });
-
-        return 'createDataChannel' in peerConnection;
-      }
-
-    }
-    return false;
-  });
-
-/*!
-{
-  "authors": ["Cătălin Mariș"],
-  "name": "Speech Recognition API",
-  "notes": [
-    {
-      "name": "W3C Web Speech API Specification - The SpeechRecognition Interface",
-      "href": "https://dvcs.w3.org/hg/speech-api/raw-file/tip/speechapi.html#speechreco-section"
-    },
-    {
-      "name": "Introduction to the Web Speech API",
-      "href": "http://updates.html5rocks.com/2013/01/Voice-Driven-Web-Apps-Introduction-to-the-Web-Speech-API"
-    }
-  ],
-  "property": "speechrecognition",
-  "tags": ["input", "speech"]
-}
-!*/
-
-
-  Modernizr.addTest('speechrecognition', !!prefixed('SpeechRecognition', window));
-
-/*!
-{
-  "name": "Vibration API",
-  "property": "vibrate",
-  "notes": [{
-    "name": "MDN documentation",
-    "href": "https://developer.mozilla.org/en/DOM/window.navigator.mozVibrate"
-  },{
-    "name": "W3C spec",
-    "href": "http://www.w3.org/TR/vibration/"
-  }]
-}
-!*/
-/* DOC
-Detects support for the API that provides access to the vibration mechanism of the hosting device, to provide tactile feedback.
-*/
-
-  Modernizr.addTest('vibrate', !!prefixed('vibrate', navigator));
-
-/*!
-{
-  "name": "getRandomValues",
-  "property": "getrandomvalues",
-  "caniuse": "window.crypto.getRandomValues",
-  "tags": ["crypto"],
-  "authors": ["komachi"],
-  "notes": [{
-    "name": "W3C Editor’s Draft",
-    "href": "https://dvcs.w3.org/hg/webcrypto-api/raw-file/tip/spec/Overview.html#RandomSource-method-getRandomValues"
-  }],
-  "polyfills": [
-    "polycrypt"
-  ]
-}
-!*/
-/* DOC
-Detects support for the window.crypto.getRandomValues for generate cryptographically secure random numbers
-*/
-
-  // In Safari <=5.0 `window.crypto` exists (for some reason) but is `undefined`, so we have to check
-  // it’s truthy before checking for existence of `getRandomValues`
-  var crypto = prefixed('crypto', window);
-  var supportsGetRandomValues;
-
-  // Safari 6.0 supports crypto.getRandomValues, but does not return the array,
-  // which is required by the spec, so we need to actually check.
-  if (crypto && 'getRandomValues' in crypto && 'Uint32Array' in window) {
-    var array = new Uint32Array(10);
-    var values = crypto.getRandomValues(array);
-    supportsGetRandomValues = values && is(values[0], 'number');
-  }
-
-  Modernizr.addTest('getrandomvalues', !!supportsGetRandomValues);
-
-/*!
-{
-  "name": "Web Intents",
-  "property": "webintents",
-  "authors": ["Eric Bidelman"],
-  "notes": [{
-    "name": "Web Intents project site",
-    "href": "http://webintents.org/"
-  }],
-  "polyfills": ["webintents"],
-  "builderAliases": ["web_intents"]
-}
-!*/
-/* DOC
-Detects native support for the Web Intents APIs for service discovery and inter-application communication.
-
-Chrome added support for this in v19, but [removed it again in v24](http://lists.w3.org/Archives/Public/public-web-intents/2012Nov/0000.html) because of "a number of areas for
-development in both the API and specific user experience in Chrome". No other browsers currently support it, however a [JavaScript shim](http://webintents.org/#javascriptshim) is available.
-*/
-
-  Modernizr.addTest('webintents', !!prefixed('startActivity', navigator));
-
-
-  /**
-   * testAllProps determines whether a given CSS property, in some prefixed
-   * form, is supported by the browser. It can optionally be given a value; in
-   * which case testAllProps will only return true if the browser supports that
-   * value for the named property; this latter case will use native detection
-   * (via window.CSS.supports) if available. A boolean can be passed as a 3rd
-   * parameter to skip the value check when native detection isn't available,
-   * to improve performance when simply testing for support of a property.
-   *
-   * @param prop - String naming the property to test (either camelCase or
-   *               kebab-case)
-   * @param value - [optional] String of the value to test
-   * @param skipValueTest - [optional] Whether to skip testing that the value
-   *                        is supported when using non-native detection
-   *                        (default: false)
-   */
-  function testAllProps (prop, value, skipValueTest) {
-    return testPropsAll(prop, undefined, undefined, value, skipValueTest);
-  }
-  ModernizrProto.testAllProps = testAllProps;
-
-/*!
-{
-  "name": "Appearance",
-  "property": "appearance",
-  "caniuse": "css-appearance",
-  "tags": ["css"],
-  "notes": [{
-    "name": "MDN documentation",
-    "href": "https://developer.mozilla.org/en-US/docs/Web/CSS/-moz-appearance"
-  },{
-    "name": "CSS-Tricks CSS Almanac: appearance",
-    "href": "http://css-tricks.com/almanac/properties/a/appearance/"
-  }]
-}
-!*/
-/* DOC
-Detects support for the `appearance` css property, which is used to make an
-element inherit the style of a standard user interface element. It can also be
-used to remove the default styles of an element, such as input and buttons.
-*/
-
-  Modernizr.addTest('appearance', testAllProps('appearance'));
-
-/*!
-{
-  "name": "Background Position XY",
-  "property": "bgpositionxy",
-  "tags": ["css"],
-  "builderAliases": ["css_backgroundposition_xy"],
-  "authors": ["Allan Lei", "Brandom Aaron"],
-  "notes": [{
-    "name": "Demo",
-    "href": "http://jsfiddle.net/allanlei/R8AYS/"
-  }, {
-    "name": "Adapted From",
-    "href": "https://github.com/brandonaaron/jquery-cssHooks/blob/master/bgpos.js"
-  }]
-}
-!*/
-/* DOC
-Detects the ability to control an element's background position using css
-*/
-
-  Modernizr.addTest('bgpositionxy', function () {
-    return testAllProps('backgroundPositionX', '3px', true) && testAllProps('backgroundPositionY', '5px', true);
-  });
-
-/*!
-{
-  "name": "Background Repeat",
-  "property": ["bgrepeatspace", "bgrepeatround"],
-  "tags": ["css"],
-  "builderAliases": ["css_backgroundrepeat"],
-  "authors": ["Ryan Seddon"],
-  "notes": [{
-    "name": "MDN Docs",
-    "href": "http://developer.mozilla.org/en/CSS/background-repeat"
-  }, {
-    "name": "Test Page",
-    "href": "http://jsbin.com/uzesun/"
-  }, {
-    "name": "Demo",
-    "href": "http://jsfiddle.net/ryanseddon/yMLTQ/6/"
-  }]
-}
-!*/
-/* DOC
-Detects the ability to use round and space as properties for background-repeat
-*/
-
-  // Must value-test these
-  Modernizr.addTest('bgrepeatround', testAllProps('backgroundRepeat', 'round'));
-  Modernizr.addTest('bgrepeatspace', testAllProps('backgroundRepeat', 'space'));
-
-/*!
-{
-  "name": "Background Size",
-  "property": "backgroundsize",
-  "tags": ["css"],
-  "knownBugs": ["This will false positive in Opera Mini - http://github.com/Modernizr/Modernizr/issues/396"],
-  "notes": [{
-    "name": "Related Issue",
-    "href": "http://github.com/Modernizr/Modernizr/issues/396"
-  }]
-}
-!*/
-
-  Modernizr.addTest('backgroundsize', testAllProps('backgroundSize', '100%', true));
-
-/*!
-{
-  "name": "Background Size Cover",
-  "property": "bgsizecover",
-  "tags": ["css"],
-  "builderAliases": ["css_backgroundsizecover"],
-  "notes": [{
-    "name" : "MDN Docs",
-    "href": "http://developer.mozilla.org/en/CSS/background-size"
-  }]
-}
-!*/
-
-  // Must test value, as this specifically tests the `cover` value
-  Modernizr.addTest('bgsizecover', testAllProps('backgroundSize', 'cover'));
-
-/*!
-{
-  "name": "Border Radius",
-  "property": "borderradius",
-  "caniuse": "border-radius",
-  "polyfills": ["css3pie"],
-  "tags": ["css"],
-  "notes": [{
-    "name": "Comprehensive Compat Chart",
-    "href": "http://muddledramblings.com/table-of-css3-border-radius-compliance"
-  }]
-}
-!*/
-
-  Modernizr.addTest('borderradius', testAllProps('borderRadius', '0px', true));
-
-/*!
-{
-  "name": "Border Image",
-  "property": "borderimage",
-  "caniuse": "border-image",
-  "polyfills": ["css3pie"],
-   "knownBugs": ["Android < 2.0 is true, but has a broken implementation"],
-  "tags": ["css"]
-}
-!*/
-
-  Modernizr.addTest('borderimage', testAllProps('borderImage', 'url() 1', true));
-
-/*!
-{
-  "name": "Box Shadow",
-  "property": "boxshadow",
-  "caniuse": "css-boxshadow",
-  "tags": ["css"],
-  "knownBugs": [
-    "WebOS false positives on this test.",
-    "The Kindle Silk browser false positives"
-  ]
-}
-!*/
-
-  Modernizr.addTest('boxshadow', testAllProps('boxShadow', '1px 1px', true));
-
-/*!
-{
-  "name": "Box Sizing",
-  "property": "boxsizing",
-  "caniuse": "css3-boxsizing",
-  "polyfills": ["borderboxmodel", "boxsizingpolyfill", "borderbox"],
-  "tags": ["css"],
-  "builderAliases": ["css_boxsizing"],
-  "notes": [{
-    "name": "MDN Docs",
-    "href": "http://developer.mozilla.org/en/CSS/box-sizing"
-  },{
-    "name": "Related Github Issue",
-    "href": "http://github.com/Modernizr/Modernizr/issues/248"
-  }]
-}
-!*/
-
-  Modernizr.addTest('boxsizing', testAllProps('boxSizing', 'border-box', true) && (document.documentMode === undefined || document.documentMode > 7));
-
-/*!
-{
-  "name": "CSS Animations",
-  "property": "cssanimations",
-  "caniuse": "css-animation",
-  "polyfills": ["transformie", "csssandpaper"],
-  "tags": ["css"],
-  "warnings": ["Android < 4 will pass this test, but can only animate a single property at a time"],
-  "notes": [{
-    "name" : "Article: 'Dispelling the Android CSS animation myths'",
-    "href": "http://goo.gl/OGw5Gm"
-  }]
-}
-!*/
-/* DOC
-Detects whether or not elements can be animated using CSS
-*/
-
-  Modernizr.addTest('cssanimations', testAllProps('animationName', 'a', true));
-
-/*!
-{
-  "name": "CSS Generated Content Animations",
-  "property": "csspseudoanimations",
-  "tags": ["css"]
-}
-!*/
-
-  Modernizr.addTest('csspseudoanimations', function () {
-    var result = false;
-
-    if (!Modernizr.cssanimations || !window.getComputedStyle) {
-      return result;
-    }
-
-    var styles = [
-      '@', Modernizr._prefixes.join('keyframes csspseudoanimations { from { font-size: 10px; } }@').replace(/\@$/,''),
-      '#modernizr:before { content:" "; font-size:5px;',
-      Modernizr._prefixes.join('animation:csspseudoanimations 1ms infinite;'),
-      '}'
-    ].join('');
-
-    Modernizr.testStyles(styles, function (elem) {
-      result = window.getComputedStyle(elem, ':before').getPropertyValue('font-size') === '10px';
-    });
-
-    return result;
-  });
-
-/*!
-{
-  "name": "CSS Background Clip Text",
-  "property": "backgroundcliptext",
-  "authors": ["ausi"],
-  "tags": ["css"],
-  "notes": [
-    {
-      "name": "CSS Tricks Article",
-      "href": "http://css-tricks.com/image-under-text/"
-    },
-    {
-      "name": "MDN Docs",
-      "href": "http://developer.mozilla.org/en/CSS/background-clip"
-    },
-    {
-      "name": "Related Github Issue",
-      "href": "http://github.com/Modernizr/Modernizr/issues/199"
-    }
-  ]
-}
-!*/
-/* DOC
-Detects the ability to control specifies whether or not an element's background
-extends beyond its border in CSS
-*/
-
-  Modernizr.addTest('backgroundcliptext', function() {
-    return testAllProps('backgroundClip', 'text');
-  });
-
-/*!
-{
-  "name": "CSS Columns",
-  "property": "csscolumns",
-  "caniuse": "multicolumn",
-  "polyfills": ["css3multicolumnjs"],
-  "tags": ["css"]
-}
-!*/
-
-
-  (function() {
-
-    /* jshint -W053 */
-    Modernizr.addTest('csscolumns', function(){
-      var bool = false;
-      var test = testAllProps('columnCount');
-      try {
-        if ( bool = !!test ) {
-          bool = new Boolean(bool);
-        }
-      } catch(e){}
-
-      return bool;
-    });
-
-    var props = ['Width', 'Span', 'Fill', 'Gap', 'Rule', 'RuleColor', 'RuleStyle', 'RuleWidth', 'BreakBefore', 'BreakAfter', 'BreakInside'];
-    var name, test;
-
-    for (var i = 0; i < props.length; i++) {
-      name = props[i].toLowerCase();
-      test = testAllProps('column' + props[i]);
-
-      // break-before, break-after & break-inside are not "column"-prefixed in spec
-      if (name === 'breakbefore' || name === 'breakafter' || name == 'breakinside') {
-        test = test || testAllProps(props[i]);
-      }
-
-      Modernizr.addTest('csscolumns.' + name, test);
-    }
-
-
-  })();
-
-
-/*!
-{
-  "name": "CSS Display run-in",
-  "property": "display-runin",
-  "authors": ["alanhogan"],
-  "tags": ["css"],
-  "builderAliases": ["css_displayrunin"],
-  "notes": [{
-    "name": "CSS Tricks Article",
-    "href": "http://css-tricks.com/596-run-in/"
-  },{
-    "name": "Related Github Issue",
-    "href": "https://github.com/Modernizr/Modernizr/issues/198"
-  }]
-}
-!*/
-
-  Modernizr.addTest('displayrunin', testAllProps('display', 'run-in'),
-    { aliases: ['display-runin'] });
-
-/*!
-{
-  "name": "CSS Hyphens",
-  "caniuse": "css-hyphens",
-  "property": ["csshyphens", "softhyphens", "softhyphensfind"],
-  "tags": ["css"],
-  "builderAliases": ["css_hyphens"],
-  "async" : true,
-  "authors": ["David Newton"],
-  "warnings": [
-    "These tests currently require document.body to be present",
-    "If loading Hyphenator.js via yepnope, be cautious of issue 158: http://code.google.com/p/hyphenator/issues/detail?id=158",
-    "This is very large – only include it if you absolutely need it"
-    ],
-  "notes": [{
-    "name": "The Current State of Hyphenation on the Web.",
-    "href": "http://davidnewton.ca/the-current-state-of-hyphenation-on-the-web"
-  },{
-    "name": "Hyphenation Test Page",
-    "href": "http://davidnewton.ca/demos/hyphenation/test.html"
-  },{
-    "name": "Hyphenation is Language Specific",
-    "href": " http://code.google.com/p/hyphenator/source/diff?spec=svn975&r=975&format=side&path=/trunk/Hyphenator.js#sc_svn975_313"
-  },{
-    "name": "Related Modernizr Issue",
-    "href": "https://github.com/Modernizr/Modernizr/issues/312"
-  }]
-}
-!*/
-
-
-  Modernizr.addAsyncTest(function() {
-    var waitTime = 300;
-    setTimeout(runHyphenTest, waitTime);
-    // Wait 1000ms so we can hope for document.body
-    function runHyphenTest() {
-      if (!document.body && !document.getElementsByTagName('body')[0]) {
-        setTimeout(runHyphenTest, waitTime);
-        return;
-      }
-
-      // functional test of adding hyphens:auto
-      function test_hyphens_css() {
-        try {
-          /* create a div container and a span within that
-           * these have to be appended to document.body, otherwise some browsers can give false negative */
-          var div = createElement('div');
-          var span = createElement('span');
-          var divStyle = div.style;
-          var spanHeight = 0;
-          var spanWidth = 0;
-          var result = false;
-          var firstChild = document.body.firstElementChild || document.body.firstChild;
-
-          div.appendChild(span);
-          span.innerHTML = 'Bacon ipsum dolor sit amet jerky velit in culpa hamburger et. Laborum dolor proident, enim dolore duis commodo et strip steak. Salami anim et, veniam consectetur dolore qui tenderloin jowl velit sirloin. Et ad culpa, fatback cillum jowl ball tip ham hock nulla short ribs pariatur aute. Pig pancetta ham bresaola, ut boudin nostrud commodo flank esse cow tongue culpa. Pork belly bresaola enim pig, ea consectetur nisi. Fugiat officia turkey, ea cow jowl pariatur ullamco proident do laborum velit sausage. Magna biltong sint tri-tip commodo sed bacon, esse proident aliquip. Ullamco ham sint fugiat, velit in enim sed mollit nulla cow ut adipisicing nostrud consectetur. Proident dolore beef ribs, laborum nostrud meatball ea laboris rump cupidatat labore culpa. Shankle minim beef, velit sint cupidatat fugiat tenderloin pig et ball tip. Ut cow fatback salami, bacon ball tip et in shank strip steak bresaola. In ut pork belly sed mollit tri-tip magna culpa veniam, short ribs qui in andouille ham consequat. Dolore bacon t-bone, velit short ribs enim strip steak nulla. Voluptate labore ut, biltong swine irure jerky. Cupidatat excepteur aliquip salami dolore. Ball tip strip steak in pork dolor. Ad in esse biltong. Dolore tenderloin exercitation ad pork loin t-bone, dolore in chicken ball tip qui pig. Ut culpa tongue, sint ribeye dolore ex shank voluptate hamburger. Jowl et tempor, boudin pork chop labore ham hock drumstick consectetur tri-tip elit swine meatball chicken ground round. Proident shankle mollit dolore. Shoulder ut duis t-bone quis reprehenderit. Meatloaf dolore minim strip steak, laboris ea aute bacon beef ribs elit shank in veniam drumstick qui. Ex laboris meatball cow tongue pork belly. Ea ball tip reprehenderit pig, sed fatback boudin dolore flank aliquip laboris eu quis. Beef ribs duis beef, cow corned beef adipisicing commodo nisi deserunt exercitation. Cillum dolor t-bone spare ribs, ham hock est sirloin. Brisket irure meatloaf in, boudin pork belly sirloin ball tip. Sirloin sint irure nisi nostrud aliqua. Nostrud nulla aute, enim officia culpa ham hock. Aliqua reprehenderit dolore sunt nostrud sausage, ea boudin pork loin ut t-bone ham tempor. Tri-tip et pancetta drumstick laborum. Ham hock magna do nostrud in proident. Ex ground round fatback, venison non ribeye in.';
-
-          document.body.insertBefore(div, firstChild);
-
-          /* get size of unhyphenated text */
-          divStyle.cssText = 'position:absolute;top:0;left:0;width:5em;text-align:justify;text-justification:newspaper;';
-          spanHeight = span.offsetHeight;
-          spanWidth = span.offsetWidth;
-
-          /* compare size with hyphenated text */
-          divStyle.cssText = 'position:absolute;top:0;left:0;width:5em;text-align:justify;'+
-            'text-justification:newspaper;'+
-            prefixes.join('hyphens:auto; ');
-
-          result = (span.offsetHeight != spanHeight || span.offsetWidth != spanWidth);
-
-          /* results and cleanup */
-          document.body.removeChild(div);
-          div.removeChild(span);
-
-          return result;
-        } catch(e) {
-          return false;
-        }
-      }
-
-      // for the softhyphens test
-      function test_hyphens( delimiter, testWidth ) {
-        try {
-          /* create a div container and a span within that
-           * these have to be appended to document.body, otherwise some browsers can give false negative */
-          var div = createElement('div');
-          var span = createElement('span');
-          var divStyle = div.style;
-          var spanSize = 0;
-          var result = false;
-          var result1 = false;
-          var result2 = false;
-          var firstChild = document.body.firstElementChild || document.body.firstChild;
-
-          divStyle.cssText = 'position:absolute;top:0;left:0;overflow:visible;width:1.25em;';
-          div.appendChild(span);
-          document.body.insertBefore(div, firstChild);
-
-
-          /* get height of unwrapped text */
-          span.innerHTML = 'mm';
-          spanSize = span.offsetHeight;
-
-          /* compare height w/ delimiter, to see if it wraps to new line */
-          span.innerHTML = 'm' + delimiter + 'm';
-          result1 = (span.offsetHeight > spanSize);
-
-          /* if we're testing the width too (i.e. for soft-hyphen, not zws),
-           * this is because tested Blackberry devices will wrap the text but not display the hyphen */
-          if (testWidth) {
-            /* get width of wrapped, non-hyphenated text */
-            span.innerHTML = 'm<br />m';
-            spanSize = span.offsetWidth;
-
-            /* compare width w/ wrapped w/ delimiter to see if hyphen is present */
-            span.innerHTML = 'm' + delimiter + 'm';
-            result2 = (span.offsetWidth > spanSize);
-          } else {
-            result2 = true;
-          }
-
-          /* results and cleanup */
-          if (result1 === true && result2 === true) { result = true; }
-          document.body.removeChild(div);
-          div.removeChild(span);
-
-          return result;
-        } catch(e) {
-          return false;
-        }
-      }
-
-      // testing if in-browser Find functionality will work on hyphenated text
-      function test_hyphens_find( delimiter ) {
-        try {
-          /* create a dummy input for resetting selection location, and a div container
-           * these have to be appended to document.body, otherwise some browsers can give false negative
-           * div container gets the doubled testword, separated by the delimiter
-           * Note: giving a width to div gives false positive in iOS Safari */
-          var dummy = createElement('input');
-          var div = createElement('div');
-          var testword = 'lebowski';
-          var result = false;
-          var textrange;
-          var firstChild = document.body.firstElementChild || document.body.firstChild;
-
-          div.innerHTML = testword + delimiter + testword;
-
-          document.body.insertBefore(div, firstChild);
-          document.body.insertBefore(dummy, div);
-
-
-          /* reset the selection to the dummy input element, i.e. BEFORE the div container
-           *   stackoverflow.com/questions/499126/jquery-set-cursor-position-in-text-area */
-          if (dummy.setSelectionRange) {
-            dummy.focus();
-            dummy.setSelectionRange(0,0);
-          } else if (dummy.createTextRange) {
-            textrange = dummy.createTextRange();
-            textrange.collapse(true);
-            textrange.moveEnd('character', 0);
-            textrange.moveStart('character', 0);
-            textrange.select();
-          }
-
-          /* try to find the doubled testword, without the delimiter */
-          if (window.find) {
-            result = window.find(testword + testword);
-          } else {
-            try {
-              textrange = window.self.document.body.createTextRange();
-              result = textrange.findText(testword + testword);
-            } catch(e) {
-              result = false;
-            }
-          }
-
-          document.body.removeChild(div);
-          document.body.removeChild(dummy);
-
-          return result;
-        } catch(e) {
-          return false;
-        }
-      }
-
-      addTest('csshyphens', function() {
-
-        if (!testAllProps('hyphens', 'auto', true)) return false;
-
-        /* Chrome lies about its hyphens support so we need a more robust test
-           crbug.com/107111
-           */
-        try {
-          return test_hyphens_css();
-        } catch(e) {
-          return false;
-        }
-      });
-
-      addTest('softhyphens', function() {
-        try {
-          // use numeric entity instead of &shy; in case it's XHTML
-          return test_hyphens('&#173;', true) && test_hyphens('&#8203;', false);
-        } catch(e) {
-          return false;
-        }
-      });
-
-      addTest('softhyphensfind', function() {
-        try {
-          return test_hyphens_find('&#173;') && test_hyphens_find('&#8203;');
-        } catch(e) {
-          return false;
-        }
-      });
-
-    }
-  });
-
-/*!
-{
-  "name": "CSS Mask",
-  "caniuse": "css-masks",
-  "property": "cssmask",
-  "tags": ["css"],
-  "builderAliases": ["css_mask"],
-  "notes": [
-    {
-      "name": "Webkit blog on CSS Masks",
-      "href": "http://www.webkit.org/blog/181/css-masks/"
-    },
-    {
-      "name": "Safari Docs",
-      "href": "http://developer.apple.com/library/safari/#documentation/InternetWeb/Conceptual/SafariVisualEffectsProgGuide/Masks/Masks.html"
-    },
-    {
-      "name": "Mozilla css svg mask (not this)",
-      "href": "http://developer.mozilla.org/en/CSS/mask"
-    },
-    {
-      "name": "Combine with clippaths for awesomeness",
-      "href": "http://generic.cx/for/webkit/test.html"
-    }
-  ]
-}
-!*/
-
-  Modernizr.addTest('cssmask', testAllProps('maskRepeat', 'repeat-x', true));
-
-/*!
-{
-  "name": "CSS Overflow Scrolling",
-  "property": "overflowscrolling",
-  "tags": ["css"],
-  "builderAliases": ["css_overflow_scrolling"],
-  "warnings": ["Introduced in iOS5b2. API is subject to change."],
-  "notes": [{
-    "name": "Article on iOS overflow scrolling",
-    "href": "http://css-tricks.com/snippets/css/momentum-scrolling-on-ios-overflow-elements/"
-  }]
-}
-!*/
-
-  Modernizr.addTest('overflowscrolling', testAllProps('overflowScrolling', 'touch', true));
-
-/*!
-{
-  "name": "CSS Reflections",
-  "caniuse": "css-reflections",
-  "property": "cssreflections",
-  "tags": ["css"]
-}
-!*/
-
-  Modernizr.addTest('cssreflections', testAllProps('boxReflect', 'above', true));
-
-/*!
-{
-  "name": "CSS Shapes",
-  "property": "shapes",
-  "tags": ["css"],
-  "notes": [{
-    "name": "CSS Shapes W3C specification",
-    "href": "http://www.w3.org/TR/css-shapes"
-  },{
-    "name": "Examples from Adobe",
-    "href": "http://html.adobe.com/webplatform/layout/shapes"
-  }, {
-    "name": "Samples showcasing uses of Shapes",
-    "href": "http://codepen.io/collection/qFesk"
-  }]
-}
-!*/
-
-  Modernizr.addTest('shapes', testAllProps('shapeOutside', 'content-box', true));
-
-/*!
-{
-  "name": "CSS text-overflow ellipsis",
-  "property": "ellipsis",
-  "caniuse": "text-overflow",
-  "polyfills": [
-    "text-overflow"
-  ],
-  "tags": ["css"]
-}
-!*/
-
-  Modernizr.addTest('ellipsis', testAllProps('textOverflow', 'ellipsis'));
-
-/*!
-{
-  "name": "CSS text-align-last",
-  "property": "textalignlast",
-  "tags": ["css"],
-  "knownBugs": ["IE does not support the 'start' or 'end' values."],
-  "notes": [{
-      "name": "Quicksmode",
-      "href": "http://www.quirksmode.org/css/text/textalignlast.html"
-    },{
-      "name": "MDN",
-      "href": "https://developer.mozilla.org/en-US/docs/Web/CSS/text-align-last"
-    }]
-}
-!*/
-
-  Modernizr.addTest('textalignlast', testAllProps('textAlignLast'));
-
-/*!
-{
-  "name": "CSS Transform Style preserve-3d",
-  "property": "preserve3d",
-  "authors": ["edmellum"],
-  "tags": ["css"],
-  "notes": [{
-    "name": "MDN Docs",
-    "href": "https://developer.mozilla.org/en-US/docs/Web/CSS/transform-style"
-  },{
-    "name": "Related Github Issue",
-    "href": "https://github.com/Modernizr/Modernizr/issues/762"
-  }]
-}
-!*/
-/* DOC
-Detects support for `transform-style: preserve-3d`, for getting a proper 3D perspective on elements.
-*/
-
-  Modernizr.addTest('preserve3d', testAllProps('transformStyle', 'preserve-3d'));
-
-/*!
-{
-  "name": "CSS UI Resize",
-  "property": "cssresize",
-  "caniuse": "css-resize",
-  "tags": ["css"],
-  "builderAliases": ["css_resize"],
-  "notes": [{
-    "name": "W3C Specification",
-    "href": "http://www.w3.org/TR/css3-ui/#resize"
-  },{
-    "name": "MDN Docs",
-    "href": "https://developer.mozilla.org/en/CSS/resize"
-  }]
-}
-!*/
-/* DOC
-Test for CSS 3 UI "resize" property
-*/
-
-  Modernizr.addTest('cssresize', testAllProps('resize', 'both', true));
-
-/*!
-{
-  "name": "CSS Transforms",
-  "property": "csstransforms",
-  "caniuse": "transforms2d",
-  "tags": ["css"]
-}
-!*/
-
-  Modernizr.addTest('csstransforms', function() {
-    // Android < 3.0 is buggy, so we sniff and blacklist
-    // http://git.io/hHzL7w
-    return navigator.userAgent.indexOf('Android 2.') === -1 &&
-           testAllProps('transform', 'scale(1)', true);
-  });
-
-/*!
-{
-  "name": "CSS Transforms 3D",
-  "property": "csstransforms3d",
-  "caniuse": "transforms3d",
-  "tags": ["css"],
-  "warnings": [
-    "Chrome may occassionally fail this test on some systems; more info: https://code.google.com/p/chromium/issues/detail?id=129004"
-  ]
-}
-!*/
-
-  Modernizr.addTest('csstransforms3d', function() {
-    var ret = !!testAllProps('perspective', '1px', true);
-    var usePrefix = Modernizr._config.usePrefixes;
-
-    // Webkit's 3D transforms are passed off to the browser's own graphics renderer.
-    //   It works fine in Safari on Leopard and Snow Leopard, but not in Chrome in
-    //   some conditions. As a result, Webkit typically recognizes the syntax but
-    //   will sometimes throw a false positive, thus we must do a more thorough check:
-    if ( ret && (!usePrefix || 'webkitPerspective' in docElement.style )) {
-      var mq;
-      // Use CSS Conditional Rules if available
-      if (Modernizr.supports) {
-        mq = '@supports (perspective: 1px)';
-      } else {
-        // Otherwise, Webkit allows this media query to succeed only if the feature is enabled.
-        // `@media (transform-3d),(-webkit-transform-3d){ ... }`
-        mq = '@media (transform-3d)';
-        if (usePrefix ) mq += ',(-webkit-transform-3d)';
-      }
-      // If loaded inside the body tag and the test element inherits any padding, margin or borders it will fail #740
-      mq += '{#modernizr{left:9px;position:absolute;height:5px;margin:0;padding:0;border:0}}';
-
-      testStyles(mq, function( elem ) {
-        ret = elem.offsetLeft === 9 && elem.offsetHeight === 5;
-      });
-    }
-
-    return ret;
-  });
-
-/*!
-{
-  "name": "CSS Transitions",
-  "property": "csstransitions",
-  "caniuse": "css-transitions",
-  "tags": ["css"]
-}
-!*/
-
-  Modernizr.addTest('csstransitions', testAllProps('transition', 'all', true));
-
-/*!
-{
-  "name": "CSS Generated Content Transitions",
-  "property": "csspseudotransitions",
-  "tags": ["css"]
-}
-!*/
-
-  Modernizr.addTest('csspseudotransitions', function () {
-    var result = false;
-
-    if (!Modernizr.csstransitions || !window.getComputedStyle) {
-      return result;
-    }
-
-    var styles =
-      '#modernizr:before { content:" "; font-size:5px;' + Modernizr._prefixes.join('transition:0s 100s;') + '}' +
-      '#modernizr.trigger:before { font-size:10px; }';
-
-    Modernizr.testStyles(styles, function (elem) {
-      // Force rendering of the element's styles so that the transition will trigger
-      window.getComputedStyle(elem, ':before').getPropertyValue('font-size');
-      elem.className += 'trigger';
-      result = window.getComputedStyle(elem, ':before').getPropertyValue('font-size') === '5px';
-    });
-
-    return result;
-  });
-
-/*!
-{
-  "name": "CSS user-select",
-  "property": "userselect",
-  "caniuse": "user-select-none",
-  "authors": ["ryan seddon"],
-  "tags": ["css"],
-  "builderAliases": ["css_userselect"],
-  "notes": [{
-    "name": "Related Modernizr Issue",
-    "href": "https://github.com/Modernizr/Modernizr/issues/250"
-  }]
-}
-!*/
-
-  //https://github.com/Modernizr/Modernizr/issues/250
-  Modernizr.addTest('userselect', testAllProps('userSelect', 'none', true));
-
-/*!
-{
-  "name": "Flexbox (legacy)",
-  "property": "flexboxlegacy",
-  "tags": ["css"],
-  "polyfills": ["flexie"],
-  "notes": [{
-    "name": "The _old_ flexbox",
-    "href": "http://www.w3.org/TR/2009/WD-css3-flexbox-20090723/"
-  }]
-}
-!*/
-
-  Modernizr.addTest('flexboxlegacy', testAllProps('boxDirection', 'reverse', true));
-
-/*!
-{
-  "name": "Flexbox",
-  "property": "flexbox",
-  "caniuse": "flexbox",
-  "tags": ["css"],
-  "notes": [{
-    "name": "The _new_ flexbox",
-    "href": "http://dev.w3.org/csswg/css3-flexbox"
-  }],
-  "warnings": [
-    "A `true` result for this detect does not imply that the `flex-wrap` property is supported; see the `flexwrap` detect."
-  ]
-}
-!*/
-/* DOC
-Detects support for the Flexible Box Layout model, a.k.a. Flexbox, which allows easy manipulation of layout order and sizing within a container.
-*/
-
-  Modernizr.addTest('flexbox', testAllProps('flexBasis', '1px', true));
-
-/*!
-{
-  "name": "Flex Line Wrapping",
-  "property": "flexwrap",
-  "tags": ["css", "flexbox"],
-  "notes": [{
-    "name": "W3C Flexible Box Layout spec",
-    "href": "http://dev.w3.org/csswg/css3-flexbox"
-  }],
-  "warnings": [
-    "Does not imply a modern implementation – see documentation."
-  ]
-}
-!*/
-/* DOC
-Detects support for the `flex-wrap` CSS property, part of Flexbox, which isn’t present in all Flexbox implementations (notably Firefox).
-
-This featured in both the 'tweener' syntax (implemented by IE10) and the 'modern' syntax (implemented by others). This detect will return `true` for either of these implementations, as long as the `flex-wrap` property is supported. So to ensure the modern syntax is supported, use together with `Modernizr.flexbox`:
-
-```javascript
-if (Modernizr.flexbox && Modernizr.flexwrap) {
-  // Modern Flexbox with `flex-wrap` supported
-}
-else {
-  // Either old Flexbox syntax, or `flex-wrap` not supported
-}
-```
-*/
-
-  Modernizr.addTest('flexwrap', testAllProps('flexWrap', 'wrap', true));
-
-/*!
-{
-  "name": "Flexbox (tweener)",
-  "property": "flexboxtweener",
-  "tags": ["css"],
-  "polyfills": ["flexie"],
-  "notes": [{
-    "name": "The _inbetween_ flexbox",
-    "href": "http://www.w3.org/TR/2011/WD-css3-flexbox-20111129/"
-  }],
-  "warnings": ["This represents an old syntax, not the latest standard syntax."]
-}
-!*/
-
-  Modernizr.addTest('flexboxtweener', testAllProps('flexAlign', 'end', true));
-
-
-  // Run each test
-  testRunner();
-
-  // Remove the "no-js" class if it exists
-  setClasses(classes);
-
-  delete ModernizrProto.addTest;
-  delete ModernizrProto.addAsyncTest;
-
-  // Run the things that are supposed to run after the tests
-  for (var i = 0; i < Modernizr._q.length; i++) {
-    Modernizr._q[i]();
-  }
-
-  // Leak Modernizr namespace
-  window.Modernizr = Modernizr;
-
-
-;
-
-})(window, document);
-
 ;// Sticky Plugin v1.0.3 for jQuery
 // =============
 // Author: Anthony Garand
@@ -103050,603 +95769,9 @@ define('ember-masonry-grid', ['ember-masonry-grid/index', 'ember', 'exports'], f
   }));
 });
 
-define('ember-waypoints/components/way-point', ['exports', 'ember'], function (exports, Ember) {
-
-  'use strict';
-
-  var getProperties = Ember['default'].getProperties;
-  var bind = Ember['default'].run.bind;
-  var on = Ember['default'].on;
-  var isNone = Ember['default'].isNone;
-
-  exports['default'] = Ember['default'].Component.extend({
-    contextElement: null,
-    offset: null,
-    triggerOnce: null,
-    continuous: null,
-    horizontal: null,
-
-    waypoint: function waypoint() {
-      if (typeof document === 'undefined') {
-        return;
-      }
-
-      var element = this.$();
-
-      if (!element.waypoint) {
-        return;
-      }
-
-      element.waypoint.apply(element, arguments);
-    },
-
-    setupWaypoint: on('didInsertElement', function () {
-      this.waypoint(this.buildOptions());
-    }),
-
-    teardownWaypoint: on('willDestroyElement', function () {
-      this.waypoint('destroy');
-    }),
-
-    buildOptions: function buildOptions() {
-      var options = getProperties(this, ['contextElementId', 'offset', 'triggerOnce', 'continuous', 'horizontal']);
-      options.handler = bind(this, this.waypointTriggered);
-
-      for (var option in options) {
-        if (isNone(options[option])) {
-          delete options[option];
-        }
-      }
-
-      if (options.contextElementId) {
-        options.context = document.getElementById(options.contextElementId);
-        delete options.contextElementId;
-      }
-
-      return options;
-    },
-
-    waypointTriggered: function waypointTriggered(direction) {
-      this.sendAction('on-' + direction, this);
-      this.sendAction('action', direction, this);
-    }
-  });
-
-});
-define('ember-waypoints', ['ember-waypoints/index', 'ember', 'exports'], function(__index__, __Ember__, __exports__) {
-  'use strict';
-  var keys = Object.keys || __Ember__['default'].keys;
-  var forEach = Array.prototype.forEach && function(array, cb) {
-    array.forEach(cb);
-  } || __Ember__['default'].EnumerableUtils.forEach;
-
-  forEach(keys(__index__), (function(key) {
-    __exports__[key] = __index__[key];
-  }));
-});
-
 ;/* jshint ignore:start */
 
-if (typeof(document) !== "undefined") {
-// Generated by CoffeeScript 1.6.2
-/*!
-jQuery Waypoints - v2.0.5
-Copyright (c) 2011-2014 Caleb Troughton
-Licensed under the MIT license.
-https://github.com/imakewebthings/jquery-waypoints/blob/master/licenses.txt
-*/
 
-
-(function() {
-  var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; },
-    __slice = [].slice;
-
-  (function(root, factory) {
-    if (typeof define === 'function' && define.amd) {
-      return define('waypoints', ['jquery'], function($) {
-        return factory($, root);
-      });
-    } else {
-      return factory(root.jQuery, root);
-    }
-  })(window, function($, window) {
-    var $w, Context, Waypoint, allWaypoints, contextCounter, contextKey, contexts, isTouch, jQMethods, methods, resizeEvent, scrollEvent, waypointCounter, waypointKey, wp, wps;
-
-    $w = $(window);
-    isTouch = __indexOf.call(window, 'ontouchstart') >= 0;
-    allWaypoints = {
-      horizontal: {},
-      vertical: {}
-    };
-    contextCounter = 1;
-    contexts = {};
-    contextKey = 'waypoints-context-id';
-    resizeEvent = 'resize.waypoints';
-    scrollEvent = 'scroll.waypoints';
-    waypointCounter = 1;
-    waypointKey = 'waypoints-waypoint-ids';
-    wp = 'waypoint';
-    wps = 'waypoints';
-    Context = (function() {
-      function Context($element) {
-        var _this = this;
-
-        this.$element = $element;
-        this.element = $element[0];
-        this.didResize = false;
-        this.didScroll = false;
-        this.id = 'context' + contextCounter++;
-        this.oldScroll = {
-          x: $element.scrollLeft(),
-          y: $element.scrollTop()
-        };
-        this.waypoints = {
-          horizontal: {},
-          vertical: {}
-        };
-        this.element[contextKey] = this.id;
-        contexts[this.id] = this;
-        $element.bind(scrollEvent, function() {
-          var scrollHandler;
-
-          if (!(_this.didScroll || isTouch)) {
-            _this.didScroll = true;
-            scrollHandler = function() {
-              _this.doScroll();
-              return _this.didScroll = false;
-            };
-            return window.setTimeout(scrollHandler, $[wps].settings.scrollThrottle);
-          }
-        });
-        $element.bind(resizeEvent, function() {
-          var resizeHandler;
-
-          if (!_this.didResize) {
-            _this.didResize = true;
-            resizeHandler = function() {
-              $[wps]('refresh');
-              return _this.didResize = false;
-            };
-            return window.setTimeout(resizeHandler, $[wps].settings.resizeThrottle);
-          }
-        });
-      }
-
-      Context.prototype.doScroll = function() {
-        var axes,
-          _this = this;
-
-        axes = {
-          horizontal: {
-            newScroll: this.$element.scrollLeft(),
-            oldScroll: this.oldScroll.x,
-            forward: 'right',
-            backward: 'left'
-          },
-          vertical: {
-            newScroll: this.$element.scrollTop(),
-            oldScroll: this.oldScroll.y,
-            forward: 'down',
-            backward: 'up'
-          }
-        };
-        if (isTouch && (!axes.vertical.oldScroll || !axes.vertical.newScroll)) {
-          $[wps]('refresh');
-        }
-        $.each(axes, function(aKey, axis) {
-          var direction, isForward, triggered;
-
-          triggered = [];
-          isForward = axis.newScroll > axis.oldScroll;
-          direction = isForward ? axis.forward : axis.backward;
-          $.each(_this.waypoints[aKey], function(wKey, waypoint) {
-            var _ref, _ref1;
-
-            if ((axis.oldScroll < (_ref = waypoint.offset) && _ref <= axis.newScroll)) {
-              return triggered.push(waypoint);
-            } else if ((axis.newScroll < (_ref1 = waypoint.offset) && _ref1 <= axis.oldScroll)) {
-              return triggered.push(waypoint);
-            }
-          });
-          triggered.sort(function(a, b) {
-            return a.offset - b.offset;
-          });
-          if (!isForward) {
-            triggered.reverse();
-          }
-          return $.each(triggered, function(i, waypoint) {
-            if (waypoint.options.continuous || i === triggered.length - 1) {
-              return waypoint.trigger([direction]);
-            }
-          });
-        });
-        return this.oldScroll = {
-          x: axes.horizontal.newScroll,
-          y: axes.vertical.newScroll
-        };
-      };
-
-      Context.prototype.refresh = function() {
-        var axes, cOffset, isWin,
-          _this = this;
-
-        isWin = $.isWindow(this.element);
-        cOffset = this.$element.offset();
-        this.doScroll();
-        axes = {
-          horizontal: {
-            contextOffset: isWin ? 0 : cOffset.left,
-            contextScroll: isWin ? 0 : this.oldScroll.x,
-            contextDimension: this.$element.width(),
-            oldScroll: this.oldScroll.x,
-            forward: 'right',
-            backward: 'left',
-            offsetProp: 'left'
-          },
-          vertical: {
-            contextOffset: isWin ? 0 : cOffset.top,
-            contextScroll: isWin ? 0 : this.oldScroll.y,
-            contextDimension: isWin ? $[wps]('viewportHeight') : this.$element.height(),
-            oldScroll: this.oldScroll.y,
-            forward: 'down',
-            backward: 'up',
-            offsetProp: 'top'
-          }
-        };
-        return $.each(axes, function(aKey, axis) {
-          return $.each(_this.waypoints[aKey], function(i, waypoint) {
-            var adjustment, elementOffset, oldOffset, _ref, _ref1;
-
-            adjustment = waypoint.options.offset;
-            oldOffset = waypoint.offset;
-            elementOffset = $.isWindow(waypoint.element) ? 0 : waypoint.$element.offset()[axis.offsetProp];
-            if ($.isFunction(adjustment)) {
-              adjustment = adjustment.apply(waypoint.element);
-            } else if (typeof adjustment === 'string') {
-              adjustment = parseFloat(adjustment);
-              if (waypoint.options.offset.indexOf('%') > -1) {
-                adjustment = Math.ceil(axis.contextDimension * adjustment / 100);
-              }
-            }
-            waypoint.offset = elementOffset - axis.contextOffset + axis.contextScroll - adjustment;
-            if ((waypoint.options.onlyOnScroll && (oldOffset != null)) || !waypoint.enabled) {
-              return;
-            }
-            if (oldOffset !== null && (oldOffset < (_ref = axis.oldScroll) && _ref <= waypoint.offset)) {
-              return waypoint.trigger([axis.backward]);
-            } else if (oldOffset !== null && (oldOffset > (_ref1 = axis.oldScroll) && _ref1 >= waypoint.offset)) {
-              return waypoint.trigger([axis.forward]);
-            } else if (oldOffset === null && axis.oldScroll >= waypoint.offset) {
-              return waypoint.trigger([axis.forward]);
-            }
-          });
-        });
-      };
-
-      Context.prototype.checkEmpty = function() {
-        if ($.isEmptyObject(this.waypoints.horizontal) && $.isEmptyObject(this.waypoints.vertical)) {
-          this.$element.unbind([resizeEvent, scrollEvent].join(' '));
-          return delete contexts[this.id];
-        }
-      };
-
-      return Context;
-
-    })();
-    Waypoint = (function() {
-      function Waypoint($element, context, options) {
-        var idList, _ref;
-
-        if (options.offset === 'bottom-in-view') {
-          options.offset = function() {
-            var contextHeight;
-
-            contextHeight = $[wps]('viewportHeight');
-            if (!$.isWindow(context.element)) {
-              contextHeight = context.$element.height();
-            }
-            return contextHeight - $(this).outerHeight();
-          };
-        }
-        this.$element = $element;
-        this.element = $element[0];
-        this.axis = options.horizontal ? 'horizontal' : 'vertical';
-        this.callback = options.handler;
-        this.context = context;
-        this.enabled = options.enabled;
-        this.id = 'waypoints' + waypointCounter++;
-        this.offset = null;
-        this.options = options;
-        context.waypoints[this.axis][this.id] = this;
-        allWaypoints[this.axis][this.id] = this;
-        idList = (_ref = this.element[waypointKey]) != null ? _ref : [];
-        idList.push(this.id);
-        this.element[waypointKey] = idList;
-      }
-
-      Waypoint.prototype.trigger = function(args) {
-        if (!this.enabled) {
-          return;
-        }
-        if (this.callback != null) {
-          this.callback.apply(this.element, args);
-        }
-        if (this.options.triggerOnce) {
-          return this.destroy();
-        }
-      };
-
-      Waypoint.prototype.disable = function() {
-        return this.enabled = false;
-      };
-
-      Waypoint.prototype.enable = function() {
-        this.context.refresh();
-        return this.enabled = true;
-      };
-
-      Waypoint.prototype.destroy = function() {
-        delete allWaypoints[this.axis][this.id];
-        delete this.context.waypoints[this.axis][this.id];
-        return this.context.checkEmpty();
-      };
-
-      Waypoint.getWaypointsByElement = function(element) {
-        var all, ids;
-
-        ids = element[waypointKey];
-        if (!ids) {
-          return [];
-        }
-        all = $.extend({}, allWaypoints.horizontal, allWaypoints.vertical);
-        return $.map(ids, function(id) {
-          return all[id];
-        });
-      };
-
-      return Waypoint;
-
-    })();
-    methods = {
-      init: function(f, options) {
-        var _ref;
-
-        options = $.extend({}, $.fn[wp].defaults, options);
-        if ((_ref = options.handler) == null) {
-          options.handler = f;
-        }
-        this.each(function() {
-          var $this, context, contextElement, _ref1;
-
-          $this = $(this);
-          contextElement = (_ref1 = options.context) != null ? _ref1 : $.fn[wp].defaults.context;
-          if (!$.isWindow(contextElement)) {
-            contextElement = $this.closest(contextElement);
-          }
-          contextElement = $(contextElement);
-          context = contexts[contextElement[0][contextKey]];
-          if (!context) {
-            context = new Context(contextElement);
-          }
-          return new Waypoint($this, context, options);
-        });
-        $[wps]('refresh');
-        return this;
-      },
-      disable: function() {
-        return methods._invoke.call(this, 'disable');
-      },
-      enable: function() {
-        return methods._invoke.call(this, 'enable');
-      },
-      destroy: function() {
-        return methods._invoke.call(this, 'destroy');
-      },
-      prev: function(axis, selector) {
-        return methods._traverse.call(this, axis, selector, function(stack, index, waypoints) {
-          if (index > 0) {
-            return stack.push(waypoints[index - 1]);
-          }
-        });
-      },
-      next: function(axis, selector) {
-        return methods._traverse.call(this, axis, selector, function(stack, index, waypoints) {
-          if (index < waypoints.length - 1) {
-            return stack.push(waypoints[index + 1]);
-          }
-        });
-      },
-      _traverse: function(axis, selector, push) {
-        var stack, waypoints;
-
-        if (axis == null) {
-          axis = 'vertical';
-        }
-        if (selector == null) {
-          selector = window;
-        }
-        waypoints = jQMethods.aggregate(selector);
-        stack = [];
-        this.each(function() {
-          var index;
-
-          index = $.inArray(this, waypoints[axis]);
-          return push(stack, index, waypoints[axis]);
-        });
-        return this.pushStack(stack);
-      },
-      _invoke: function(method) {
-        this.each(function() {
-          var waypoints;
-
-          waypoints = Waypoint.getWaypointsByElement(this);
-          return $.each(waypoints, function(i, waypoint) {
-            waypoint[method]();
-            return true;
-          });
-        });
-        return this;
-      }
-    };
-    $.fn[wp] = function() {
-      var args, method;
-
-      method = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
-      if (methods[method]) {
-        return methods[method].apply(this, args);
-      } else if ($.isFunction(method)) {
-        return methods.init.apply(this, arguments);
-      } else if ($.isPlainObject(method)) {
-        return methods.init.apply(this, [null, method]);
-      } else if (!method) {
-        return $.error("jQuery Waypoints needs a callback function or handler option.");
-      } else {
-        return $.error("The " + method + " method does not exist in jQuery Waypoints.");
-      }
-    };
-    $.fn[wp].defaults = {
-      context: window,
-      continuous: true,
-      enabled: true,
-      horizontal: false,
-      offset: 0,
-      triggerOnce: false
-    };
-    jQMethods = {
-      refresh: function() {
-        return $.each(contexts, function(i, context) {
-          return context.refresh();
-        });
-      },
-      viewportHeight: function() {
-        var _ref;
-
-        return (_ref = window.innerHeight) != null ? _ref : $w.height();
-      },
-      aggregate: function(contextSelector) {
-        var collection, waypoints, _ref;
-
-        collection = allWaypoints;
-        if (contextSelector) {
-          collection = (_ref = contexts[$(contextSelector)[0][contextKey]]) != null ? _ref.waypoints : void 0;
-        }
-        if (!collection) {
-          return [];
-        }
-        waypoints = {
-          horizontal: [],
-          vertical: []
-        };
-        $.each(waypoints, function(axis, arr) {
-          $.each(collection[axis], function(key, waypoint) {
-            return arr.push(waypoint);
-          });
-          arr.sort(function(a, b) {
-            return a.offset - b.offset;
-          });
-          waypoints[axis] = $.map(arr, function(waypoint) {
-            return waypoint.element;
-          });
-          return waypoints[axis] = $.unique(waypoints[axis]);
-        });
-        return waypoints;
-      },
-      above: function(contextSelector) {
-        if (contextSelector == null) {
-          contextSelector = window;
-        }
-        return jQMethods._filter(contextSelector, 'vertical', function(context, waypoint) {
-          return waypoint.offset <= context.oldScroll.y;
-        });
-      },
-      below: function(contextSelector) {
-        if (contextSelector == null) {
-          contextSelector = window;
-        }
-        return jQMethods._filter(contextSelector, 'vertical', function(context, waypoint) {
-          return waypoint.offset > context.oldScroll.y;
-        });
-      },
-      left: function(contextSelector) {
-        if (contextSelector == null) {
-          contextSelector = window;
-        }
-        return jQMethods._filter(contextSelector, 'horizontal', function(context, waypoint) {
-          return waypoint.offset <= context.oldScroll.x;
-        });
-      },
-      right: function(contextSelector) {
-        if (contextSelector == null) {
-          contextSelector = window;
-        }
-        return jQMethods._filter(contextSelector, 'horizontal', function(context, waypoint) {
-          return waypoint.offset > context.oldScroll.x;
-        });
-      },
-      enable: function() {
-        return jQMethods._invoke('enable');
-      },
-      disable: function() {
-        return jQMethods._invoke('disable');
-      },
-      destroy: function() {
-        return jQMethods._invoke('destroy');
-      },
-      extendFn: function(methodName, f) {
-        return methods[methodName] = f;
-      },
-      _invoke: function(method) {
-        var waypoints;
-
-        waypoints = $.extend({}, allWaypoints.vertical, allWaypoints.horizontal);
-        return $.each(waypoints, function(key, waypoint) {
-          waypoint[method]();
-          return true;
-        });
-      },
-      _filter: function(selector, axis, test) {
-        var context, waypoints;
-
-        context = contexts[$(selector)[0][contextKey]];
-        if (!context) {
-          return [];
-        }
-        waypoints = [];
-        $.each(context.waypoints[axis], function(i, waypoint) {
-          if (test(context, waypoint)) {
-            return waypoints.push(waypoint);
-          }
-        });
-        waypoints.sort(function(a, b) {
-          return a.offset - b.offset;
-        });
-        return $.map(waypoints, function(waypoint) {
-          return waypoint.element;
-        });
-      }
-    };
-    $[wps] = function() {
-      var args, method;
-
-      method = arguments[0], args = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
-      if (jQMethods[method]) {
-        return jQMethods[method].apply(null, args);
-      } else {
-        return jQMethods.aggregate.call(null, method);
-      }
-    };
-    $[wps].settings = {
-      resizeThrottle: 100,
-      scrollThrottle: 30
-    };
-    return $w.on('load.waypoints', function() {
-      return $[wps]('refresh');
-    });
-  });
-
-}).call(this);
-
-}
 
 /* jshint ignore:end */
 //# sourceMappingURL=vendor.map

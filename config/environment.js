@@ -2,7 +2,7 @@
 
 module.exports = function(environment) {
   var ENV = {
-    modulePrefix: 'home',
+    modulePrefix: 'blog',
     environment: environment,
     baseURL: '/',
     locationType: 'auto',
@@ -16,15 +16,6 @@ module.exports = function(environment) {
     APP: {
       // Here you can pass flags/options to your application instance
       // when it is created
-    },
-    contentSecurityPolicy: {
-      'default-src': "'none'",
-      'script-src': "'self'",
-      'font-src': "'self'",
-      'connect-src': "'self' 'localhost:4200'",
-      'img-src': "'self'",
-      'style-src': "'self' *",
-      'media-src': "'self'"
     }
   };
 
