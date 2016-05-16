@@ -1,0 +1,128 @@
+/**
+ * Teaser
+ **/
+
+$masonry-gutter: 1.5rem;
+
+.masonry-item {
+	width: 100%;
+	width: calc(100% - #{$masonry-gutter});
+	margin-right: $masonry-gutter;
+	margin-bottom: $masonry-gutter;
+	@media (min-width: $layout-s) {
+		width: 48%;
+		width: calc(50% - #{$masonry-gutter});
+	}
+	@media (min-width: $layout-m) {
+		width: 30%;
+		width: calc(33% - #{$masonry-gutter});
+	}
+	@media (min-width: $layout-xl) {
+		width: 20%;
+		width: calc(25% - #{$masonry-gutter});
+	}
+}
+
+.Teaser {
+	display: flex;
+	flex-flow: row wrap;
+	justify-content: space-around;
+
+	max-width: rem(1000);
+	margin: 0 auto;
+	padding: 0 rem(5);
+
+	a:hover,
+	a:active {
+		.Teaser-media {
+			outline: 1px solid $black;
+			img {
+				filter: brightness(95%);
+			}
+		}
+		.Teaser-body {
+			position: relative;
+			outline: 1px solid $black;
+			// border-top: 3px solid $black;
+
+			&:before {
+				content: '';
+				position: absolute;
+				width: 100%;
+				top: 0;
+				left: 0;
+				right: 0;
+				border-top: 3px solid $black;
+			}
+		}
+	}
+}
+.Teaser-wrap {
+	flex: rem(200);
+	margin: rem(5);
+}
+.Teaser-media {
+	@include ratio(1456,2177);
+	margin-bottom: 0;
+	overflow: hidden;
+
+	img {
+		transition: -webkit-filter 600ms $easing, transform 600ms $easing;
+		@include ratio-inner;
+		// transition: -webkit-filter 150ms $easing, transform 2000ms $easing;
+
+		// without default values, the image will jump 1px in chrome on hover
+		filter: brightness(1);
+		backface-visibility: hidden;
+		transform: translate3d(0,0,0);
+	}
+}
+.Teaser-body {
+	overflow: hidden;
+	padding: 15px;
+	margin: 0;
+	background-color: $white;
+
+	img {
+		width: 14px;
+		float: left;
+	}
+	p {
+		font-size: 13px;
+		margin: 0;
+	}
+}
+.Teaser-title {
+	text-transform: uppercase;
+	margin-top: 0;
+	font-size: $font-15;
+
+	@media (min-width: $layout-ml) {
+		font-size: $font-17;
+	}
+}
+// .Teaser-title {
+// 	@extend %font-bold;
+// 	font-size: rem(20);
+// 	@media (min-width: $layout-sm) {
+// 		font-size: rem(24);
+// 	}
+// 	@media (min-width: $layout-ml) {
+// 		// font-size: rem(30);
+// 	}
+// 	margin-top: 1rem;
+// 	padding: 0.2em 0.4em 0.3em;
+// 	position: absolute;
+// 	left: 0;
+// 	bottom: 1rem;
+// 	z-index: 1;
+// 	// background-color: rgba($gray, 0.5);
+// 	background-color: $teal;
+// 	background-color: #08092D;
+// 	color: $silk;
+// 	// background-image: url(images/moods/bluego.gif);
+// }
+// .Teaser-subtitle {
+// 	font-size: $font-14;
+// 	margin-bottom: rem(26);
+// }

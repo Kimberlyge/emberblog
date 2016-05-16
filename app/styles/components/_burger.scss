@@ -1,0 +1,31 @@
+.Burger {
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 6; // on top of .Aside
+
+	@media (min-width: $layout-m) {
+		display: none;
+	}
+
+	// background-image: url(images/dots/dot7.svg);
+	// background-position: 0.5rem 50%;
+	// background-repeat: no-repeat;
+	// background-color: transparent;
+	// background-size: rem(25);
+	// height: rem(50);
+	line-height: rem(50);
+	padding-left: 1em; //rem(42);
+	border: 0;
+	text-transform: uppercase;
+	font-size: $font-14;
+	letter-spacing: 0.1em;
+	&:focus,
+	&:active {
+		outline: none;
+	}
+	.show-aside & {
+		background-image: url(images/dots/dot6.svg);
+	}
+}
+

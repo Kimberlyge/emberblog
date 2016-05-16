@@ -1,0 +1,42 @@
+html {
+	min-height: 100%;
+}
+
+.App {
+	overflow: hidden;
+}
+.App-main {
+	> .liquid-container,
+	> .liquid-container > .liquid-child {
+		min-height: 100%;
+	}
+}
+.Section {}
+.Manchet {
+	max-width: $max-width;
+	padding-left: rem($space*3);
+	padding-right: rem($space*2);
+	padding-bottom: rem($space);
+}
+.Manchet,
+.Page-body {
+	padding-top: rem($space*3);
+}
+
+.BackLink {
+	margin-bottom: rem($space*2);
+	a {
+		text-decoration: none;
+	}
+}
+
+img.alignleft {
+	float: left;
+	margin-right: 1rem;
+	margin-bottom: 0.5rem;
+}
+img.alignright {
+	float: right;
+	margin-left: 1rem;
+	margin-bottom: 0.5rem;
+}

@@ -1,0 +1,58 @@
+/*!
+	ALIVE FESTIVAL
+	by Oskar Rough
+*/
+
+/**
+ * Third party
+ If is only *.css available rename it to *.scss
+ */
+// @import 'node_modules/flickity/css/flickity';
+@import 'node_modules/normalize.css/normalize';
+@import 'node_modules/suitcss-base/lib/base';
+
+@import 'base/mixins';
+@import 'base/config';
+
+// Utilities (abstract patterns to be reused in components)
+@import 'utilities/clearfix';
+@import 'utilities/negative-text';
+@import 'utilities/align';
+@import 'utilities/ratio';
+// @import 'utilities/custom-select';
+// @import 'utilities/animation-delay';
+
+// Base
+@import 'base/fonts';
+@import 'base/global';
+@import 'base/icons';
+
+// Components
+@import 'components/media-block';
+@import 'components/animation';
+// @import 'components/index';
+@import 'components/buttons';
+@import 'components/container';
+// @import 'components/frame';
+// @import 'components/billetter';
+@import 'components/logo';
+
+// @import 'components/aside';
+@import 'components/burger';
+@import 'components/menu';
+@import 'components/ratio';
+@import 'components/nav';
+@import 'components/teaser';
+@import 'components/page';
+@import 'components/flickity-gallery'; // dont edit this, it's imported
+@import 'components/gallery';
+@import 'components/list';
+@import 'components/section-box';
+// @import 'components/header-bar';
+
+@import 'layout/header';
+@import 'layout/layout';
+@import 'layout/detail';
+@import 'layout/grid';
+@import 'layout/scrollbar';
+

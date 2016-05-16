@@ -1,0 +1,137 @@
+/**
+ * Navigation
+ */
+
+.Nav,
+.NavSub {
+	a {
+		display: block;
+		margin: 0 rem(5);
+		font-size: $font-16;
+		letter-spacing: 0.05em;
+		text-transform: uppercase;
+		text-decoration: none;
+		cursor: pointer;
+		border-bottom: 2px solid black;
+
+		@media (min-width: $layout-sm) {
+			display: inline-block;
+			border-bottom: 2px solid transparent;
+
+			&:hover,
+			&:active,
+			&.is-active {
+				border-bottom: 2px solid;
+			}
+
+		}
+	}
+}
+
+.Nav {
+	padding: 20px;
+
+	a {
+		&:first-of-typev{
+			margin-top: 1.3em;
+		}
+	}
+
+	span {
+		display: none;
+		@media (min-width: $layout-sm) {
+			display: inline-block;
+		}
+	}
+
+	// @media (max-width: $layout-sm) {
+	// 	display: none;
+
+	// 	&.is-active {
+	// 		display: block;
+	// 	}
+	// }
+}
+
+.Nav--sub {
+	position: relative;
+	z-index: 9;
+
+	@media (max-width: $layout-sm) {
+		display: none;
+	}
+
+	&:before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		width: 0.4em;
+		margin: auto;
+		border-top: 1px solid;
+	}
+
+	a {
+		padding: 0;
+		background: none;
+		font-size: 14px;
+		text-transform: lowercase;
+	}
+}
+
+.is-sticky .sticky {
+	z-index: 9;
+	background: $white;
+
+	.Nav {
+		a {
+			background: $white;
+			margin-top: 0;
+
+			&:first-of-type {
+				border-top: 2px solid $black;
+			}
+
+			@media (min-width: $layout-sm) {
+				padding: rem(20) 0 0;
+				border-bottom: 2px solid $white;
+
+				&:first-of-type {
+					border-top: 0;
+				}
+
+				&:hover,
+				&:active,
+				&.is-active {
+					border-bottom: 2px solid $black;
+				}
+			}
+		}
+	}
+	.NavSub {
+		padding-bottom: 1em;
+		@media (min-width: $layout-sm) {
+			border-bottom: 2px solid $white !important;
+		}
+	}
+}
+
+.Nav-static {
+	@media (max-width: $layout-sm) {
+		background-color: $black !important;
+		color: $white !important;
+		border-color: $white !important;
+	}
+}
+
+// The social nav
+.Social {
+	margin-top: rem($space*2);
+	padding-left: rem($space*2);
+	text-align: left;
+	img {
+		width: rem(30);
+		height: rem(30);
+	}
+}

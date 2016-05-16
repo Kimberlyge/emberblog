@@ -1,0 +1,127 @@
+// Scale to the right format.
+// Responsive images are adjusted to the same.
+.Index-gallery {
+
+}
+
+// Set a max height when object-fit is supported
+.object-fit .Index-gallery {
+	min-height: 300px;
+	max-height: 75vh;
+	overflow: hidden;
+	.FlickityGallery .FlickityGallery-item {
+		height: 100%;
+		img {
+			max-height: 75vh;
+			height: 100%;
+			object-fit: cover;
+			object-position: center;
+		}
+	}
+}
+
+.FlickityGallery {
+	@include ratio(16, 9);
+	@media (orientation: portrait) {
+		@include ratio(9, 16);
+	}
+	> * {
+		@include ratio-inner;
+	}
+}
+.FlickityGallery-item {
+	width: 100%;
+}
+.FlickityGallery-item img {
+	width: 100%;
+}
+
+// Dots
+// .flickity-page-dots {
+// 	bottom: rem(15);
+// }
+// .flickity-page-dots .dot {
+// 	// width: 6px;
+// 	// height: 6px;
+// 	// margin: 0 5px;
+// 	// background-color: #fff;
+
+// 	opacity: 1;
+// 	// SO! We move the (dot) styles from the .dot
+// 	// to a pseudo-element in order to create a bigger tap area.
+// 	margin: 0;
+// 	padding: 0 rem(8);
+// 	width: auto;
+// 	height: auto;
+// 	border: 0;
+// 	background-color: transparent;
+// 	&::after {
+// 		content: '';
+// 		display: inline-block;
+// 		height: rem(12);
+// 		width: rem(12);
+// 		background: transparent;
+// 		border: 2px solid rgba(123, 123, 123, 0.38);
+// 		border-radius: 50%;
+// 	}
+// 	&.is-selected::after {
+// 		background: $white;
+// 		border: 2px solid $black;
+// 		transition: border 1s $easing2;
+// 	}
+// }
+
+// // Buttons
+// .FlickityGallery:hover .flickity-prev-next-button {
+// 	opacity: 1;
+// }
+// .flickity-prev-next-button {
+// 	// C's optical alignment, yo
+// 	top: 47%;
+// 	opacity: 0;
+// 	transition: all 300ms;
+// 	&:active {}
+// 	&.previous {
+// 		left: rem($space);
+// 	}
+// 	&.next {
+// 		right: rem($space);
+// 	}
+// }
+
+// Shows a "1/5" counter
+.GalleryCounter {
+	display: none;
+	@media (min-width: $layout-sm) {
+		display: block;
+	}
+
+	user-select: none;
+	z-index: 1;
+	width: rem(35);
+	height: rem(35);
+	color: $white;
+	// position: absolute;
+	// left: $space;
+	// bottom: $space;
+
+	// @extend %font-bold;
+	span {
+	 position: absolute;
+	}
+	span:first-child {
+		top: rem(-6);
+		left: 0;
+	}
+	span:nth-child(2) {
+		top: rem(20);
+		left: rem(-8);
+		border-bottom: 2px solid rgba(white, 0.25);
+		transform: rotate(135deg);
+		width: rem(45);
+	}
+	span:last-child {
+		bottom: rem(-6);
+		right: 0;
+	}
+}
