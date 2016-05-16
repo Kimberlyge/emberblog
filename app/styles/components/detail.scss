@@ -5,7 +5,14 @@
 .Detail	{
 	background: $white;
 	padding: rem(40) rem(20);
+	transform: translate3d(100%, 0, 0);
 }
+
+.Detail--loaded {
+	transform: translate3d(0%, 0, 0);
+	transition: transform .3s ease;
+}
+
 .Detail-title {
 	font-family: Nobel;
 	font-weight: 300;

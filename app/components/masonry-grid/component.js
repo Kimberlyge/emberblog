@@ -18,7 +18,9 @@ export default Component.extend({
 			$teaser.addClass('is-loaded');
 
 			$grid.isotope({
-				itemSelector: '.Teaser'
+				itemSelector: '.Teaser',
+				resizable: false,
+				masonry: { columnWidth: $grid.width() / 5}
 			});
 
 			$grid.masonry({
@@ -41,9 +43,12 @@ export default Component.extend({
 				percentPosition: true,
 				gutter: '.Masonry-gutter'
 			});
+
 			$grid.isotope({
-				filter: filterValue
+				filter: filterValue,
+				masonry: { columnWidth: $grid.width() / 5}
 			});
+
 		});
 	}),
 

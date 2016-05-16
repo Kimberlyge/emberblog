@@ -12,6 +12,7 @@ export default Component.extend({
 		console.log('hi');
 
 		$grid.imagesLoaded( function() {
+			$('.Detail').addClass('Detail--loaded');
 
 			$detailItem.addClass('is-loaded');
 
@@ -25,6 +26,9 @@ export default Component.extend({
 	}),
 
 	actions: {
+		// $('.Nav a').on('click', function() {
+		// 		$('.Detail').removeClass('Detail--loaded');
+		// });
 		// filter: function() {
 		// 	var $grid = this.$().find('.Masonry');
 		// 	var filterValue = $(this).attr('data-filter');

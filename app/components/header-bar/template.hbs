@@ -2,6 +2,8 @@
 	<h1>just another vegan food blog</h1>
 {{/link-to}}
 
+<button class="burger">×</button>
+
 {{#sticky-container options:options}}
 	<div class="Nav">
 		<a href="#" data-filter='.sweets'>Sweets</a>
@@ -10,8 +12,8 @@
 		<a href="#" data-filter='.main'>main</a>
 		<a href="#" data-filter='.snacks'>snacks</a>
 		<span>/</span>
-		{{#link-to 'about'}}Local Food{{/link-to}}
-		{{#link-to 'about'}}me{{/link-to}}
+		{{#link-to 'about' class="Nav-static"}}Local Food{{/link-to}}
+		{{#link-to 'about' class="Nav-static"}}me{{/link-to}}
 	</div>
 	<div class="NavSub is-hidden">
 		<a href="#" data-filter='.cookie'>Cookie</a>
