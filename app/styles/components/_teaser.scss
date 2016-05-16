@@ -34,27 +34,27 @@ $masonry-gutter: 1.5rem;
 
 	a:hover,
 	a:active {
-		.Teaser-media {
-			outline: 1px solid $black;
-			img {
-				filter: brightness(95%);
-			}
-		}
-		.Teaser-body {
-			position: relative;
-			outline: 1px solid $black;
-			// border-top: 3px solid $black;
+		// .Teaser-media {
+		// 	outline: 1px solid $black;
+		// 	img {
+		// 		filter: brightness(95%);
+		// 	}
+		// }
+		// .Teaser-body {
+		// 	position: relative;
+		// 	outline: 1px solid $black;
+		// 	// border-top: 3px solid $black;
 
-			&:before {
-				content: '';
-				position: absolute;
-				width: 100%;
-				top: 0;
-				left: 0;
-				right: 0;
-				border-top: 3px solid $black;
-			}
-		}
+		// 	&:before {
+		// 		content: '';
+		// 		position: absolute;
+		// 		width: 100%;
+		// 		top: 0;
+		// 		left: 0;
+		// 		right: 0;
+		// 		border-top: 3px solid $black;
+		// 	}
+		// }
 	}
 }
 .Teaser-wrap {

@@ -1,4 +1,4 @@
-# Just Another Vegan Blog
+# Vunchies
 
 ## Prerequisites
 

@@ -5,6 +5,11 @@ export default function () {
 		easing: [0.860, 0.000, 0.070, 1.000]
 	});
 
+	this.transition(
+		this.toRoute('detail'),
+		this.use('toLeft'),
+		this.reverse('toRight')
+	);
 	// // Animate the title in the header-bar
 	// this.transition(
 	// 	this.matchSelector('.TitleFade'),
