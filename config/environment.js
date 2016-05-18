@@ -3,7 +3,7 @@
 module.exports = function(environment) {
   var ENV = {
     modulePrefix: 'vunchies',
-    // podModulePrefix: 'alivefestival/pods',
+    wordpressHost: 'http://dev-vunchies.pantheonsite.io',
     environment: environment,
     baseURL: '/',
     locationType: 'auto',
