@@ -25,3 +25,11 @@ You will need the following things properly installed on your computer.
 ### Deploying to dev (justanotherveganfoodblog.surge.sh)
 
 * `npm run build; npm run deploy`
+
+
+## Structure
+
+## Filter
+Search bar where you can enter ingredients.
+Entered ingredients will be added to a list underneath.
+The grid will automatically reload depending on recipes with these specific ingredients.

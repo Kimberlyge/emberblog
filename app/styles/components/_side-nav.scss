@@ -3,14 +3,6 @@
  */
 
 .SideNav {
-	display: flex;
-	width: rem(500);
-	text-align: center;
-
-	@media (min-width: 1200px) {
-		display: block;
-		width: 25%;
-	}
 }
 .SideNav-button {
 	text-transform: uppercase;
@@ -20,8 +12,9 @@
 	top: 0;
 	left: 0;
 	z-index: 9;
-	width: rem(500);
+	width: 3em;
 	height: 100%;
+	background-color: rgb(238, 238, 238); // rgb(238, 238, 238)
 	overflow: hidden;
 	span {
 		position: fixed;
@@ -39,8 +32,10 @@
 }
 
 .SideNav-content {
-	padding-top: rem(50);
+	padding: rem(50);
+	text-align: center;
 	transition: transform 400ms $easing;
+	background-color: rgb(238, 238, 238);
 
 	// Smaller
 	@media (max-width: 1200px) {
@@ -49,9 +44,8 @@
 		z-index: 8;
 		top: 0;
 		left: 0;
-		width: 100%;
+		max-width: rem(300);
 		height: 100%;
-		padding-left: rem(50); // button width
 		overflow-y: auto;
 		transform: translateX(-150%);
 		h2,
