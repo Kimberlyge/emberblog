@@ -4,25 +4,32 @@
 
 <div class="Header-inner">
 	<div class="Nav">
-		<a href="#" data-filter='.sweets'>Basics</a>
-		<a href="#" data-filter='.sweets'>Seasonal</a>
-		<a href="#" data-filter='.sweets'>Breakfast</a>
-		<a href="#" data-filter='.breakfast'>Salads</a>
-		<a href="#" data-filter='.salad'>Dinner</a>
-		<a href="#" data-filter='.main'>Sweets</a>
-		<a href="#" data-filter='.snacks'>Snacks</a>
-		<a href="#" data-filter='.snacks'>Sides</a>
-		<a href="#" data-filter='.snacks'>Sauces</a>
+		<a class="js-openSub" href="#" data='.sweets'>Basics</a>
+		<a href="#" data='swee'>Breakfast</a>
+		<a href="#" data='breakfast'>Salads</a>
+		<a href="#" data='sns'>Soup</a>
+		<a href="#" data='salad'>Dinner</a>
+		<a href="#" data='main'>Dessert</a>
+		<a href="#" data='snks'>Cake</a>
 		<span>/</span>
-		{{#link-to 'about' class="Nav-static"}}Kitchen{{/link-to}}
+		{{!-- {{#link-to 'about' class="Nav-static"}}Cuisine{{/link-to}} --}}
 		{{#link-to 'about' class="Nav-static"}}Cities{{/link-to}}
 		{{#link-to 'about.contact' class="Nav-static"}}About{{/link-to}}
 	</div>
 	<div class="Nav Nav--sub is-hidden">
-		<a href="#" data-filter='.cookie'>Spring</a>
-		<a href="#" data-filter='.pie'>Summer</a>
-		<a href="#" data-filter='.cake'>Fall</a>
-		<a href="#" data-filter='.muffin'>Winter</a>
+		<a href="#" data-filter='.cookie'>Gluten free</a>
+		<a href="#" data-filter='.pie'>Soy free</a>
+		<a href="#" data-filter='.cake'>Nut free</a>
+		<a href="#" data-filter='.cake'>Sugar free</a>
+		<a href="#" data-filter='.muffin'>Raw</a>
+	</div>
+	<div class="Nav Nav--filter">
+		<i class="icon-filter" data-grunticon-embed></i>
+		<a href="#" data-filter='.cookie'>Gluten free</a>
+		<a href="#" data-filter='.pie'>Soy free</a>
+		<a href="#" data-filter='.cake'>Nut free</a>
+		<a href="#" data-filter='.cake'>Sugar free</a>
+		<a href="#" data-filter='.muffin'>Raw</a>
 	</div>
 </div>
 
