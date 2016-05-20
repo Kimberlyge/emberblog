@@ -91,6 +91,14 @@
 	h3,
 	ul {
 		margin: 30px;
+
+		p {
+			margin: 0;
+		}
+	}
+	div:empty,
+	p:empty {
+		height: 0.8em;
 	}
 }
 
