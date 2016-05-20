@@ -3,13 +3,25 @@
  */
 
 .Header {
-	max-width: 95%;
+	max-width: rem(1000);
+	padding: 0 rem(10);
 	margin: rem(20) auto;
 	text-align: center;
-	padding-left: 3em;
+
+	@media (max-width: 655px) {
+		position: fixed;
+		background: $white;
+		width: 100%;
+		z-index: 10;
+		margin-top: 0;
+
+		.Header-title {
+			margin: rem(10) 0;
+		}
+	}
 }
 .Header-inner {
-	@media (max-width: $layout-m) {
+	@media (max-width: 655px) {
 		display: none;
 	}
 }
@@ -33,18 +45,26 @@
 	}
 }
 
+/* Sticky */
+// .is-sticky {
+// 	.Header {
+// 		background: red;
+// 	}
+// }
 
 /* Mobile */
 .on-mobile {
 	.Header-inner {
 		display: block;
 		position: fixed;
-		top: 0;
+		top: rem(38);
 		left: 0;
 		background-color: $white;
 		width: 100%;
 		height: 100vh;
 		z-index: 5;
-		padding-top: 3em;
+		@media (min-width: $layout-s) {
+			top: 3em;
+		}
 	}
 }

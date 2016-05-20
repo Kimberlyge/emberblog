@@ -54,11 +54,13 @@
     "postcss-import": "^8.0.2"
   },
   "dependencies": {
-    "flickity": "^1.1.2",
     "ember-cli-google-analytics": "^1.5.0",
     "ember-cli-reset-scroll": "0.0.1",
-    "lazysizes": "^1.4.0",
+    "ember-cli-sticky": "^0.6.0",
+    "flickity": "^1.1.2",
     "imagesloaded": "^4.1.0",
+    "jquery-sticky": "^1.0.4",
+    "lazysizes": "^1.4.0",
     "liquid-fire": "0.23.0",
     "moment": "^2.12.0",
     "moment-timezone": "^0.5.3",

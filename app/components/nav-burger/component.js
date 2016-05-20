@@ -4,10 +4,10 @@ const {Component, inject} = Ember;
 
 export default Component.extend({
 	layout: inject.service(),
-	classNameBindings: ['layout.onMobile'],
+	// classNameBindings: ['layout.onMobile'],
 	actions: {
-		toggleAside() {
-			this.toggleProperty('layout.onMobile');
+		toggleMobile() {
+			$('.Header').toggleClass('on-mobile');
 		}
 	}
 });

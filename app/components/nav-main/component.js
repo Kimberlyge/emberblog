@@ -7,7 +7,7 @@ export default Component.extend({
 	classNames: ['Header'],
 
 	detail: on('didInsertElement', function() {
-		// $('.Nav').sticky();
+		// $('.Nav').sticky(); @todo: not working for some reason
 		this.actions();
 	}),
 
@@ -16,11 +16,11 @@ export default Component.extend({
 		console.log('open');
 		event.preventDefault();
 
-		const dropdown = $('.Nav--sub');
+		const dropdown = $('.NavSub');
 
 		$(dropdown).removeClass('is-hidden');
 
-		$('.Nav--sub').on('mouseleave', event => this.close(event));
+		$('.js-navToggle').on('mouseleave', event => this.close(event));
 	},
 
 	// close subNav Dropdown
@@ -28,22 +28,31 @@ export default Component.extend({
 		console.log('close');
 		event.preventDefault();
 
-		const dropdown = $('.Nav--sub');
+		const dropdown = $('.NavSub');
 
 		$(dropdown).addClass('is-hidden');
 	},
 
 	actions() {
-		this.$subNav = $('.js-openSub');
+		// get events data attribute and check if another elemnt has the same
+		// $('.Nav a').on('mouseenter', function(event) {
+		// 	var target = $(event.currentTarget);
+		// 	var targetVal = target.attr('data-target');
+		// 	var targetParent = target.parents('.Nav');
+		// 	var targetSub = targetParent.find('.NavSub-content');
+		// 	console.log(targetSub);
+		// 	if (targetSub.attr('data-target') === targetVal) {
+		// 		console.log('SAME SAME');
+		// 	}
+		// })
 
-		$('.Nav a').on('click', function() {
-			console.log('clicked');
-		})
-
+		this.$subNav = $('.js-navToggle');
 		this.$subNav.on('mouseenter', event => this.open(event));
 	},
 
 	click(event) {
+		// @todo: close before hash load
+
 		const clickedElementHasAnHref = $(this);
 		// console.log(clickedElementHasAnHref);
 		// console.log(event);

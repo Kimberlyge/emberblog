@@ -6,32 +6,37 @@
 .Nav--filter {
 	a {
 		display: block;
-		margin: 0 rem(5);
 		font-size: $font-14;
 		letter-spacing: 0.05em;
 		text-transform: uppercase;
 		text-decoration: none;
 		cursor: pointer;
-		// border-bottom: 2px solid black;
 
-		@media (min-width: $layout-sm) {
+		padding: 0.5em 0;
+		margin: 0.5em 0;
+
+		@media (min-width: 656px) {
 			display: inline-block;
-			// border-bottom: 2px solid transparent;
+			margin: 0 rem(5);
+			padding: 0;
 
 			&:hover,
 			&:active,
 			&.is-active {
-				// border-bottom: 2px solid;
 				color: $yellow;
 			}
-
 		}
 	}
 }
 
 .Nav {
+	position: relative;
 	padding: rem(20);
 	padding-bottom: 0;
+
+	@media (max-width: 656px) {
+		padding-top: 0;
+	}
 
 	a {
 		&:first-of-typev{
@@ -41,33 +46,53 @@
 
 	span {
 		display: none;
-		@media (min-width: $layout-sm) {
+		@media (min-width: 656px) {
 			display: inline-block;
 		}
 	}
-
-	// @media (max-width: $layout-sm) {
-	// 	display: none;
-
-	// 	&.is-active {
-	// 		display: block;
-	// 	}
-	// }
 }
-.Nav--sub {
-	background-color: $white;
-	// border: 2px solid $yellow;
-	padding: rem(20);
-	display: block;
 
+/* Sub Navigation */
+
+.NavSub {
+	position: absolute;
+	z-index: 10;
+	width: 100%;
+	left: 0;
+	top: rem(41);
+	min-height: 2em; //needs a height to keep it open while moving the cursor
+
+	// pointer-events: none;
 	&.is-hidden {
 		display: none;
 	}
+	@media (max-width: 656px) {
+		display: none !important;
+	}
+}
+.NavSub-content {
+	@include flexRow;
+	background-color: $white;
+	border: 2px solid $black;
+	padding: rem(20);
+}
 
+.NavSub-wrap {
+	@include flexCol;
+	justify-content: flex-start;
+	width: 100%;
+
+	h3 {
+		font-size: 12px;
+		margin-bottom: 0;
+	}
 	a {
 		font-size: 12px;
 	}
 }
+
+/* Filter Navigation */
+
 .Nav--filter {
 	@include flexRow;
 	background-color: $white;
@@ -76,7 +101,7 @@
 	padding: rem(10) rem(10) rem(10) rem(20);
 	margin-top: rem(20);
 
-	@media (max-width: $layout-sm) {
+	@media (max-width: 656px) {
 		display: none;
 	}
 

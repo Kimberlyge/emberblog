@@ -32,6 +32,15 @@ $masonry-gutter: 1.5rem;
 	margin: 0 auto;
 	padding: 0 rem(5);
 
+	margin-top: 3em;
+
+	@media (min-width: $layout-s) {
+		margin-top: 4em;
+	}
+	@media (min-width: $layout-m) {
+		margin-top: 0;
+	}
+
 	a:hover,
 	a:active {
 		.Teaser-media {

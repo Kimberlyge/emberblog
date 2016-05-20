@@ -1,27 +1,61 @@
+{{!-- {{#sticky-container}}
+	{{/sticky-container}} --}}
+{{nav-burger}}
 {{#link-to 'application' class="Header-title" data-filter='*'}}
 	<h1>vunchies</h1>
 {{/link-to}}
 
 <div class="Header-inner">
 	<div class="Nav">
-		<a class="js-openSub" href="#" data='.sweets'>Basics</a>
-		<a href="#" data='swee'>Breakfast</a>
-		<a href="#" data='breakfast'>Salads</a>
-		<a href="#" data='sns'>Soup</a>
-		<a href="#" data='salad'>Dinner</a>
-		<a href="#" data='main'>Dessert</a>
-		<a href="#" data='snks'>Cake</a>
+		<a href="#" class="js-navToggle" data-target='swee'>All Recipes
+			<div class="NavSub is-hidden">
+				{{!-- only nested in case there will be more content to be shown --}}
+				<div class="NavSub-content">
+					<div class="NavSub-wrap">
+						<a href="#"><h3>Basics</h3></a>
+						<a href="#">Doughs</a>
+					</div>
+					<div class="NavSub-wrap">
+						<a href="#"><h3>Smoothies / Beverages</h3></a>
+						<a href="#">Smoothies</a>
+						<a href="#">Smoothie Bowls</a>
+						<a href="#">Cold Drinks</a>
+					</div>
+					<div class="NavSub-wrap">
+						<a href="#"><h3>Lunch</h3></a>
+						<a href="#"><h3>Sauce</h3></a>
+						<a href="#"><h3>Dip</h3></a>
+						<a href="#"><h3>Spread</h3></a>
+						<a href="#"><h3>Sides</h3></a>
+						<a href="#"><h3>Snacks</h3></a>
+					</div>
+					<div class="NavSub-wrap">
+						<a href="#"><h3>Baked goods</h3></a>
+						<a href="#">Muffins</a>
+						<a href="#">Cookies</a>
+						<a href="#">Bread</a>
+					</div>
+					<div class="NavSub-wrap">
+						<a href="#"><h3>Cuisine</h3></a>
+						<a href="#">Thai</a>
+						<a href="#">Vietnamese</a>
+						<a href="#">Middle Eastern</a>
+						<a href="#">Mexican</a>
+					</div>
+				</div>
+			</div>
+		</a>
+		<a href="#">Breakfast</a>
+		<a href="#">Salad</a>
+		<a href="#">Soup</a>
+		<a href="#">Dinner</a>
+		<a href="#">Dessert</a>
+		<a href="#">Cake</a>
 		<span>/</span>
 		{{!-- {{#link-to 'about' class="Nav-static"}}Cuisine{{/link-to}} --}}
 		{{#link-to 'about' class="Nav-static"}}Cities{{/link-to}}
 		{{#link-to 'about.contact' class="Nav-static"}}About{{/link-to}}
-	</div>
-	<div class="Nav Nav--sub is-hidden">
-		<a href="#" data-filter='.cookie'>Gluten free</a>
-		<a href="#" data-filter='.pie'>Soy free</a>
-		<a href="#" data-filter='.cake'>Nut free</a>
-		<a href="#" data-filter='.cake'>Sugar free</a>
-		<a href="#" data-filter='.muffin'>Raw</a>
+
 	</div>
 	<div class="Nav Nav--filter">
 		<i class="icon-filter" data-grunticon-embed></i>
