@@ -1,14 +1,16 @@
 <div class="Index">
-	{{teaser-item}}
-{{!--
-	<div class="Index-gallery">
-		{{#flickity-gallery images=model.page.acf.gallery settle=(action 'updateGalleryCounter') as |image|}}
-			<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{image.alt}}" data-sizes="auto" data-srcset="
-				{{image.sizes.s}} 320w,
-				{{image.sizes.m}} 768w,
-				{{image.sizes.l}} 1024w,
-				{{image.sizes.xl}} 1600w,
-				{{image.sizes.xxl}} 1920w"/>
-		{{/flickity-gallery}}
-	</div> --}}
+	<div class="Teaser">
+		{{#each model.posts as |item|}}
+			{{#link-to 'detail' class="Teaser-wrap"}}
+				<figure class="Teaser-media">
+					<img class="lazyload" alt="" src="{{item.acf.thumbnail.url}}">
+					{{!-- <img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" class="lazyload" alt="" data-srcset="{{item.acf.thumbnail.sizes.thumbnail}} 320w, {{item.acf.thumbnail.sizes.medium}} 640w"> --}}
+				</figure>
+				<div class="Teaser-body">
+					<h2 class="Teaser-title">{{item.title}}</h2>
+					<p>{{item.tags.name}}</p>
+				</div>
+			{{/link-to}}
+		{{/each}}
+	</div>
 </div>

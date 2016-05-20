@@ -75,6 +75,8 @@ $masonry-gutter: 1.5rem;
 		filter: brightness(1);
 		backface-visibility: hidden;
 		transform: translate3d(0,0,0);
+
+		object-fit: cover;
 	}
 }
 .Teaser-body {
