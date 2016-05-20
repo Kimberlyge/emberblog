@@ -11,7 +11,7 @@ export default DS.Model.extend({
 	featured_media: attr('number'),
 	better_featured_image: attr(),
 	format: attr(),
-	categories: attr(),
-	tags: attr(),
+	categories: attr('string'),
+	tags: attr('string'),
 	acf: attr()
 });

@@ -3,7 +3,14 @@ import DS from 'ember-data';
 
 export default DS.RESTSerializer.extend({
 	isNewSerializerAPI: true,
-
+	attrs: {
+		tags: {
+			embedded: 'always'
+		},
+		categories: {
+			embedded: 'always'
+		}
+	},
 	// Here we wrap the payload in a named object after the model type
 	// because this is what Ember expects { post: { datahere } }
 	normalizeSingleResponse(store, primaryModelClass, payload, id, requestType) {

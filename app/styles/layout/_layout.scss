@@ -11,7 +11,7 @@ html {
 	@media (min-width: $layout-s) {
 		padding-top: 4em;
 	}
-	@media (min-width: $layout-m) {
+	@media (min-width: 650px) {
 		padding-top: 0;
 	}
 	> .liquid-container,
