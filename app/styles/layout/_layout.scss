@@ -6,7 +6,14 @@ html {
 	overflow: hidden;
 }
 .App-main {
-	// padding-left: 3em;
+	padding-top: 3em;
+
+	@media (min-width: $layout-s) {
+		padding-top: 4em;
+	}
+	@media (min-width: $layout-m) {
+		padding-top: 0;
+	}
 	> .liquid-container,
 	> .liquid-container > .liquid-child {
 		min-height: 100%;
