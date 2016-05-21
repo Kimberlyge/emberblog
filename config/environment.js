@@ -44,11 +44,6 @@ module.exports = function(environment) {
     ENV.APP.rootElement = '#ember-testing';
   }
 
-  if (environment === 'production') {
-    ENV.googleAnalytics = {
-      webPropertyId: 'UA-3906535-9'
-    };
-  }
 
   return ENV;
 };

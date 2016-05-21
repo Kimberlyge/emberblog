@@ -12,9 +12,9 @@ module.exports = function(defaults) {
     storeConfigInMeta: false,
 
     // Don't fingerprint favicons as browsers expect standard names.
-    fingerprint: {
-      exclude: ['images/', 'apple-touch-icon', 'favicon', 'mstile', '.png']
-    },
+    // fingerprint: {
+    //   exclude: ['images/', 'apple-touch-icon', 'favicon', 'mstile', '.png']
+    // },
 
     // Very verbose but this adds autoprefixer and atImport.
     styleProcessorOptions: {
