@@ -9,6 +9,9 @@
 				<div class="Teaser-body">
 					<h2 class="Teaser-title">{{item.title}}</h2>
 					<p>{{item.category.slug}}</p>
+					{{#each item.categories as |category|}}
+						<li>{{category.name}}</li>
+					{{/each}}
 				</div>
 			{{/link-to}}
 		{{/each}}
