@@ -1,7 +1,7 @@
 {{!-- {{#sticky-container}}
 	{{/sticky-container}} --}}
 {{nav-burger}}
-{{#link-to 'application' class="Header-title" data-filter='*'}}
+{{#link-to 'index' class="Header-title"}}
 	<h1>vunchies</h1>
 {{/link-to}}
 
@@ -12,58 +12,56 @@
 				{{!-- only nested in case there will be more content to be shown --}}
 				<div class="NavSub-content">
 					<div class="NavSub-wrap">
-						<a href="#"><h3>Basics</h3></a>
-						<a href="#">Doughs</a>
+						{{#link-to "index" (query-params category="basics")}}<h3>Basics</h3>{{/link-to}}
+						{{#link-to "index" (query-params category="doughs")}}Doughs{{/link-to}}
 					</div>
 					<div class="NavSub-wrap">
-						<a href="#"><h3>Smoothies / Beverages</h3></a>
-						<a href="#">Smoothies</a>
-						<a href="#">Smoothie Bowls</a>
-						<a href="#">Cold Drinks</a>
+						{{#link-to "index" (query-params category="smoothies")}}<h3>Smoothies / Beverages</h3>{{/link-to}}
+						{{#link-to "index" (query-params category="smoothies")}}Smoothies{{/link-to}}
+						{{#link-to "index" (query-params category="smoothie-bowls")}}Smoothie Bowls{{/link-to}}
+						{{#link-to "index" (query-params category="cold-drinks")}}Cold Drinks{{/link-to}}
 					</div>
 					<div class="NavSub-wrap">
-						<a href="#"><h3>Lunch</h3></a>
-						<a href="#"><h3>Sauce</h3></a>
-						<a href="#"><h3>Dip</h3></a>
-						<a href="#"><h3>Spread</h3></a>
-						<a href="#"><h3>Sides</h3></a>
-						<a href="#"><h3>Snacks</h3></a>
+						{{#link-to "index" (query-params category="lunch")}}<h3>Lunch</h3>{{/link-to}}
+						{{#link-to "index" (query-params category="sauce")}}<h3>Sauce / Dip</h3>{{/link-to}}
+						{{#link-to "index" (query-params category="spread")}}<h3>Spread</h3>{{/link-to}}
+						{{#link-to "index" (query-params category="sides")}}<h3>Sides</h3>{{/link-to}}
+						{{#link-to "index" (query-params category="snacks")}}<h3>Snacks</h3>{{/link-to}}
 					</div>
 					<div class="NavSub-wrap">
-						<a href="#"><h3>Baked goods</h3></a>
-						<a href="#">Muffins</a>
-						<a href="#">Cookies</a>
-						<a href="#">Bread</a>
+						{{#link-to "index" (query-params category="baked")}}<h3>Baked goods</h3>{{/link-to}}
+						{{#link-to "index" (query-params category="muffins")}}Muffins{{/link-to}}
+						{{#link-to "index" (query-params category="cookies")}}Cookies{{/link-to}}
+						{{#link-to "index" (query-params category="bread")}}Bread{{/link-to}}
 					</div>
 					<div class="NavSub-wrap">
-						<a href="#"><h3>Cuisine</h3></a>
-						<a href="#">Thai</a>
-						<a href="#">Vietnamese</a>
-						<a href="#">Middle Eastern</a>
-						<a href="#">Mexican</a>
+						{{#link-to "index" (query-params category="cuisine")}}<h3>Cuisine</h3>{{/link-to}}
+						{{#link-to "index" (query-params category="thai")}}Thai{{/link-to}}
+						{{#link-to "index" (query-params category="vietnamese")}}Vietnamese{{/link-to}}
+						{{#link-to "index" (query-params category="middle-eastern")}}Middle Eastern{{/link-to}}
+						{{#link-to "index" (query-params category="mexican")}}Mexican{{/link-to}}
 					</div>
 				</div>
 			</div>
 		</a>
-		<a href="#">Breakfast</a>
-		<a href="#">Salad</a>
-		<a href="#">Soup</a>
-		<a href="#">Dinner</a>
-		<a href="#">Dessert</a>
-		<a href="#">Cake</a>
+		{{#link-to "index" (query-params category="breakfast")}}Breakfast{{/link-to}}
+		{{#link-to "index" (query-params category="salad")}}Salad{{/link-to}}
+		{{#link-to "index" (query-params category="soup")}}Soup{{/link-to}}
+		{{#link-to "index" (query-params category="dinner")}}Dinner{{/link-to}}
+		{{#link-to "index" (query-params category="dessert")}}Dessert{{/link-to}}
+		{{#link-to "index" (query-params category="cake")}}Cake{{/link-to}}
 		<span>/</span>
-		{{!-- {{#link-to 'about' class="Nav-static"}}Cuisine{{/link-to}} --}}
-		{{#link-to 'about' class="Nav-static"}}Cities{{/link-to}}
+		{{#link-to 'about' class="Nav-static"}}Travel{{/link-to}}
 		{{#link-to 'about.contact' class="Nav-static"}}About{{/link-to}}
 
 	</div>
 	<div class="Nav Nav--filter">
 		<i class="icon-filter" data-grunticon-embed></i>
-		<a href="#" data-filter='.cookie'>Gluten free</a>
-		<a href="#" data-filter='.pie'>Soy free</a>
-		<a href="#" data-filter='.cake'>Nut free</a>
-		<a href="#" data-filter='.cake'>Sugar free</a>
-		<a href="#" data-filter='.muffin'>Raw</a>
+		<a href="#">Gluten free</a>
+		<a href="#">Soy free</a>
+		<a href="#">Nut free</a>
+		<a href="#">Sugar free</a>
+		<a href="#">Raw</a>
 	</div>
 </div>
 

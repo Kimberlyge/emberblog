@@ -1,17 +1,24 @@
 <div class="Index">
 	<div class="Teaser">
-		{{#each model.posts as |item|}}
-			{{#link-to 'detail' class="Teaser-wrap"}}
+		{{#each model as |item|}}
+			{{#link-to 'detail' item class="Teaser-wrap"}}
 				<figure class="Teaser-media">
-					<img class="lazyload" alt="" src="{{item.acf.cover.url}}">
-					{{!-- <img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" class="lazyload" alt="" data-srcset="{{item.acf.thumbnail.sizes.thumbnail}} 320w, {{item.acf.thumbnail.sizes.medium}} 640w"> --}}
+					<img class="lazyload" alt="" src="{{item.acf.cover.sizes.medium_large}}">
+					{{!-- <img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" class="lazyload" alt="" data-srcset="{{item.acf.cover.sizes.medium_large}} 320w, {{item.acf.cover.sizes.medium}} 640w"> --}}
 				</figure>
 				<div class="Teaser-body">
 					<h2 class="Teaser-title">{{item.title}}</h2>
-					<p>{{item.category.slug}}</p>
-					{{#each item.categories as |category|}}
-						<li>{{category.name}}</li>
-					{{/each}}
+					<ul class="Teaser-categories">
+						{{#each item.categories as |category|}}
+							<li>{{category.name}}</li>
+						{{/each}}
+					</ul>
+					<ul class="Teaser-tags">
+						{{#each item.tags as |tag|}}
+							<li>#{{tag.name}}</li>
+						{{/each}}
+					</ul>
+
 				</div>
 			{{/link-to}}
 		{{/each}}

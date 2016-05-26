@@ -7,7 +7,8 @@ const Router = Ember.Router.extend(googlePageview, {
 });
 
 Router.map(function () {
-  this.route('detail');
+  this.route('index', {path: '/'});
+  this.route('detail', {path: '/detail/:post_id'});
   this.route('about', {path: 'om-alive'}, function () {
     this.route('contact', {path: 'kontakt'});
     this.route('history', {path: 'historie'});

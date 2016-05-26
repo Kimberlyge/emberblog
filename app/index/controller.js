@@ -3,9 +3,19 @@ import Ember from 'ember';
 const {run} = Ember;
 
 export default Ember.Controller.extend({
-	actions: {
+	queryParams: ['category'],
+	category: null,
 
-	}
+	filteredArticles: Ember.computed('category', 'model', function() {
+		var category = this.get('category');
+		var posts = this.get('model');
+
+		if (category) {
+			return posts.filterBy('category', category);
+		} else {
+			return posts;
+		}
+	})
 
 	// queryParams: ['category'],
 	// category: 'featured',
