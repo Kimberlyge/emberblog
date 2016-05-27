@@ -31,7 +31,6 @@
 
 .Nav {
 	position: relative;
-	padding: rem(20);
 	padding-bottom: 0;
 
 	@media (max-width: 656px) {
@@ -42,6 +41,9 @@
 		&:first-of-typev{
 			margin-top: 1.3em;
 		}
+	}
+	> a {
+		padding: $space 0;
 	}
 
 	span {
@@ -59,7 +61,7 @@
 	z-index: 10;
 	width: 100%;
 	left: 0;
-	top: rem(41);
+	top: rem(62);
 	min-height: 2em; //needs a height to keep it open while moving the cursor
 
 	// pointer-events: none;
@@ -74,7 +76,7 @@
 	@include flexRow;
 	background-color: $white;
 	border: 2px solid $black;
-	padding: rem(20);
+	padding: rem($space);
 }
 
 .NavSub-wrap {
@@ -98,8 +100,7 @@
 	background-color: $white;
 	border: 2px solid $yellow;
 	align-items: flex-end;
-	padding: rem(10) rem(10) rem(10) rem(20);
-	margin-top: rem(20);
+	padding: rem(10) rem(10) rem(10) rem($space);
 
 	@media (max-width: 656px) {
 		display: none;
@@ -116,8 +117,18 @@
 	// 	border-top: 1px solid;
 	// }
 
-	i {
+	a i {
+			margin-left: rem(4);
+			width: rem(16);
+			height: rem(16);
+			vertical-align: middle;
+			margin-top: rem(1);
+	}
+
+	> i {
 		margin-right: rem(15);
+		width: rem(16);
+		height: rem(16);
 	}
 
 	a {
@@ -142,7 +153,7 @@
 // 			}
 
 // 			@media (min-width: $layout-sm) {
-// 				padding: rem(20) 0 0;
+// 				padding: rem($space) 0 0;
 // 				border-bottom: 2px solid $white;
 
 // 				&:first-of-type {

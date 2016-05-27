@@ -20,6 +20,10 @@
 
 .icon-filter { background-image: url('png/filter.png'); background-repeat: no-repeat; }
 
+.icon-gluten-free-color { background-image: url('png/gluten-free-color.png'); background-repeat: no-repeat; }
+
+.icon-gluten-free { background-image: url('png/gluten-free.png'); background-repeat: no-repeat; }
+
 .icon-instagram-circle { background-image: url('png/instagram-circle.png'); background-repeat: no-repeat; }
 
 .icon-instagram { background-image: url('png/instagram.png'); background-repeat: no-repeat; }
@@ -34,6 +38,10 @@
 
 .icon-marker { background-image: url('png/marker.png'); background-repeat: no-repeat; }
 
+.icon-nut-free-color { background-image: url('png/nut-free-color.png'); background-repeat: no-repeat; }
+
+.icon-nut-free { background-image: url('png/nut-free.png'); background-repeat: no-repeat; }
+
 .icon-overview-hover { background-image: url('png/overview-hover.png'); background-repeat: no-repeat; }
 
 .icon-overview { background-image: url('png/overview.png'); background-repeat: no-repeat; }
@@ -42,9 +50,21 @@
 
 .icon-party-switch-on { background-image: url('png/party-switch-on.png'); background-repeat: no-repeat; }
 
+.icon-raw-color { background-image: url('png/raw-color.png'); background-repeat: no-repeat; }
+
+.icon-raw { background-image: url('png/raw.png'); background-repeat: no-repeat; }
+
 .icon-slide-arrow-left { background-image: url('png/slide-arrow-left.png'); background-repeat: no-repeat; }
 
 .icon-slide-arrow-right { background-image: url('png/slide-arrow-right.png'); background-repeat: no-repeat; }
+
+.icon-soy-free-color { background-image: url('png/soy-free-color.png'); background-repeat: no-repeat; }
+
+.icon-soy-free { background-image: url('png/soy-free.png'); background-repeat: no-repeat; }
+
+.icon-sugar-free-color { background-image: url('png/sugar-free-color.png'); background-repeat: no-repeat; }
+
+.icon-sugar-free { background-image: url('png/sugar-free.png'); background-repeat: no-repeat; }
 
 .icon-website-hover { background-image: url('png/website-hover.png'); background-repeat: no-repeat; }
 

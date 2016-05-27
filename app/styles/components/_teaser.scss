@@ -16,23 +16,12 @@
 		.Teaser-media {
 			outline: 1px solid $black;
 			img {
-				filter: brightness(90%);
+				filter: brightness(98%);
 			}
 		}
 		.Teaser-body {
 			position: relative;
 			outline: 1px solid $black;
-			// border-top: 3px solid $black;
-
-			// &:before {
-			// 	content: '';
-			// 	position: absolute;
-			// 	width: 100%;
-			// 	top: 0;
-			// 	left: 0;
-			// 	right: 0;
-			// 	border-top: 3px solid $black;
-			// }
 		}
 	}
 }
@@ -59,6 +48,8 @@
 	}
 }
 .Teaser-body {
+	@include flexRow;
+	flex-wrap: wrap;
 	overflow: hidden;
 	padding: 15px;
 	margin: 0;
@@ -76,34 +67,31 @@
 .Teaser-title {
 	text-transform: uppercase;
 	margin-top: 0;
+	flex: 1 100%;
 	font-size: $font-15;
 
 	@media (min-width: $layout-ml) {
 		font-size: $font-17;
 	}
 }
-// .Teaser-title {
-// 	@extend %font-bold;
-// 	font-size: rem(20);
-// 	@media (min-width: $layout-sm) {
-// 		font-size: rem(24);
-// 	}
-// 	@media (min-width: $layout-ml) {
-// 		// font-size: rem(30);
-// 	}
-// 	margin-top: 1rem;
-// 	padding: 0.2em 0.4em 0.3em;
-// 	position: absolute;
-// 	left: 0;
-// 	bottom: 1rem;
-// 	z-index: 1;
-// 	// background-color: rgba($gray, 0.5);
-// 	background-color: $teal;
-// 	background-color: #08092D;
-// 	color: $silk;
-// 	// background-image: url(images/moods/bluego.gif);
-// }
-// .Teaser-subtitle {
-// 	font-size: $font-14;
-// 	margin-bottom: rem(26);
-// }
+.Teaser-categories {
+	@include flexRow;
+	flex-wrap: wrap;
+	flex: 4;
+	a {
+		margin-right: rem(6);
+		font-size: $font-14;
+	}
+}
+.Teaser-tags {
+	@include flexRow;
+	align-self: baseline;
+	flex: 1;
+	padding-top: rem(2);
+	justify-content: flex-end;
+	margin-bottom: 0;
+
+	li {
+		margin: 0 rem(2);
+	}
+}

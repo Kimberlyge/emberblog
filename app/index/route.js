@@ -5,15 +5,15 @@ export default Ember.Route.extend({
 	queryParams: {
 		category: {
 			refreshModel: true
+		},
+		tag: {
+			refreshModel: true
 		}
 	},
 
 	model(params) {
-		// return Ember.RSVP.hash({
-		// 	posts: this.store.query('post', {filter: {category_name: 'breakfast'}})
-		// });
 		console.log(params);
-		return this.store.query('post', {filter: {category_name: params.category}});
+		return this.store.query('post', {filter: {category_name: params.category, tag_name: params.tag}});
 		// return this.store.query('post', params);
 		// return this.store.findAll('post');
 	}

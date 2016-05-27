@@ -1,13 +1,13 @@
 {{!-- {{#sticky-container}}
 	{{/sticky-container}} --}}
 {{nav-burger}}
-{{#link-to 'index' class="Header-title"}}
+<a href="/" class="Header-title">
 	<h1>vunchies</h1>
-{{/link-to}}
+</a>
 
 <div class="Header-inner">
 	<div class="Nav">
-		<a href="#" class="js-navToggle" data-target='swee'>All Recipes
+		<a href="/" class="js-navToggle">All Recipes
 			<div class="NavSub is-hidden">
 				{{!-- only nested in case there will be more content to be shown --}}
 				<div class="NavSub-content">
@@ -57,11 +57,11 @@
 	</div>
 	<div class="Nav Nav--filter">
 		<i class="icon-filter" data-grunticon-embed></i>
-		<a href="#">Gluten free</a>
-		<a href="#">Soy free</a>
-		<a href="#">Nut free</a>
-		<a href="#">Sugar free</a>
-		<a href="#">Raw</a>
+		{{#link-to "index" (query-params tag="gluten-free")}}Gluten free <i class="icon-gluten-free" data-grunticon-embed></i>{{/link-to}}
+		{{#link-to "index" (query-params tag="soy-free")}}Soy free <i class="icon-soy-free" data-grunticon-embed></i>{{/link-to}}
+		{{#link-to "index" (query-params tag="nut-free")}}Nut free <i class="icon-nut-free" data-grunticon-embed></i>{{/link-to}}
+		{{#link-to "index" (query-params tag="sugar-free")}}Sugar free <i class="icon-sugar-free" data-grunticon-embed></i>{{/link-to}}
+		{{#link-to "index" (query-params tag="raw")}}Raw <i class="icon-raw" data-grunticon-embed></i>{{/link-to}}
 	</div>
 </div>
 

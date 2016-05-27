@@ -10,12 +10,14 @@
 					<h2 class="Teaser-title">{{item.title}}</h2>
 					<ul class="Teaser-categories">
 						{{#each item.categories as |category|}}
-							<li>{{category.name}}</li>
+							{{#link-to "index" (query-params category="basics")}}{{category.name}}{{/link-to}}
 						{{/each}}
 					</ul>
 					<ul class="Teaser-tags">
 						{{#each item.tags as |tag|}}
-							<li>#{{tag.name}}</li>
+							<li>
+								<i class="icon-{{tag.name}}" data-grunticon-embed></i>
+							</li>
 						{{/each}}
 					</ul>
 
