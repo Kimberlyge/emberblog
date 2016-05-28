@@ -8,7 +8,7 @@
 
 <div class="Header-inner">
 	<div class="Nav">
-		<a href="/" class="js-navToggleRecipes">All Recipes
+		<a href="/" class="js-navToggle">All Recipes
 			<div class="NavSub is-hidden">
 				{{!-- only nested in case there will be more content to be shown --}}
 				<div class="NavSub-content">
@@ -52,19 +52,9 @@
 		{{#link-to "index" (query-params category="dessert")}}Dessert{{/link-to}}
 		{{#link-to "index" (query-params category="cake")}}Cake{{/link-to}}
 		<span>/</span>
-		<a href="/" class="js-navToggleTravel ">Travel
-			<div class="NavSub is-hidden">
-				{{!-- only nested in case there will be more content to be shown --}}
-				<div class="NavSub-content">
-					<div class="NavSub-wrap">
-						{{#link-to 'travel.single' (query-params id=104) class="Nav-static"}}Ko Tao{{/link-to}}
-					</div>
-					<div class="NavSub-wrap">
-						{{#link-to 'travel.single' (query-params id=101) class="Nav-static"}}Berlin{{/link-to}}
-					</div>
-				</div>
-			</div>
-		</a>
+		{{#link-to 'travel' class="Nav-static"}}Travel{{/link-to}}
+		{{#link-to 'travel.single' (query-params id=104) class="Nav-static"}}Ko Tao{{/link-to}}
+		{{#link-to 'travel.single' (query-params id=101) class="Nav-static"}}Berlin{{/link-to}}
 
 	</div>
 	<div class="Nav Nav--filter">

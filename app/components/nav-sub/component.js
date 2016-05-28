@@ -13,13 +13,14 @@ export default Component.extend({
 
 	// open subNav
 	open(event) {
-		const target = $(event.currentTarget);
-		const targetClass = target.attr('class');
-		const nav = target.find($('.NavSub'));
+		console.log('open');
+		event.preventDefault();
 
-		nav.removeClass('is-hidden');
+		const dropdown = $('.NavSub');
 
-		target.on('mouseleave', event => this.close(event));
+		$(dropdown).removeClass('is-hidden');
+
+		$('.js-navToggle').on('mouseleave', event => this.close(event));
 	},
 
 	// close subNav Dropdown
@@ -57,7 +58,7 @@ export default Component.extend({
 		// })
 
 		// add subnav
-		this.$subNav = $('.js-navToggleRecipes, .js-navToggleTravel');
+		this.$subNav = $('.js-navToggle');
 		this.$subNav.on('mouseenter', event => this.open(event));
 
 		$('.Nav a').on('click', event => this.mobileNav(event))
