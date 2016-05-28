@@ -14,42 +14,12 @@ $font-40: rem(40);
 $font-50: rem(50);
 $font-70: rem(60);
 
-@font-face {
-	font-family: 'GT Haptik';
-	src: url('fonts/gt-haptik/gt-haptik-light.woff') format('woff');
-	font-weight: 300;
-	font-style: normal;
-}
-@font-face {
-	font-family: 'GT Haptik';
-	src: url('fonts/gt-haptik/gt-haptik-regular.woff') format('woff');
-	font-weight: 400;
-	font-style: normal;
-}
-@font-face {
-	font-family: 'GT Haptik';
-	src: url('fonts/gt-haptik/gt-haptik-medium.woff') format('woff');
-	font-weight: 500;
-	font-style: normal;
-}
-@font-face {
-	font-family: 'GT Haptik';
-	src: url('fonts/gt-haptik/gt-haptik-bold.woff') format('woff');
-	font-weight: 600;
-	font-style: normal;
-}
-@font-face {
-	font-family: 'GT Haptik';
-	src: url('fonts/gt-haptik/gt-haptik-black.woff') format('woff');
-	font-weight: 700;
-	font-style: normal;
-}
-@font-face {
-	font-family: 'GT Haptik Rotalic';
-	src: url('fonts/gt-haptik/gt-haptik-bold-rotalic.woff') format('woff');
-	font-weight: normal;
-	font-style: normal;
-}
+// @font-face {
+// 	font-family: 'GT Haptik';
+// 	src: url('fonts/gt-haptik/gt-haptik-light.woff') format('woff');
+// 	font-weight: 300;
+// 	font-style: normal;
+// }
 
 %font-light {
 	font-family: 'Apercu', sans-serif; font-weight: 300;

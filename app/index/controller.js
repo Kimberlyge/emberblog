@@ -6,6 +6,11 @@ export default Ember.Controller.extend({
 	queryParams: ['category', 'tag'],
 	category: null,
 	tag: null,
+	actions: {
+		change: function() {
+			console.log('changed');
+		}
+	},
 
 	filteredCategories: Ember.computed('category', 'model', function() {
 		var category = this.get('category');

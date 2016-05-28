@@ -3,21 +3,16 @@
  */
 
 .Header {
-	max-width: rem(1000);
-	padding: 0 rem(10);
-	margin: rem(20) auto;
+	width: 100%;
+	z-index: 10;
+	margin-top: 0;
 	text-align: center;
 
-	@media (max-width: 655px) {
-		position: fixed;
-		background: $white;
-		width: 100%;
-		z-index: 10;
-		margin-top: 0;
-
-		.Header-title {
-			margin: rem(10) 0;
-		}
+	@media (min-width: 655px) {
+		max-width: rem(1000);
+		padding: 0 rem(10);
+		margin: rem(20) auto;
+		text-align: center;
 	}
 }
 .Header-inner {
@@ -27,44 +22,40 @@
 }
 .Header-title {
 	display: block;
-	margin-top: 2em;
+	margin: rem(40) 0;
 
 	h1 {
-		margin-bottom: 0;
-		font-size: $font-30;
-		@media (min-width: $layout-s) {
-			font-size: $font-35;
-		}
+		margin-bottom: 0.1em;
+		font-size: $font-35;
 		@media (min-width: $layout-m) {
 			font-size: $font-40;
-			margin-bottom: 0;
 		}
 		@media (min-width: $layout-ml) {
 			font-size: 50px;
 		}
 	}
+	h3 {
+		@extend %font-light;
+		font-size: $font-14;
+		text-transform: lowercase;
+	}
 }
-
-/* Sticky */
-// .is-sticky {
-// 	.Header {
-// 		background: red;
-// 	}
-// }
 
 /* Mobile */
 .on-mobile {
 	.Header-inner {
 		display: block;
 		position: fixed;
-		top: rem(38);
+		top: 0;
 		left: 0;
+		padding-top: rem($space*2);
 		background-color: $white;
 		width: 100%;
 		height: 100vh;
 		z-index: 5;
-		@media (min-width: $layout-s) {
-			top: 3em;
+
+		.Nav > a {
+			padding: rem(10) 0;
 		}
 	}
 }

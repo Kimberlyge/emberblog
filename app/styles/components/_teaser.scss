@@ -14,19 +14,19 @@
 	a:hover,
 	a:active {
 		.Teaser-media {
-			outline: 1px solid $black;
+			// outline: 1px solid $black;
 			img {
 				filter: brightness(98%);
 			}
 		}
 		.Teaser-body {
 			position: relative;
-			outline: 1px solid $black;
+			// outline: 1px solid $black;
 		}
 	}
 }
 .Teaser-wrap {
-	flex: rem(200);
+	flex: rem(145); //200
 	margin: rem(5);
 }
 .Teaser-media {
@@ -48,12 +48,18 @@
 	}
 }
 .Teaser-body {
-	@include flexRow;
-	flex-wrap: wrap;
 	overflow: hidden;
 	padding: 15px;
 	margin: 0;
 	background-color: $white;
+
+	@media (min-width: 656px) {
+		@include flexCol;
+		flex-wrap: wrap;
+	}
+	@media (min-width: $layout-m) {
+		@include flexRow;
+	}
 
 	img {
 		width: 14px;

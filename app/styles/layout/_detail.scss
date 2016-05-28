@@ -3,9 +3,13 @@
  */
 
 .Detail	{
-	display: flex;
-	flex-flow: row wrap;
+	// @include flexCol;
 	background: $white;
+
+	@media (min-width: 656px) {
+		@include flexRow;
+		flex-wrap: wrap;
+	}
 }
 
 /* Intro */
@@ -59,6 +63,9 @@
 .DetailItem {
 	margin: 0 auto;
 	flex: 3;
+	@media (min-width: 656px) {
+		flex: 3;
+	}
 }
 .DetailItem--text {
 	@extend %font-light;

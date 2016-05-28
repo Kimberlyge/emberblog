@@ -10,6 +10,14 @@ export default function () {
 		this.use('toLeft'),
 		this.reverse('toRight')
 	);
+
+	//@todo
+	this.transition(
+		this.toRoute('single'),
+		this.use('toLeft'),
+		this.reverse('toRight')
+	);
+
 	// // Animate the title in the header-bar
 	// this.transition(
 	// 	this.matchSelector('.TitleFade'),
@@ -46,13 +54,4 @@ export default function () {
 	// 	})
 	// );
 
-	// // between city.bar models
-	// this.transition(
-	// 	this.matchSelector('.BarAnimation'),
-	// 	this.media('(min-width: 970px)'),
-	// 	this.use('explode', {
-	// 		pick: '.Bar-text',
-	// 		use: ['toDown']
-	// 	})
-	// );
 }
