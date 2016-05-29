@@ -57,12 +57,16 @@
 				{{!-- only nested in case there will be more content to be shown --}}
 				<div class="NavSub-content">
 					<div class="NavSub-wrap">
-						{{#link-to 'travel.single' (query-params id=104) class="Nav-static"}}Ko Tao{{/link-to}}
+						{{#link-to 'travel.single' (query-params id=104) class="nav-pages"}}Ko Tao{{/link-to}}
 					</div>
 					<div class="NavSub-wrap">
-						{{#link-to 'travel.single' (query-params id=101) class="Nav-static"}}Berlin{{/link-to}}
+						{{#link-to 'travel.single' (query-params id=101) class="nav-pages"}}Berlin{{/link-to}}
 					</div>
 				</div>
+			</div>
+			<div class="NavSubMobile is-hidden">
+				{{#link-to 'travel.single' (query-params id=104) class="nav-pages"}}Ko Tao{{/link-to}}
+				{{#link-to 'travel.single' (query-params id=101) class="nav-pages"}}Berlin{{/link-to}}
 			</div>
 		</a>
 

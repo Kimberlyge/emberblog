@@ -8,6 +8,7 @@ export default Component.extend({
 	actions: {
 		toggleMobile() {
 			$('.Header').toggleClass('on-mobile');
+			$('.NavSubMobile').toggleClass('is-hidden');
 		}
 	}
 });
