@@ -1,2 +1,31 @@
-{{page-item page=model}}
-{{outlet}}
+<div class="Cover">
+	<div class="Cover-body">
+		<h2>{{{model.title}}}</h2>
+		<p>{{{model.acf.country}}}</p>
+	</div>
+	<div class="Cover-media" style="background-image: url({{model.acf.cover.url}})">
+	</div>
+</div>
+<div>{{{model.content}}}</div>
+<div class="Section">
+	{{#each model.acf.restaurant as |item|}}
+		<div class="DetailHead GridCol-1">
+			<div class="DetailHead-body GridCol-2">
+				<h2>{{item.name}}</h2>
+				{{{item.description}}}
+
+				{{#if item.contact}}
+					<div class="Box Box--border Box--small">
+						{{{item.contact}}}
+					</div>
+				{{/if}}
+			</div>
+			<div class="DetailHead-media GridCol-2">
+				<img class="lazyload" alt="" src="{{item.cover.url}}">
+			</div>
+		</div>
+		<div class="DetailItem DetailItem--text GridCol-1">
+			{{{item.description_2}}}
+		</div>
+	{{/each}}
+</div>

@@ -1,0 +1,17 @@
+/**
+ * Box
+ */
+
+.Box {
+	padding: $space;
+
+	p:last-of-type {
+		margin-bottom: 0;
+	}
+}
+.Box--border {
+	border: 2px solid;
+}
+.Box--small {
+	max-width: rem(200);
+}

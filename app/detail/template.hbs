@@ -1,10 +1,8 @@
 <div class="Detail">
 	{{!-- {{page-item page=model}} @todo consider making a global page component--}}
 
-	<div class="DetailHead">
-		{{!-- {{#each model.posts as |item|}}
-		{{/each}} --}}
-		<div class="DetailHead-body">
+	<div class="DetailHead GridCol-1">
+		<div class="DetailHead-body centered GridCol-2">
 			<h2>{{{model.title}}}</h2>
 			<p>{{{model.acf.description}}}</p>
 		</div>
@@ -12,7 +10,7 @@
 			<img class="lazyload" alt="" src="{{model.acf.cover.url}}">
 		</div>
 	</div>
-	<div class="DetailItem DetailItem--text">
+	<div class="DetailItem DetailItem--text DetailItem--small GridCol-3">
 		<div class="DetailInfo">
 			<h3 class="DetailText-title">Ingredients</h3>
 			<ul>
@@ -27,26 +25,26 @@
 		</div>
 	</div>
 	{{#if model.acf.directions.[0].directions-content}}
-		<div class="DetailItem DetailItem--text">
+		<div class="DetailItem DetailItem--text DetailItem--small GridCol-3">
 			<h3 class="DetailText-title">Directions</h3>
 			{{{model.acf.directions.[0].directions-content}}}
 		</div>
 		{{#if model.acf.directions.[1].directions-content}}
-			<div class="DetailItem DetailItem--text">
+			<div class="DetailItem DetailItem--text DetailItem--small">
 				{{{model.acf.directions.[1].directions-content}}}
 			</div>
 		{{/if}}
 	{{/if}}
 
 	{{#if model.acf.notes}}
-		<div class="DetailItem DetailItem--text">
+		<div class="DetailItem DetailItem--text DetailItem--small GridCol-3">
 			<h3 class="DetailText-title">Notes</h3>
 			{{{model.acf.notes}}}
 		</div>
 	{{/if}}
 
 	{{#each model.acf.images as |item|}}
-		<div class="DetailItem DetailItem--image">
+		<div class="DetailItem DetailItem--image GridCol-3">
 			<img class="lazyload" alt="" src="{{item.image.url}}">
 		</div>
 	{{/each}}

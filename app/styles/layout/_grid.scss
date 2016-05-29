@@ -2,10 +2,21 @@
 	display: flex;
 	flex-flow: row wrap;
 }
-.Grid-item {
-	flex: rem(320);
-	margin-right: 1rem;
-	margin-bottom: 1rem;
+
+.GridCol-1 {
+	@media (min-width: 656px) {
+		flex: 1 100%;
+	}
+}
+.GridCol-2 {
+	@media (min-width: 656px) {
+		flex: 2;
+	}
+}
+.GridCol-3 {
+	@media (min-width: 656px) {
+		flex: 3;
+	}
 }
 
 // Make sure wrapper links are block

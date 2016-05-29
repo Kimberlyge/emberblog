@@ -3,7 +3,6 @@
  */
 
 .Detail	{
-	// @include flexCol;
 	background: $white;
 
 	@media (min-width: 656px) {
@@ -15,22 +14,16 @@
 /* Intro */
 
 .DetailHead {
-	display: flex;
-	flex-flow: row wrap;
+	@include flexRowWrap;
 
-	flex: 1 100%;
+	&:nth-of-type(3n) {
+		flex-direction: row-reverse;
+	}
 }
+
 .DetailHead-body {
 	padding: rem(40);
 	margin: auto;
-	text-align: center;
-
-	@media (min-width: $layout-s) {
-		flex: 2;
-	}
-	@media (min-width: $layout-ml) {
-		flex: 2;
-	}
 
 	h2 {
 		@extend %font-light;
@@ -46,7 +39,7 @@
 	}
 	p {
 		@extend %font-light;
-		margin-bottom: 0;
+		// margin-bottom: 0;
 	}
 }
 .DetailHead-media {
@@ -62,26 +55,20 @@
 
 .DetailItem {
 	margin: 0 auto;
-	flex: 3;
-	@media (min-width: 656px) {
-		flex: 3;
-	}
+	min-width: rem(300);
 }
 .DetailItem--text {
 	@extend %font-light;
-
-	min-width: rem(300);
-	padding: rem(30);
-	max-width: rem(380);
-
 	letter-spacing: 0.05em;
+
+	padding: rem(30);
 
 	p:last-of-type {
 		margin-bottom: 0;
 	}
 }
-.DetailItem--image {
-	min-width: rem(300);
+.DetailItem--small {
+	max-width: rem(380);
 }
 .DetailText-title {
 	width: rem(70);
