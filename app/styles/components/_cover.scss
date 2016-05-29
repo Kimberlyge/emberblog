@@ -12,7 +12,7 @@
 	}
 
 	.Cover-body {
-		width: 90%;
+		// width: 90%;
 		z-index: 10;
 		top: 50%;
 		left: 50%;
@@ -20,10 +20,11 @@
 
 		padding: rem(40);
 		margin: auto;
+		background-color: $white;
 		text-align: center;
 
 		h2 {
-			@extend %font-light;
+			@extend %font-medium;
 			letter-spacing: 0.1em;
 			font-size: $font-35;
 			margin-bottom: 0.2em;
@@ -34,6 +35,8 @@
 		}
 		p {
 			@extend %font-light;
+			text-transform: uppercase;
+			letter-spacing: 0.1em;
 			margin-bottom: 0;
 		}
 	}
