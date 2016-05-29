@@ -71,13 +71,8 @@
 		</a>
 
 	</div>
-	<div class="Nav Nav--filter">
-		<i class="icon-filter" data-grunticon-embed></i>
-		{{#link-to "index" (query-params tag="gluten-free")}}Gluten free <i class="icon-gluten-free" data-grunticon-embed></i>{{/link-to}}
-		{{#link-to "index" (query-params tag="soy-free")}}Soy free <i class="icon-soy-free" data-grunticon-embed></i>{{/link-to}}
-		{{#link-to "index" (query-params tag="nut-free")}}Nut free <i class="icon-nut-free" data-grunticon-embed></i>{{/link-to}}
-		{{#link-to "index" (query-params tag="sugar-free")}}Sugar free <i class="icon-sugar-free" data-grunticon-embed></i>{{/link-to}}
-		{{#link-to "index" (query-params tag="raw")}}Raw <i class="icon-raw" data-grunticon-embed></i>{{/link-to}}
+	<div class="{{if layout.onTravel 'is-hidden'}}">
+		{{nav-filter}}
 	</div>
 </div>
 

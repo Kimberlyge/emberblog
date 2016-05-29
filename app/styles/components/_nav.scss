@@ -3,7 +3,14 @@
  */
 
 .Nav,
-.Nav--filter {
+.NavFilter {
+	position: relative;
+	padding-bottom: 0;
+
+	@media (max-width: 656px) {
+		padding-top: 0;
+	}
+
 	a {
 		display: block;
 		font-size: $font-14;
@@ -26,18 +33,7 @@
 				color: $yellow;
 			}
 		}
-	}
-}
 
-.Nav {
-	position: relative;
-	padding-bottom: 0;
-
-	@media (max-width: 656px) {
-		padding-top: 0;
-	}
-
-	a {
 		&:first-of-typev{
 			margin-top: 1.3em;
 		}
@@ -53,6 +49,7 @@
 		}
 	}
 }
+
 
 /* Sub Navigation */
 
@@ -95,7 +92,7 @@
 
 /* Filter Navigation */
 
-.Nav--filter {
+.NavFilter {
 	@include flexRow;
 	background-color: $white;
 	border: 2px solid $yellow;
@@ -105,17 +102,6 @@
 	@media (max-width: 656px) {
 		display: none;
 	}
-
-	// &:before {
-	// 	content: '';
-	// 	position: absolute;
-	// 	top: 0;
-	// 	left: 0;
-	// 	right: 0;
-	// 	width: 0.4em;
-	// 	margin: auto;
-	// 	border-top: 1px solid;
-	// }
 
 	a i {
 			margin-left: rem(4);

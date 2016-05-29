@@ -5,6 +5,8 @@ const {Component, inject, on, $} = Ember;
 export default Component.extend({
 	layout: inject.service(),
 	classNames: ['Header'],
+	layout: Ember.inject.service(),
+
 
 	detail: on('didInsertElement', function() {
 		// $('.Nav').sticky(); @todo: not working for some reason
@@ -24,7 +26,6 @@ export default Component.extend({
 
 	// close subNav Dropdown
 	close(event) {
-		console.log('close');
 		event.preventDefault();
 
 		const dropdown = $('.NavSub');
@@ -37,8 +38,6 @@ export default Component.extend({
 		var headerMobile = $('.Header');
 
 		if (headerMobile.hasClass('on-mobile')) {
-			console.log('clicked mobile');
-
 			headerMobile.removeClass('on-mobile');
 		}
 	},
