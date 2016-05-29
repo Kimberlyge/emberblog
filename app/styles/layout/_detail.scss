@@ -15,10 +15,9 @@
 
 .DetailHead {
 	@include flexRowWrap;
-
-	&:nth-of-type(3n) {
-		flex-direction: row-reverse;
-	}
+}
+.DetailHead--reverse {
+	flex-direction: row-reverse;
 }
 
 .DetailHead-body {

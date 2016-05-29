@@ -7,15 +7,15 @@
 	</div>
 </div>
 <div>{{{model.content}}}</div>
-<div class="Section">
+<div class="Section SectionTravel">
 	{{#each model.acf.restaurant as |item|}}
-		<div class="DetailHead GridCol-1">
+		<div class="DetailHead {{if item.reverse 'DetailHead--reverse'}} GridCol-full">
 			<div class="DetailHead-body GridCol-2">
 				<h2>{{item.name}}</h2>
 				{{{item.description}}}
 
 				{{#if item.contact}}
-					<div class="Box Box--border Box--small">
+					<div class="Box Box--border Box--small centered">
 						{{{item.contact}}}
 					</div>
 				{{/if}}
@@ -24,8 +24,10 @@
 				<img class="lazyload" alt="" src="{{item.cover.url}}">
 			</div>
 		</div>
-		<div class="DetailItem DetailItem--text GridCol-1">
-			{{{item.description_2}}}
-		</div>
+		{{#each item.description_2 as |content|}}
+			<div class="DetailItem DetailItem--text GridCol-2">
+				{{{content.description-content}}}
+			</div>
+		{{/each}}
 	{{/each}}
 </div>

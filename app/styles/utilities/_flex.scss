@@ -16,3 +16,8 @@
 	flex-direction: row;
 	flex-wrap: wrap;
 }
+@mixin flexColWrap {
+	display: flex;
+	flex-direction: column;
+	flex-wrap: wrap;
+}

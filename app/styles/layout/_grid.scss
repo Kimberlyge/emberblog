@@ -3,9 +3,14 @@
 	flex-flow: row wrap;
 }
 
-.GridCol-1 {
+.GridCol-full {
 	@media (min-width: 656px) {
 		flex: 1 100%;
+	}
+}
+.GridCol-1 {
+	@media (min-width: 656px) {
+		flex: 1;
 	}
 }
 .GridCol-2 {
