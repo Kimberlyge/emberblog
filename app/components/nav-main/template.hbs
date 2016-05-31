@@ -1,14 +1,14 @@
 {{!-- {{#sticky-container}}
 	{{/sticky-container}} --}}
 {{nav-burger}}
-<a href="/" class="Header-title">
+{{#link-to "index" (query-params category="") class="Logo js-navToggleRecipes"}}
 	<h1>vunchies</h1>
 	<h3>Vegan Munchies</h3>
-</a>
+{{/link-to}}
 
 <div class="Header-inner">
 	<div class="Nav">
-		<a href="/" class="js-navToggleRecipes">All Recipes
+		{{#link-to "index" (query-params category="") class="js-navToggleRecipes"}}All Recipes
 			<div class="NavSub is-hidden">
 				{{!-- only nested in case there will be more content to be shown --}}
 				<div class="NavSub-content">
@@ -44,7 +44,7 @@
 					</div>
 				</div>
 			</div>
-		</a>
+		{{/link-to}}
 		{{#link-to "index" (query-params category="breakfast")}}Breakfast{{/link-to}}
 		{{#link-to "index" (query-params category="salad")}}Salad{{/link-to}}
 		{{#link-to "index" (query-params category="soup")}}Soup{{/link-to}}
