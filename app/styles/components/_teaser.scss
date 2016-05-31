@@ -14,20 +14,21 @@
 	a:hover,
 	a:active {
 		.Teaser-media {
-			// outline: 1px solid $black;
 			img {
 				filter: brightness(98%);
 			}
 		}
 		.Teaser-body {
 			position: relative;
-			// outline: 1px solid $black;
 		}
 	}
 }
 .Teaser-wrap {
-	flex: rem(145); //200
+	flex: rem(145);
 	margin: rem(5);
+	@media (min-width: $layout-m) {
+		flex: rem(180);
+	}
 }
 .Teaser-media {
 	@include ratio(1456,2177);
@@ -99,5 +100,23 @@
 
 	li {
 		margin: 0 rem(2);
+	}
+	i {
+		position: relative;
+	}
+	span {
+		display: none;
+	}
+	i:hover {
+
+		span {
+			display: block;
+			font-size: rem(10);
+			position: absolute;
+			bottom: -2em;
+			left: -1em;
+			right: -1em;
+			text-align: center;
+		}
 	}
 }
