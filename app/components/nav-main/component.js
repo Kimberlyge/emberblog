@@ -5,7 +5,6 @@ const {Component, inject, on, $} = Ember;
 export default Component.extend({
 	layout: inject.service(),
 	classNames: ['Header'],
-	layout: Ember.inject.service(),
 
 
 	detail: on('didInsertElement', function() {
@@ -16,7 +15,6 @@ export default Component.extend({
 	// open subNav
 	open(event) {
 		const target = $(event.currentTarget);
-		const targetClass = target.attr('class');
 		const nav = target.find($('.NavSub'));
 
 		nav.removeClass('is-hidden');
@@ -34,7 +32,7 @@ export default Component.extend({
 	},
 
 	// hide menu overlay on nav-item click
-	mobileNav(event) {
+	mobileNav() {
 		var headerMobile = $('.Header');
 
 		if (headerMobile.hasClass('on-mobile')) {
@@ -60,17 +58,17 @@ export default Component.extend({
 		this.$subNav.on('mouseenter', event => this.open(event));
 
 		$('.Nav a').on('click', event => this.mobileNav(event));
-	},
-
-	click(event) {
-		// @todo: close before hash load
-
-		const clickedElementHasAnHref = $(this);
-		// console.log(clickedElementHasAnHref);
-		// console.log(event);
-
-		// if (clickedElementHasAnHref && this.get('layout.showAside')) {
-		// 	this.get('layout').perhapsCloseAside();
-		// }
 	}
+
+	// click(event) {
+	// 	@todo: close before hash load
+
+	// 	const clickedElementHasAnHref = $(this);
+	// 	console.log(clickedElementHasAnHref);
+	// 	console.log(event);
+
+	// 	if (clickedElementHasAnHref && this.get('layout.showAside')) {
+	// 		this.get('layout').perhapsCloseAside();
+	// 	}
+	// }
 });
