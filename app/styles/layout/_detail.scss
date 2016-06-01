@@ -21,9 +21,12 @@
 }
 
 .DetailHead-body {
-	padding: rem(40);
+	padding: rem($space);
 	margin: auto;
 
+	@media (min-width: $layout-s) {
+		padding: rem($space*2);
+	}
 	h2 {
 		@extend %font-light;
 		letter-spacing: 0.1em;
@@ -42,11 +45,16 @@
 	}
 }
 .DetailHead-media {
+	flex: 1;
 	@media (min-width: $layout-s) {
 		flex: 2;
 	}
 	@media (min-width: $layout-ml) {
 		flex: 2;
+	}
+	img {
+		margin: 0 auto;
+		width: 100%;
 	}
 }
 
