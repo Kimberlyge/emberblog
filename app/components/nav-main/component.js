@@ -6,7 +6,6 @@ export default Component.extend({
 	layout: inject.service(),
 	classNames: ['Header'],
 
-
 	detail: on('didInsertElement', function() {
 		// $('.Nav').sticky(); @todo: not working for some reason
 		this.actions();

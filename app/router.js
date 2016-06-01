@@ -10,8 +10,8 @@ Router.map(function () {
   this.route('index', {path: '/'});
   this.route('detail', {path: '/detail/:post_id'});
   this.route('travel', {path: 'travel'}, function () {
-    this.route('single', {path: '/'});
     this.route('overview');
+    this.route('single', {path: '/'});
   });
   this.route('404', {path: '/*wildcard'});
 });
