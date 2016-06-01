@@ -1,9 +1,5 @@
-/* global document */
 import Ember from 'ember';
 // import Cookies from 'ember-cli-js-cookie';
-
-// const BREAKPOINT = 740;
-const {computed, on} = Ember;
 
 export default Ember.Service.extend({
 	onMobile: false,
