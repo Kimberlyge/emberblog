@@ -9,13 +9,14 @@
 
 	max-width: rem(1000);
 	margin: 0 auto;
-	padding: 0 rem(5);
+	padding: 0 rem(5) 1em;
 
 	a:hover,
 	a:active {
 		.Teaser-media {
 			img {
-				filter: brightness(98%);
+				// filter: brightness(96%);
+				opacity: 0.8;
 			}
 		}
 		.Teaser-body {
@@ -36,15 +37,12 @@
 	overflow: hidden;
 
 	img {
-		transition: -webkit-filter 600ms $easing, transform 600ms $easing;
+		// -webkit-transition: -webkit-filter 1600ms $easing;
+		transition: opacity 150ms $easing;
 		@include ratio-inner;
-		// transition: -webkit-filter 150ms $easing, transform 2000ms $easing;
 
-		// without default values, the image will jump 1px in chrome on hover
-		filter: brightness(1);
+		// filter: brightness(1);
 		backface-visibility: hidden;
-		transform: translate3d(0,0,0);
-
 		object-fit: cover;
 	}
 }

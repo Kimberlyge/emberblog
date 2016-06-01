@@ -3,7 +3,8 @@
 		<h2>{{{model.title}}}</h2>
 		<p>{{{model.acf.country}}}</p>
 	</div>
-	<div class="Cover-media" style="background-image: url({{model.acf.cover.url}})">
+	<div class="Cover-media">
+		<img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" class="lazyload" alt="" data-srcset="{{model.acf.cover.sizes.medium}} 320w, {{model.acf.cover.sizes.large}} 1000w">
 	</div>
 </div>
 <div>{{{model.content}}}</div>
@@ -21,7 +22,7 @@
 				{{/if}}
 			</div>
 			<div class="DetailHead-media GridCol-2">
-				<img class="lazyload" alt="" src="{{item.cover.url}}">
+				<img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" class="lazyload" alt="" data-srcset="{{item.cover.sizes.medium}} 320w, {{item.cover.sizes.medium_large}} 1000w">
 			</div>
 		</div>
 		{{#each item.description_2 as |content|}}
