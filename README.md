@@ -22,14 +22,15 @@ You will need the following things properly installed on your computer.
 * Visit your app at [http://localhost:4200](http://localhost:4200).
 
 
-### Deploying to dev (justanotherveganfoodblog.surge.sh)
+### Deploying to dev (vunchies.surge.sh)
 
-* `npm run build; npm run deploy`
+* `npm run build; npm run deploy-dev`
 
 
-## Structure
+<!-- ## Structure
 
 ## Filter
 Search bar where you can enter ingredients.
 Entered ingredients will be added to a list underneath.
 The grid will automatically reload depending on recipes with these specific ingredients.
+ -->
