@@ -45,13 +45,6 @@
 	}
 }
 .DetailHead-media {
-	flex: 1;
-	@media (min-width: $layout-s) {
-		flex: 2;
-	}
-	@media (min-width: $layout-ml) {
-		flex: 2;
-	}
 	img {
 		margin: 0 auto;
 		width: 100%;

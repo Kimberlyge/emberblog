@@ -5,6 +5,7 @@
 
 .Grid--margin {
 	padding: 0 ($space) ($space);
+	margin-top: -($space);
 	.Grid-cell {
 		margin: ($space);
 	}
@@ -24,8 +25,8 @@
 	}
 }
 .Grid-cell--2 {
-	@media (min-width: $layout-m) {
-		flex: rem(300);
+	@media (min-width: 656px) {
+		flex: 2;
 	}
 }
 .Grid-cell--3 {

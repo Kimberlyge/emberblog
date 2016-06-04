@@ -136,49 +136,10 @@
 	}
 }
 
-// .is-sticky .sticky {
-// 	z-index: 9;
-// 	background: $white;
-
-// 	.Nav {
-// 		a {
-// 			background: $white;
-// 			margin-top: 0;
-
-// 			&:first-of-type {
-// 				border-top: 2px solid $black;
-// 			}
-
-// 			@media (min-width: $layout-sm) {
-// 				padding: rem($space) 0 0;
-// 				border-bottom: 2px solid $white;
-
-// 				&:first-of-type {
-// 					border-top: 0;
-// 				}
-
-// 				&:hover,
-// 				&:active,
-// 				&.is-active {
-// 					border-bottom: 2px solid $black;
-// 				}
-// 			}
-// 		}
-// 	}
-// 	.Nav--filter {
-// 		padding-bottom: 1em;
-// 		@media (min-width: $layout-sm) {
-// 			border-bottom: 2px solid $white !important;
-// 		}
-// 	}
-// }
-
-.Nav-pages {
-	// @media (max-width: $layout-sm) {
-	// 	background-color: $black !important;
-	// 	color: $white !important;
-	// 	border-color: $white !important;
-	// }
+.NavFilter--left {
+	@include flexCol;
+	align-items: flex-start;
+	max-width: rem(200);
 }
 
 // The social nav

@@ -9,13 +9,17 @@
 			background-color: rgba($white, 0.2);
 		}
 	}
+	.Grid-cell {
+		flex: rem(250);
+		@media (min-width: 928px) {
+			flex: rem(400);
+		}
+	}
 }
 
 /* Travel Single  */
 
 .SectionTravel {
-	@include flexRowWrap;
-
 	.DetailItem {
 		max-width: 50%;
 	}
