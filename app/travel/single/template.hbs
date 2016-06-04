@@ -8,27 +8,39 @@
 	</div>
 </div>
 <div>{{{model.content}}}</div>
-<div class="Section SectionTravel">
-	{{#each model.acf.restaurant as |item|}}
-		<div class="DetailHead {{if item.reverse 'DetailHead--reverse'}} Grid-cell Grid-cell--full">
-			<div class="DetailHead-body Grid-cell Grid-cell--2">
-				<h2>{{item.name}}</h2>
-				{{{item.description}}}
+<div class="Section SectionTravel Grid">
+	{{!-- {{#sticky-container}}
+		{{#nav-filter  class="NavFilter--left Grid-cell Grid-cell--2"}}
+			<i class="icon-filter" data-grunticon-embed></i>
+			{{#link-to "index" (query-params tag="gluten-free")}}Gluten free <i class="icon-gluten-free" data-grunticon-embed></i>{{/link-to}}
+			{{#link-to "index" (query-params tag="soy-free")}}Soy free <i class="icon-soy-free" data-grunticon-embed></i>{{/link-to}}
+			{{#link-to "index" (query-params tag="nut-free")}}Nut free <i class="icon-nut-free" data-grunticon-embed></i>{{/link-to}}
+			{{#link-to "index" (query-params tag="sugar-free")}}Sugar free <i class="icon-sugar-free" data-grunticon-embed></i>{{/link-to}}
+			{{#link-to "index" (query-params tag="raw")}}Raw <i class="icon-raw" data-grunticon-embed></i>{{/link-to}}
+		{{/nav-filter}}
+	{{/sticky-container}} --}}
+	<div class="Grid-cell Grid-cell--2">
+		{{#each model.acf.restaurant as |item|}}
+			<div class="DetailHead {{if item.reverse 'DetailHead--reverse'}} Grid-cell Grid-cell--full">
+				<div class="DetailHead-body Grid-cell Grid-cell--2">
+					<h2>{{item.name}}</h2>
+					{{{item.description}}}
 
-				{{#if item.contact}}
-					<div class="Box Box--border Box--small centered">
-						{{{item.contact}}}
-					</div>
-				{{/if}}
+					{{#if item.contact}}
+						<div class="Box Box--border Box--small centered">
+							{{{item.contact}}}
+						</div>
+					{{/if}}
+				</div>
+				<div class="DetailHead-media Grid-cell Grid-cell--2">
+					<img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" class="lazyload" alt="" data-srcset="{{item.cover.sizes.medium}} 320w, {{item.cover.sizes.medium_large}} 1000w">
+				</div>
 			</div>
-			<div class="DetailHead-media Grid-cell Grid-cell--2">
-				<img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" class="lazyload" alt="" data-srcset="{{item.cover.sizes.medium}} 320w, {{item.cover.sizes.medium_large}} 1000w">
-			</div>
-		</div>
-		{{#each item.description_2 as |content|}}
-			<div class="DetailItem DetailItem--text Grid-cell Grid-cell--2">
-				{{{content.description-content}}}
-			</div>
+			{{#each item.description_2 as |content|}}
+				<div class="DetailItem DetailItem--text Grid-cell Grid-cell--2">
+					{{{content.description-content}}}
+				</div>
+			{{/each}}
 		{{/each}}
-	{{/each}}
+	</div>
 </div>

@@ -28,7 +28,7 @@
 			font-size: $font-20;
 			margin-bottom: 0.2em;
 
-			@media (min-width: $layout-s) {
+			@media (min-width: $layout-m) {
 				font-size: $font-35;
 			}
 			@media (min-width: $layout-ml) {
@@ -60,7 +60,7 @@
 	}
 }
 .Cover--small {
-	@media (max-width: $layout-sm) {
+	@media (max-width: $layout-m) {
 		height: 35vh;
 	}
 }
