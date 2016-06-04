@@ -18,3 +18,29 @@
 	width: 100%;
 	height: 100%;
 }
+
+.Ratio {
+	position: relative;
+	height: 0;
+}
+
+// Stretch any child element to the ratio container
+.Ratio > * {
+	@include ratio-inner;
+}
+
+.Ratio--portrait {
+	@include ratio(3, 4);
+}
+.Ratio--landscape {
+	@include ratio(16, 9);
+}
+
+// Fade in images
+.Ratio img {
+	transition: 400ms opacity;
+
+	&.lazyload:not(iframe) {
+		opacity: 0;
+	}
+}

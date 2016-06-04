@@ -1,0 +1,26 @@
+/**
+ * Travel
+ */
+
+/* Travel Overview */
+.TravelOverview {
+	a:hover {
+		.Cover::after {
+			background-color: rgba($white, 0.2);
+		}
+	}
+}
+
+/* Travel Single  */
+
+.SectionTravel {
+	@include flexRowWrap;
+
+	.DetailItem {
+		max-width: 50%;
+	}
+	.DetailHead-body {
+		@include flexRowWrap;
+		justify-content: center;
+	}
+}

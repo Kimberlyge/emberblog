@@ -25,9 +25,12 @@
 		h2 {
 			@extend %font-medium;
 			letter-spacing: 0.1em;
-			font-size: $font-35;
+			font-size: $font-20;
 			margin-bottom: 0.2em;
 
+			@media (min-width: $layout-s) {
+				font-size: $font-35;
+			}
 			@media (min-width: $layout-ml) {
 				font-size: $font-40;
 			}
@@ -47,8 +50,21 @@
 		left: 0;
 		right: 0;
 		bottom: 0;
+		transition: background-color 350ms $easing;
 	}
 }
+
+.Cover--big {
+	@media (min-width: $layout-ml) {
+		height: 80vh;
+	}
+}
+.Cover--small {
+	@media (max-width: $layout-sm) {
+		height: 35vh;
+	}
+}
+
 .Cover-media {
 	width: 100%;
 	height: 100%;
