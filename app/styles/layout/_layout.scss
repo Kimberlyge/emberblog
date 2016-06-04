@@ -15,17 +15,6 @@ html {
 .Section {
 	padding: 2em 0;
 }
-.SectionTravel {
-	@include flexRowWrap;
-
-	.DetailItem {
-		max-width: 50%;
-	}
-	.DetailHead-body {
-		@include flexRowWrap;
-		justify-content: center;
-	}
-}
 .is-hidden {
 	display: none;
 }

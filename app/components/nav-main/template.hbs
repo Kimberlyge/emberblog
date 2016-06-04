@@ -53,27 +53,19 @@
 		{{#link-to "index" (query-params category="cake")}}Cake{{/link-to}}
 		<span>/</span>
 
-
-		{{!-- <a href="/" class="js-navToggleTravel desktopOnly">Travel --}}
-		{{#link-to "travel.overview" class='js-navToggleTravel'}}Travel
+		{{#link-to "travel" class='js-navToggleTravel'}}Travel
 			<div class="NavSub is-hidden">
 				{{!-- only nested in case there will be more content to be shown --}}
 				<div class="NavSub-content">
 					<div class="NavSub-wrap">
-						{{#link-to 'travel.single' (query-params id=104) class="nav-pages"}}Ko Tao{{/link-to}}
+						{{#link-to 'travel.single' 'ko-tao' class="nav-pages"}}Ko Tao{{/link-to}}
 					</div>
 					<div class="NavSub-wrap">
-						{{#link-to 'travel.single' (query-params id=101) class="nav-pages"}}Berlin{{/link-to}}
+						{{#link-to 'travel.single' 'berlin' class="nav-pages"}}Berlin{{/link-to}}
 					</div>
 				</div>
 			</div>
-			{{!-- <div class="mobileOnly">
-				{{#link-to 'travel.single' (query-params id=104) class="nav-pages"}}Ko Tao{{/link-to}}
-				{{#link-to 'travel.single' (query-params id=101) class="nav-pages"}}Berlin{{/link-to}}
-			</div> --}}
 		{{/link-to}}
-		{{!-- </a> --}}
-
 	</div>
 	<div class="{{if layout.onTravel 'is-hidden'}}">
 		{{nav-filter}}

@@ -3,25 +3,39 @@
 	flex-flow: row wrap;
 }
 
-.GridCol-full {
+.Grid--margin {
+	padding: 0 ($space) ($space);
+	.Grid-cell {
+		margin: ($space);
+	}
+}
+
+.Grid-cell {
+	flex: 1 100%;
+}
+.Grid-cell--full {
 	@media (min-width: 656px) {
 		flex: 1 100%;
 	}
 }
-.GridCol-1 {
+.Grid-cell--1 {
 	@media (min-width: 656px) {
 		flex: 1;
 	}
 }
-.GridCol-2 {
-	@media (min-width: 656px) {
-		flex: 2;
+.Grid-cell--2 {
+	@media (min-width: $layout-m) {
+		flex: rem(300);
 	}
 }
-.GridCol-3 {
+.Grid-cell--3 {
 	@media (min-width: 656px) {
 		flex: 3;
 	}
+}
+
+.u-last {
+	clear: both;
 }
 
 // Make sure wrapper links are block

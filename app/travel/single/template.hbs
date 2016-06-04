@@ -1,17 +1,17 @@
-<div class="Cover">
+<div class="Cover Cover--big">
 	<div class="Cover-body">
 		<h2>{{{model.title}}}</h2>
 		<p>{{{model.acf.country}}}</p>
 	</div>
 	<div class="Cover-media">
-		<img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" class="lazyload" alt="" data-srcset="{{model.acf.cover.sizes.medium}} 320w, {{model.acf.cover.sizes.large}} 1000w">
+		<img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" class="lazyload" alt="" data-srcset="{{model.acf.cover.sizes.medium}} 320w, {{model.acf.cover.sizes.post-thumbnail}} 1000w">
 	</div>
 </div>
 <div>{{{model.content}}}</div>
 <div class="Section SectionTravel">
 	{{#each model.acf.restaurant as |item|}}
-		<div class="DetailHead {{if item.reverse 'DetailHead--reverse'}} GridCol-full">
-			<div class="DetailHead-body GridCol-2">
+		<div class="DetailHead {{if item.reverse 'DetailHead--reverse'}} Grid-cell Grid-cell--full">
+			<div class="DetailHead-body Grid-cell Grid-cell--2">
 				<h2>{{item.name}}</h2>
 				{{{item.description}}}
 
@@ -21,12 +21,12 @@
 					</div>
 				{{/if}}
 			</div>
-			<div class="DetailHead-media GridCol-2">
+			<div class="DetailHead-media Grid-cell Grid-cell--2">
 				<img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" class="lazyload" alt="" data-srcset="{{item.cover.sizes.medium}} 320w, {{item.cover.sizes.medium_large}} 1000w">
 			</div>
 		</div>
 		{{#each item.description_2 as |content|}}
-			<div class="DetailItem DetailItem--text GridCol-2">
+			<div class="DetailItem DetailItem--text Grid-cell Grid-cell--2">
 				{{{content.description-content}}}
 			</div>
 		{{/each}}

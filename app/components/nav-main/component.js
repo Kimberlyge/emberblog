@@ -58,16 +58,4 @@ export default Component.extend({
 
 		$('.Nav a').on('click', event => this.mobileNav(event));
 	}
-
-	// click(event) {
-	// 	@todo: close before hash load
-
-	// 	const clickedElementHasAnHref = $(this);
-	// 	console.log(clickedElementHasAnHref);
-	// 	console.log(event);
-
-	// 	if (clickedElementHasAnHref && this.get('layout.showAside')) {
-	// 		this.get('layout').perhapsCloseAside();
-	// 	}
-	// }
 });
