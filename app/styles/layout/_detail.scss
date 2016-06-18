@@ -41,13 +41,15 @@
 	}
 	p {
 		@extend %font-light;
-		// margin-bottom: 0;
 	}
 }
 .DetailHead-media {
 	img {
 		margin: 0 auto;
 		width: 100%;
+	}
+	&.is-reversed {
+		padding: rem($space*2);
 	}
 }
 

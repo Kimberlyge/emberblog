@@ -9,16 +9,16 @@
 </div>
 <div>{{{model.content}}}</div>
 <div class="Section SectionTravel Grid">
-	{{!-- {{#sticky-container}}
-		{{#nav-filter  class="NavFilter--left Grid-cell Grid-cell--2"}}
-			<i class="icon-filter" data-grunticon-embed></i>
-			{{#link-to "index" (query-params tag="gluten-free")}}Gluten free <i class="icon-gluten-free" data-grunticon-embed></i>{{/link-to}}
-			{{#link-to "index" (query-params tag="soy-free")}}Soy free <i class="icon-soy-free" data-grunticon-embed></i>{{/link-to}}
-			{{#link-to "index" (query-params tag="nut-free")}}Nut free <i class="icon-nut-free" data-grunticon-embed></i>{{/link-to}}
-			{{#link-to "index" (query-params tag="sugar-free")}}Sugar free <i class="icon-sugar-free" data-grunticon-embed></i>{{/link-to}}
-			{{#link-to "index" (query-params tag="raw")}}Raw <i class="icon-raw" data-grunticon-embed></i>{{/link-to}}
-		{{/nav-filter}}
-	{{/sticky-container}} --}}
+	{{#nav-filter class="NavFilter--left NavFilter--inline Grid-cell Grid-cell--2 js-scrollTrigger"}}
+		<h3>City</h3>
+		<a href="#">Anchor</a>
+		<a href="#">Anchor</a>
+		<a href="#">Anchor</a>
+		<a href="#">Anchor</a>
+		<a href="#">Anchor</a>
+		<a href="#">Anchor</a>
+		<a href="#">Anchor</a>
+	{{/nav-filter}}
 	<div class="Grid-cell Grid-cell--2">
 		{{#each model.acf.restaurant as |item|}}
 			<div class="DetailHead {{if item.reverse 'DetailHead--reverse'}} Grid-cell Grid-cell--full">
@@ -32,7 +32,7 @@
 						</div>
 					{{/if}}
 				</div>
-				<div class="DetailHead-media Grid-cell Grid-cell--2">
+				<div class="DetailHead-media {{if item.reverse 'is-reversed'}} Grid-cell Grid-cell--2">
 					<img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" class="lazyload" alt="" data-srcset="{{item.cover.sizes.medium}} 320w, {{item.cover.sizes.medium_large}} 1000w">
 				</div>
 			</div>

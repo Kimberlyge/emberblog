@@ -1,4 +1,4 @@
-// import Stickyjs from 'npm:flickity';
+import ScrollMagic from 'npm:scrollmagic';
 import Ember from 'ember';
 
 const {Component, $, on} = Ember;
@@ -7,17 +7,17 @@ export default Component.extend({
 	classNames: ['NavFilter'],
 
 	sticky: on('didRender', function() {
-		// $('.Nav').sticky(); @todo: not working for some reason
-		this.stick();
-		// console.log('yess');
-	}),
+		// init controller
+		var controller = new ScrollMagic.Controller();
 
-	stick() {
-		// $(document).ready(function(){
-		// 	$(".NavFilter--left").sticky({topSpacing:0});
-		// });
+		// create a scene
+		new ScrollMagic.Scene({
+			triggerElement: '.NavFilter--inline',
+			triggerHook: 0
 
-		// $('.NavFilter--left').sticky();
+		})
+		.setClassToggle(".js-scrollTrigger", "is-sticky")
+		.addTo(controller); // assign the scene to the controller
+	})
 
-	}
 });

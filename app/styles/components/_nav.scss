@@ -135,11 +135,34 @@
 		text-transform: lowercase;
 	}
 }
+.NavFilter--sticky {
+	display: none;
+	width: 25%;
+	&.is-sticky {
+		@include flexCol;
+		align-items: flex-start;
+		max-width: rem(200);
 
-.NavFilter--left {
+		position: fixed;
+		top: 0;
+		z-index: 90;
+	}
+}
+.NavFilter--inline {
 	@include flexCol;
 	align-items: flex-start;
 	max-width: rem(200);
+	&.is-sticky {
+		visibility: hidden;
+	}
+}
+
+.NavFilter--left {
+	height: rem(300);
+	padding: rem(10);
+	a {
+		margin: 0;
+	}
 }
 
 // The social nav

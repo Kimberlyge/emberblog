@@ -2,6 +2,18 @@
 
 <main class="App-main">
 	{{!-- don't move the outlet without changing liquid.scss --}}
+	{{#if layout.onTravelSingle}}
+		{{#nav-filter class="NavFilter--left NavFilter--sticky js-scrollTrigger Grid-cell Grid-cell--2"}}
+			<h3>City</h3>
+			<a href="#">Anchor</a>
+			<a href="#">Anchor</a>
+			<a href="#">Anchor</a>
+			<a href="#">Anchor</a>
+			<a href="#">Anchor</a>
+			<a href="#">Anchor</a>
+			<a href="#">Anchor</a>
+		{{/nav-filter}}
+	{{/if}}
 	{{liquid-outlet}}
 </main>
 
