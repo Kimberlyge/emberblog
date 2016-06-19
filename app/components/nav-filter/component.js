@@ -20,4 +20,5 @@ export default Component.extend({
 		.addTo(controller); // assign the scene to the controller
 	})
 
+
 });

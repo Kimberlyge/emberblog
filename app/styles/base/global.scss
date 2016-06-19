@@ -55,6 +55,10 @@ time {
 	margin: 0 0 rem($space);
 }
 
+button {
+	cursor: pointer;
+}
+
 h1 {
 	@include h1;
 	margin-bottom: rem($space*2);
