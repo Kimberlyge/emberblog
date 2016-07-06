@@ -23,15 +23,4 @@ export default Ember.Controller.extend({
 			return posts;
 		}
 	})
-
-	// filteredTags: Ember.computed('tag', 'model', function() {
-	// 	var tag = this.get('tag');
-	// 	var posts = this.get('model');
-
-	// 	if (tag) {
-	// 		return posts.filterBy('tag', tag);
-	// 	} else {
-	// 		return posts;
-	// 	}
-	// })
 });
