@@ -54,7 +54,7 @@ export default Component.extend({
 
 		// add subnav
 		this.$subNav = $('.js-navToggleRecipes, .js-navToggleTravel');
-		this.$subNav.on('mouseenter', event => this.open(event));
+		// this.$subNav.on('mouseenter', event => this.open(event));
 
 		$('.Nav a').on('click', event => this.mobileNav(event));
 	}
