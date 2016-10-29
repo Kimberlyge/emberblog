@@ -9,13 +9,13 @@
 </div>
 <div>{{{model.content}}}</div>
 <div class="Section SectionTravel Grid">
-	{{#nav-filter class="NavFilter--left NavFilter--inline Grid-cell Grid-cell--2 js-scrollTrigger"}}
+	{{!-- {{#nav-filter class="NavFilter--left NavFilter--inline Grid-cell Grid-cell--2 js-scrollTrigger"}}
 		<h3>City</h3>
 		{{#each model.acf.restaurant as |item|}}
-			{{!-- <a href="#{{{item.name}}}" {{action 'scrollTo'}}>{{{item.name}}}</a> --}}
+			<a href="#{{{item.name}}}" {{action 'scrollTo'}}>{{{item.name}}}</a>
 			<button data="{{{item.name}}}">{{{item.name}}}</button>
 		{{/each}}
-	{{/nav-filter}}
+	{{/nav-filter}} --}}
 	<div class="Grid-cell Grid-cell--2">
 		{{#each model.acf.restaurant as |item|}}
 			<div class="DetailHead {{if item.reverse 'DetailHead--reverse'}} Grid-cell Grid-cell--full" id="{{{item.name}}}">

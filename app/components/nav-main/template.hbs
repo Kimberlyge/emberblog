@@ -1,5 +1,5 @@
 {{nav-burger}}
-{{#link-to "index" (query-params category="") class="Logo js-navToggleRecipes"}}
+{{#link-to "index" (query-params category="") class="Logo"}}
 	<h1>vunchies</h1>
 	<h3>Vegan Munchies</h3>
 {{/link-to}}
@@ -51,21 +51,33 @@
 		{{#link-to "index" (query-params category="cake")}}Cake{{/link-to}}
 		<span>/</span>
 
-		{{#link-to "travel" class='js-navToggleTravel'}}Travel
-			<div class="NavSub">
+		<div class="NavItemTravel">
+			{{#link-to "travel" class='NavItemTravel-title js-navToggleTravel'}}Travel
+			{{/link-to}}
+			<div class="NavSub js-nav-travel is-hidden">
 				{{!-- only nested in case there will be more content to be shown --}}
 				<div class="NavSub-content">
 					<div class="NavSub-wrap">
-						{{#link-to 'travel.single' 'ko-tao' class="nav-pages"}}Ko Tao{{/link-to}}
+						{{#link-to "travel" }}<h3>Europe</h3>{{/link-to}}
+						{{#link-to "travel.single" 'amsterdam'}}Amsterdam{{/link-to}}
+						{{#link-to "travel.single" 'bamberg'}}Bamberg{{/link-to}}
+						{{#link-to "travel.single" 'berlin-germany' }}Berlin{{/link-to}}
+						{{#link-to "travel.single" 'florence'}}Florence{{/link-to}}
+						{{#link-to "travel.single" 'rome'}}Rome{{/link-to}}
 					</div>
 					<div class="NavSub-wrap">
-						{{#link-to 'travel.single' 'berlin' class="nav-pages"}}Berlin{{/link-to}}
+						{{#link-to "travel" }}<h3>Asia</h3>{{/link-to}}
+						{{#link-to "travel.single" 'ko-tao' }}Ko Tao{{/link-to}}
+						{{#link-to "travel.single" 'ko-phangan'}}Ko Phangan{{/link-to}}
+						{{#link-to "travel.single" 'bali'}}Bali{{/link-to}}
+						{{#link-to "travel.single" 'gili-meno'}}Gili Meno{{/link-to}}
+						{{#link-to "travel.single" 'gili-air'}}Gili Air{{/link-to}}
 					</div>
 				</div>
 			</div>
-		{{/link-to}}
+		</div>
 	</div>
-	<div class="{{if layout.onTravel 'is-hidden'}}">
+	{{!-- <div class="{{if layout.onTravel 'is-hidden'}}">
 		{{#nav-filter}}
 			<i class="icon-filter" data-grunticon-embed></i>
 			{{#link-to "index" (query-params tag="gluten-free")}}Gluten free <i class="icon-gluten-free" data-grunticon-embed></i>{{/link-to}}
@@ -74,7 +86,7 @@
 			{{#link-to "index" (query-params tag="sugar-free")}}Sugar free <i class="icon-sugar-free" data-grunticon-embed></i>{{/link-to}}
 			{{#link-to "index" (query-params tag="raw")}}Raw <i class="icon-raw" data-grunticon-embed></i>{{/link-to}}
 		{{/nav-filter}}
-	</div>
+	</div> --}}
 </div>
 
 {{yield}}

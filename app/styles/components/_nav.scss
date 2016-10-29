@@ -60,7 +60,14 @@
 	}
 }
 
+.NavItemTravel {
+	display: inline-block;
+}
 
+.NavItemTravel-title {
+	position: relative;
+	z-index: 12;
+}
 /* Sub Navigation */
 
 .NavSub {
@@ -68,9 +75,10 @@
 	z-index: 10;
 	width: 100%;
 	left: 0;
-	top: rem(62);
+	top: 0;
 	min-height: 2em; //needs a height to keep it open while moving the cursor
 
+	padding-top: rem(62);
 	// pointer-events: none;
 	&.is-hidden {
 		display: none;
