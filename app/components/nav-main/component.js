@@ -8,7 +8,6 @@ export default Component.extend({
 
 	detail: on('didInsertElement', function() {
 		this.actions();
-		console.log('yo');
 	}),
 
 	// open subNav
@@ -16,7 +15,7 @@ export default Component.extend({
 
 		var target = event.currentTarget;
 
-		var navigation = target.querySelector('.NavSub');
+		var navigation = document.querySelector('.js-nav-recipes');
 
 		navigation.classList.remove('is-hidden');
 
@@ -64,7 +63,7 @@ export default Component.extend({
 	actions() {
 
 		var buttonRecipes = document.querySelectorAll('.js-navToggleRecipes');
-		var buttonTravel = document.querySelectorAll('.NavItemTravel');
+		var buttonTravel = document.querySelectorAll('.js-navToggleTravelOverview');
 
 		$(buttonRecipes).on('mouseenter', event => this._showNavRecipe(event));
 		$(buttonTravel).on('mouseenter', event => this._showNavTravel(event));

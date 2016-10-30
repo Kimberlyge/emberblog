@@ -7,7 +7,17 @@
 		<img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" class="lazyload" alt="" data-srcset="{{model.acf.cover.sizes.medium}} 320w, {{model.acf.cover.sizes.post-thumbnail}} 1000w">
 	</div>
 </div>
-<div>{{{model.content}}}</div>
+
+<ul class="list list--centered listLink">
+	{{#scroll-to}}
+		{{#each model.acf.restaurant as |item|}}
+			<li class="list-item">
+				<a href="#{{item.name}}" class="listLink-item js-listLink-item">{{{item.name}}}</a>
+			</li>
+		{{/each}}
+	{{/scroll-to}}
+</ul>
+
 <div class="Section SectionTravel Grid">
 	{{!-- {{#nav-filter class="NavFilter--left NavFilter--inline Grid-cell Grid-cell--2 js-scrollTrigger"}}
 		<h3>City</h3>

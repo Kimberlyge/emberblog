@@ -22,6 +22,7 @@
 		}
 	}
 }
+
 .Teaser-wrap {
 	flex: rem(145);
 	margin: rem(5);
@@ -29,6 +30,7 @@
 		flex: rem(180);
 	}
 }
+
 .Teaser-media {
 	@include ratio(1456,2177);
 	margin-bottom: 0;
@@ -44,6 +46,7 @@
 		object-fit: cover;
 	}
 }
+
 .Teaser-body {
 	overflow: hidden;
 	padding: 15px;
@@ -67,6 +70,7 @@
 		margin: 0;
 	}
 }
+
 .Teaser-title {
 	text-transform: uppercase;
 	margin-top: 0;
@@ -77,15 +81,19 @@
 		font-size: $font-17;
 	}
 }
+
 .Teaser-categories {
 	@include flexRow;
 	flex-wrap: wrap;
 	flex: 4;
-	a {
+	padding-top: rem(3);
+
+	span {
 		margin-right: rem(6);
-		font-size: $font-14;
+		font-size: $font-12;
 	}
 }
+
 .Teaser-tags {
 	@include flexRow;
 	align-self: baseline;

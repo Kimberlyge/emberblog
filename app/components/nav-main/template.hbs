@@ -1,13 +1,15 @@
 {{nav-burger}}
-{{#link-to "index" (query-params category="") class="Logo"}}
+<a href="/" class="Logo">
 	<h1>vunchies</h1>
 	<h3>Vegan Munchies</h3>
-{{/link-to}}
+</a>
 
 <div class="Header-inner">
 	<div class="Nav">
-		{{#link-to "index" (query-params category="") class="js-navToggleRecipes"}}All Recipes
-			<div class="NavSub is-hidden">
+		<div class="NavItemRecipes js-navToggleRecipes">
+			{{#link-to "index" (query-params category="") class="NavItemRecipes-title"}}All Recipes
+			{{/link-to}}
+			<div class="NavSub js-nav-recipes is-hidden">
 				{{!-- only nested in case there will be more content to be shown --}}
 				<div class="NavSub-content">
 					<div class="NavSub-wrap">
@@ -42,7 +44,7 @@
 					</div>
 				</div>
 			</div>
-		{{/link-to}}
+		</div>
 		{{#link-to "index" (query-params category="breakfast")}}Breakfast{{/link-to}}
 		{{#link-to "index" (query-params category="salad")}}Salad{{/link-to}}
 		{{#link-to "index" (query-params category="soup")}}Soup{{/link-to}}
@@ -51,22 +53,22 @@
 		{{#link-to "index" (query-params category="cake")}}Cake{{/link-to}}
 		<span>/</span>
 
-		<div class="NavItemTravel">
-			{{#link-to "travel" class='NavItemTravel-title js-navToggleTravel'}}Travel
+		<div class="NavItemTravel js-navToggleTravelOverview">
+			{{#link-to "travel" class="NavItemTravel-title"}}Travel
 			{{/link-to}}
 			<div class="NavSub js-nav-travel is-hidden">
 				{{!-- only nested in case there will be more content to be shown --}}
 				<div class="NavSub-content">
 					<div class="NavSub-wrap">
-						{{#link-to "travel" }}<h3>Europe</h3>{{/link-to}}
+						<h3>Europe</h3>
 						{{#link-to "travel.single" 'amsterdam'}}Amsterdam{{/link-to}}
 						{{#link-to "travel.single" 'bamberg'}}Bamberg{{/link-to}}
-						{{#link-to "travel.single" 'berlin-germany' }}Berlin{{/link-to}}
+						{{#link-to "travel.single" 'berlin-germany' (query-params parent=101) }}Berlin{{/link-to}}
 						{{#link-to "travel.single" 'florence'}}Florence{{/link-to}}
 						{{#link-to "travel.single" 'rome'}}Rome{{/link-to}}
 					</div>
 					<div class="NavSub-wrap">
-						{{#link-to "travel" }}<h3>Asia</h3>{{/link-to}}
+						<h3>Asia</h3>
 						{{#link-to "travel.single" 'ko-tao' }}Ko Tao{{/link-to}}
 						{{#link-to "travel.single" 'ko-phangan'}}Ko Phangan{{/link-to}}
 						{{#link-to "travel.single" 'bali'}}Bali{{/link-to}}

@@ -3,10 +3,20 @@
  */
 
 .Box {
+	background-color: $white;
 	padding: $space;
+
+	p {
+		line-height: 20px;
+	}
 
 	p:last-of-type {
 		margin-bottom: 0;
+	}
+
+	a {
+		border-bottom: 1px solid;
+		font-style: italic;
 	}
 }
 .Box--border {

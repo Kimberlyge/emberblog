@@ -3,6 +3,7 @@ import Ember from 'ember';
 // const {Component, $, on} = Ember;
 
 export default Ember.Controller.extend({
+
 	// actions: {
 	// 	scrollTo() {
 	// 		console.log('clicked');

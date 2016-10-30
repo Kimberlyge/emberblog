@@ -60,11 +60,13 @@
 	}
 }
 
-.NavItemTravel {
+.NavItemTravel,
+.NavItemRecipes {
 	display: inline-block;
 }
 
-.NavItemTravel-title {
+.NavItemTravel-title,
+.NavItemRecipes-title {
 	position: relative;
 	z-index: 12;
 }

@@ -9,7 +9,7 @@
 					<h2 class="Teaser-title">{{item.title}}</h2>
 					<ul class="Teaser-categories">
 						{{#each item.categories as |category|}}
-							{{#link-to "index" (query-params category="basics")}}{{category.name}}{{/link-to}}
+							<span>{{category.name}}</span>
 						{{/each}}
 					</ul>
 					<ul class="Teaser-tags">
