@@ -47,11 +47,16 @@
 		</div>
 	{{/if}}
 
-	{{#each model.acf.images as |item|}}
-		<div class="DetailItem DetailItem--image Grid-cell Grid-cell--3">
-			<img class="lazyload" alt="" src="{{item.image.url}}">
-		</div>
-	{{/each}}
+	{{#if model.acf.images.[0].image}}
+		{{#each model.acf.images as |item|}}
+			<div class="DetailItem DetailItem--image Grid-cell Grid-cell--3">
+				{{!-- <img class="lazyload" alt="" src="{{item.image.url}}"> --}}
+				<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{item.image.alt}}" data-sizes="auto" data-srcset="
+					{{item.image.sizes.medium}} 320w,
+					{{item.image.sizes.large}} 1024w"/>
+			</div>
+		{{/each}}
+	{{/if}}
 
 	{{outlet}}
 </div>
