@@ -3,7 +3,7 @@
  */
 
 .Box {
-	background-color: $white;
+
 	padding: $space;
 
 	p {
@@ -18,10 +18,25 @@
 		border-bottom: 1px solid;
 		font-style: italic;
 	}
+
+	&--white {
+		background-color: $white;
+	}
+
+	&--border {
+		border: 2px solid;
+	}
+
+	&--small {
+		display: inline-block;
+	}
+
 }
+
 .Box--border {
 	border: 2px solid;
 }
+
 .Box--small {
 	display: inline-block;
 }

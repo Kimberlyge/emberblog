@@ -55,6 +55,7 @@ module.exports = function(defaults) {
   // along with the exports of each module as its value.
 
   app.import('vendor/modernizr-custom.js');
+  app.import('vendor/yo.js');
   // app.import('bower_components/video.js/dist/video.js');
   // app.import('bower_components/BigVideo/lib/bigvideo.js');
 

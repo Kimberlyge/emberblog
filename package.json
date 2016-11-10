@@ -44,6 +44,7 @@
     "ember-load-initializers": "^0.5.1",
     "ember-masonry-grid": "1.1.0",
     "ember-resolver": "^2.0.3",
+    "ember-scroll-to": "0.5.4",
     "ember-windoc": "0.1.6",
     "ember-wordpress": "0.1.1",
     "grunticon-lib": "^1.0.4",

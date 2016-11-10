@@ -20,6 +20,9 @@ html {
 	@media (min-width: $layout-xl) {
 		font-size: $base-font-size + 2;
 	}
+
+	overflow-y: scroll; /* has to be scroll, not auto */
+  -webkit-overflow-scrolling: touch;
 }
 
 body,

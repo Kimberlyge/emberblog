@@ -22,6 +22,6 @@ export default Ember.Route.extend({
 			filter: {
 				name: params.slug
 			}
-		}).then(models => models.get('firstObject'));;
+		}).then(models => models.get('firstObject'));
 	}
 });

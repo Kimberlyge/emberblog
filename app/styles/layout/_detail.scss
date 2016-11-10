@@ -16,6 +16,7 @@
 .DetailHead {
 	@include flexRowWrap;
 }
+
 .DetailHead--reverse {
 	flex-direction: row-reverse;
 }
@@ -27,27 +28,40 @@
 	@media (min-width: $layout-s) {
 		padding: rem($space*2);
 	}
-	h2 {
-		@extend %font-light;
-		letter-spacing: 0.1em;
-		font-size: $font-20;
 
-		@media (min-width: $layout-s) {
-			font-size: rem(30);
-		}
-		@media (min-width: $layout-ml) {
-			font-size: $font-40;
-		}
-	}
 	p {
 		@extend %font-light;
 	}
 }
+
+.TravelCopy {
+	max-width: rem(660);
+}
+
+.TravelCopy-title {
+	@extend %font-light;
+	letter-spacing: 0.1em;
+	font-size: $font-20;
+
+	@media (min-width: $layout-s) {
+		font-size: rem(30);
+	}
+	@media (min-width: $layout-ml) {
+		font-size: $font-40;
+	}
+}
+
+.TravelCopy-description {
+	margin-bottom: rem(30);
+}
+
 .DetailHead-media {
+
 	img {
 		margin: 0 auto;
 		width: 100%;
 	}
+
 	&.is-reversed {
 		padding: rem($space*2);
 	}
@@ -59,6 +73,7 @@
 	margin: 0 auto;
 	min-width: rem(300);
 }
+
 .DetailItem--text {
 	@extend %font-light;
 	letter-spacing: 0.05em;

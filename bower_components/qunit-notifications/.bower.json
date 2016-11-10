@@ -19,14 +19,14 @@
     "sinon": "http://sinonjs.org/releases/sinon-1.12.2.js",
     "rsvp": "~3.0.16"
   },
-  "version": "0.1.0",
-  "_release": "0.1.0",
+  "version": "0.1.1",
+  "_release": "0.1.1",
   "_resolution": {
     "type": "version",
-    "tag": "v0.1.0",
-    "commit": "8c8c77e2d263ba04becb55dc9b36b20d74f882cd"
+    "tag": "v0.1.1",
+    "commit": "7a13f6dba5a340e1cb9e0b64c1c711e4d7edaca1"
   },
-  "_source": "git://github.com/dockyard/qunit-notifications.git",
+  "_source": "https://github.com/dockyard/qunit-notifications.git",
   "_target": "~0.1.0",
   "_originalSource": "qunit-notifications"
 }

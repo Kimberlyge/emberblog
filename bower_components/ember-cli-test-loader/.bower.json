@@ -27,7 +27,7 @@
     "tag": "v0.2.2",
     "commit": "5c184b79b279ba0438bce0dd30b696efbc030a64"
   },
-  "_source": "git://github.com/ember-cli/ember-cli-test-loader.git",
+  "_source": "https://github.com/ember-cli/ember-cli-test-loader.git",
   "_target": "0.2.2",
   "_originalSource": "ember-cli-test-loader"
 }

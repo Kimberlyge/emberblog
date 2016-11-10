@@ -5,6 +5,7 @@ export default Ember.Controller.extend({
 	category: null,
 	tag: null,
 
+
 	filteredCategories: Ember.computed('category', 'tag', 'model', function() {
 		var category = this.get('category');
 		var tag = this.get('tags');
