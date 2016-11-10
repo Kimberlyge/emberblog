@@ -6,11 +6,11 @@
 .Teaser-media img,
 .Cover-media img,
 .DetailHead-media img  {
-	// transition: opacity 1s $easing;
-	// opacity: 0;
+	transition: opacity 1s $easing;
+	opacity: 0;
 
-	// &.lazyloaded {
-	// 	transition: opacity 1s $easing;
-	// 	opacity: 1;
-	// }
+	&.lazyloaded {
+		transition: opacity 1s $easing;
+		opacity: 1;
+	}
 }

@@ -11,7 +11,6 @@ export default Ember.Route.extend({
 	},
 
  	model(params) {
- 		console.log(this);
 		console.log(params);
 
 		// return this.store.query('page', {
