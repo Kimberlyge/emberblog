@@ -4,7 +4,7 @@
 
 // Fade in images
 .Teaser-media img,
-.DetailItem img,
+.DetailItem--media img,
 .Cover-media img,
 .DetailHead-media img  {
 	transition: opacity 1s $easing;
