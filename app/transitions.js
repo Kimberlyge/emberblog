@@ -6,16 +6,22 @@ export default function () {
 	});
 
 	this.transition(
-		this.toRoute('detail'),
+		this.toRoute(['detail', 'travel']),
 		this.use('toLeft'),
 		this.reverse('toRight')
 	);
 
-	//@todo
 	this.transition(
-		this.toRoute('single'),
-		this.use('toLeft'),
-		this.reverse('toRight')
+		this.toRoute('travel'),
+		this.use('toRight'),
+		this.reverse('toLeft')
+	);
+
+	this.transition(
+		this.fromRoute('detail'),
+		this.toRoute('index'),
+		this.use('toRight'),
+		this.reverse('toLeft')
 	);
 
 	// // Animate the title in the header-bar

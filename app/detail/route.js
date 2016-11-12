@@ -10,15 +10,6 @@ export default Ember.Route.extend({
 			filter: {name: params.slug}
 		}).then(models => models.get('firstObject'));
 
-	},
-
-	afterModel() {
-
-		console.log('uuu');
-		// var coverImg = $(document).find('.Detail');
-
-		// console.log(coverImg);
-
 	}
 
 });
