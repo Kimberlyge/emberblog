@@ -10,27 +10,27 @@ export default Component.extend({
 		this.actions();
 	}),
 
-	// open subNav
+	// open subNav + add active state on the target
 	_showNavRecipe(event) {
 
 		var target = event.currentTarget;
+		var subNav = document.querySelector('.js-nav-recipes');
 
-		var navigation = document.querySelector('.js-nav-recipes');
-
-		navigation.classList.remove('is-hidden');
+		target.classList.add('is-active');
+		subNav.classList.remove('is-hidden');
 
 		$(target).on('mouseleave', event => this._hideNav(event));
 
 	},
 
-	// open subNav
+	// close subNav + remove active state on the target
 	_showNavTravel(event) {
 
 		var target = event.currentTarget;
+		var subNav = document.querySelector('.js-nav-travel');
 
-		var navigation = document.querySelector('.js-nav-travel');
-
-		navigation.classList.remove('is-hidden');
+		target.classList.add('is-active');
+		subNav.classList.remove('is-hidden');
 
 		$(target).on('mouseleave', event => this._hideNav(event));
 
@@ -41,9 +41,11 @@ export default Component.extend({
 
 		event.preventDefault();
 
-		const dropdown = $('.NavSub');
+		var target = event.currentTarget;
+		var subNav = document.querySelector('.NavSub');
 
-		$(dropdown).addClass('is-hidden');
+		subNav.classList.add('is-hidden');
+		target.classList.remove('is-active');
 
 	},
 

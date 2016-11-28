@@ -14,15 +14,13 @@ html {
 	// to use open-type features, bower install normalize-opentype
 	text-rendering: optimizeLegibility;
 	font-size: 15px;
+
 	@media (min-width: $layout-m) {
 		font-size: $base-font-size;
 	}
 	@media (min-width: $layout-xl) {
 		font-size: $base-font-size + 2;
 	}
-
-	overflow-y: scroll; /* has to be scroll, not auto */
-  -webkit-overflow-scrolling: touch;
 }
 
 body,
@@ -31,7 +29,6 @@ html {
 	height: 100%;
 	margin: 0px;
 	padding: 0px;
-	overflow-x: hidden;
 }
 
 // Set a consistent margin between elements

@@ -3,7 +3,7 @@
 module.exports = function(environment) {
   var ENV = {
     modulePrefix: 'vunchies',
-    wordpressHost: 'http://dev-vunchies.pantheonsite.io',
+    wordpressHost: 'http://vunchies.com',
     environment: environment,
     baseURL: '/',
     locationType: 'auto',

@@ -4,7 +4,7 @@
 	top: 0;
 	bottom: 0;
 	left: 0;
-	padding: 0.5em 1em;
+	padding: rem(15);
 	z-index: 11; // on top of .Aside
 	text-transform: uppercase;
 	font-size: $font-14;
@@ -16,12 +16,6 @@
 		display: none;
 	}
 
-	// background-image: url(images/dots/dot7.svg);
-	// background-position: 0.5rem 50%;
-	// background-repeat: no-repeat;
-	// background-color: transparent;
-	// background-size: rem(25);
-	// height: rem(50);
 	&:focus,
 	&:active {
 		outline: none;

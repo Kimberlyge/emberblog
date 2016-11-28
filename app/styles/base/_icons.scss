@@ -57,6 +57,20 @@ $icon-size: 20px;
 	width: 20px;
 	height: 24px;
 }
+
+.icon-pinterest,
+.icon-instagram {
+	background-size: contain;
+	height: 0.7em;
+	width: 0.7em;
+
+	&:hover {
+		path {
+			color: $yellow;
+		}
+	}
+}
+
 .NavWrap-close {
 	padding: 20px 0;
 	right: rem(16);

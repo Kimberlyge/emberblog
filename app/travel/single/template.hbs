@@ -4,7 +4,7 @@
 		<p>{{{model.acf.country}}}</p>
 	</div>
 	<div class="Cover-media">
-		<img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" class="lazyload" alt="" data-srcset="{{model.acf.cover.sizes.medium}} 320w, {{model.acf.cover.sizes.post-thumbnail}} 1000w">
+		<img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" class="lazyload" alt="" data-srcset="{{model.acf.image.sizes.medium}} 320w, {{model.acf.image.sizes.large}} 1000w">
 	</div>
 </div>
 
@@ -19,31 +19,34 @@
 </ul>
 
 <div class="Section SectionTravel Grid">
-	<div class="Grid-cell Grid-cell--2">
-		{{#each model.acf.restaurant as |item|}}
-			<div class="DetailHead {{if item.reverse 'DetailHead--reverse'}} Grid-cell Grid-cell--full" id="{{{item.slug}}}">
-				<div class="DetailHead-body Grid-cell Grid-cell--2">
-					<div class="TravelCopy Box">
-						<h2 class="TravelCopy-title">{{{item.name}}}</h2>
-						<div class="TravelCopy-description">
-							{{{item.description}}}
-						</div>
-						{{#if item.contact}}
-							<div class="TravelCopy-address Box Box--white Box--border Box--small centered">
-								{{{item.contact}}}
-							</div>
-						{{/if}}
+	{{#each model.acf.restaurant as |item|}}
+		<div class="TravelDetail {{if item.reverse 'TravelDetail--reverse'}} Grid-cell Grid-cell--full" id="{{{item.slug}}}">
+			<div class="TravelDetail-body Grid-cell Grid-cell--2">
+				<div class="TravelCopy Box">
+					<h2 class="TravelCopy-title">{{{item.name}}}</h2>
+					<div class="TravelCopy-description">
+						{{{item.description}}}
 					</div>
-				</div>
-				<div class="DetailHead-media {{if item.reverse 'is-reversed'}} Grid-cell Grid-cell--2">
-					<img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" class="lazyload" alt="" data-srcset="{{item.cover.sizes.medium}} 320w, {{item.cover.sizes.medium_large}} 1000w">
+					{{#if item.contact}}
+						<div class="TravelCopy-address Box Box--white Box--border Box--small centered">
+							{{{item.contact}}}
+						</div>
+					{{/if}}
 				</div>
 			</div>
-			{{#each item.description_2 as |content|}}
-				<div class="DetailItem DetailItem--text Grid-cell Grid-cell--2">
-					{{{content.description-content}}}
-				</div>
-			{{/each}}
+			<div class="TravelDetail-cover {{if item.reverse 'is-reversed'}} Grid-cell Grid-cell--2">
+				<img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" class="lazyload" alt="" data-srcset="{{item.media.sizes.medium}} 320w, {{item.media.sizes.medium_large}} 1000w">
+			</div>
+		</div>
+		{{#each item.description_full as |content|}}
+			<div class="TravelDetailContent TravelDetailContent--full Grid-cell Grid-cell--full">
+				{{{content.description-content}}}
+			</div>
 		{{/each}}
-	</div>
+		{{#each item.description_half as |content|}}
+			<div class="TravelDetailContent TravelDetailContent--half Grid-cell Grid-cell--2">
+				{{{content.description-content}}}
+			</div>
+		{{/each}}
+	{{/each}}
 </div>

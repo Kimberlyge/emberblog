@@ -2,7 +2,7 @@
  * Navigation
  */
 
-.Nav,
+.Nav--main,
 .NavFilter {
 	position: relative;
 	padding-bottom: 0;
@@ -23,16 +23,17 @@
 		padding: 0.5em 0;
 		margin: 0.5em 0;
 
+		&:hover,
+		&:active,
+		&.is-active {
+			color: $yellow;
+		}
+
 		@media (min-width: 656px) {
 			display: inline-block;
 			margin: 0 rem(5);
 			padding: 0;
 
-			&:hover,
-			&:active,
-			&.is-active {
-				color: $yellow;
-			}
 		}
 
 		&:first-of-typev{
@@ -54,15 +55,35 @@
 
 	span {
 		display: none;
+
 		@media (min-width: 656px) {
 			display: inline-block;
 		}
 	}
 }
 
+.Nav-item {
+	display: inline-block;
+}
+
+
+/* Main Navigation */
+
+.Nav--main > a {
+	position: relative;
+	z-index: 20;
+}
+
+
+/* NavItems with SubNavigations */
+
 .NavItemTravel,
 .NavItemRecipes {
 	display: inline-block;
+
+	&.is-active > a {
+		color: $yellow;
+	}
 }
 
 .NavItemTravel-title,
@@ -70,6 +91,7 @@
 	position: relative;
 	z-index: 12;
 }
+
 /* Sub Navigation */
 
 .NavSub {
@@ -81,12 +103,17 @@
 	min-height: 2em; //needs a height to keep it open while moving the cursor
 
 	padding-top: rem(62);
-	// pointer-events: none;
+
 	&.is-hidden {
 		display: none;
 	}
+
 	@media (max-width: 656px) {
 		display: none !important;
+	}
+
+	a {
+		margin: rem(5) 0;
 	}
 }
 
@@ -104,12 +131,15 @@
 
 	h3 {
 		font-size: 12px;
-		margin-bottom: 0;
+		margin: 2px 0;
 	}
+
 	a {
 		font-size: 12px;
+		margin: 2px 0;
 	}
 }
+
 
 /* Filter Navigation */
 
@@ -145,6 +175,7 @@
 		text-transform: lowercase;
 	}
 }
+
 .NavFilter--sticky {
 	display: none;
 	width: 25%;
@@ -158,6 +189,7 @@
 		z-index: 90;
 	}
 }
+
 .NavFilter--inline {
 	@include flexCol;
 	align-items: flex-start;
@@ -172,16 +204,5 @@
 	padding: rem(10);
 	a {
 		margin: 0;
-	}
-}
-
-// The social nav
-.Social {
-	margin-top: rem($space*2);
-	padding-left: rem($space*2);
-	text-align: left;
-	img {
-		width: rem(30);
-		height: rem(30);
 	}
 }

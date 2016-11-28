@@ -3,12 +3,12 @@
 
 	<div class="DetailHead Grid-cell Grid-cell--full">
 		<div class="DetailHead-body centered Grid-cell Grid-cell--2">
-			<h2>{{{model.title}}}</h2>
-			<p>{{{model.acf.description}}}</p>
+			<div class="DetailHead-copy">
+				<h2 class="DetailHead-title">{{{model.title}}}</h2>
+				<p>{{{model.content}}}</p>
+			</div>
 		</div>
 		<div class="DetailHead-media Grid-cell Grid-cell--2">
-			{{!-- <img class="YESS" alt="" src="{{model.acf.cover.url}}"> --}}
-
 			<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{model.acf.alt}}" data-sizes="auto" data-srcset="
 				{{model.acf.cover.sizes.medium_large}} 320w,
 				{{model.acf.cover.sizes.large}} 1024w"/>

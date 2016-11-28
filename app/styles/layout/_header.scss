@@ -15,8 +15,36 @@
 	}
 }
 .Header-inner {
-	@media (max-width: 655px) {
+
+	.Logo {
 		display: none;
+	}
+
+	@media (max-width: 655px) {
+		position: fixed;
+		z-index: 5;
+
+		width: 100%;
+		height: 100vh;
+		top: 0;
+		left: 0;
+
+		transform: translateX(-100%);
+		transition: transform 0.35s cubic-bezier(0.445, 0.050, 0.550, 0.950);
+
+		padding-top: rem($space*2);
+
+		background-color: $white;
+
+		.Logo {
+			display: block;
+		}
+
+		.Nav > a {
+			padding: rem(10) 0;
+		}
+
+
 	}
 }
 .Header-title {
@@ -43,18 +71,6 @@
 /* Mobile */
 .on-mobile {
 	.Header-inner {
-		display: block;
-		position: fixed;
-		top: 0;
-		left: 0;
-		padding-top: rem($space*2);
-		background-color: $white;
-		width: 100%;
-		height: 100vh;
-		z-index: 5;
-
-		.Nav > a {
-			padding: rem(10) 0;
-		}
+		transform: translateX(0%);
 	}
 }

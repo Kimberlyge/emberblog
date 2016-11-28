@@ -1,26 +1,27 @@
 {{nav-burger}}
-{{#link-to "index" class="Logo"}}
-	<h1>vunchies</h1>
-	<h3>Vegan Munchies</h3>
+
+{{#link-to "index"}}
+	{{logo-main}}
 {{/link-to}}
 
 <div class="Header-inner">
-	<div class="Nav">
-		<div class="NavItemRecipes js-navToggleRecipes">
+	{{logo-main}}
+	<div class="Nav Nav--main">
+		<div class="NavItem NavItemRecipes js-navToggleRecipes">
 			{{#link-to "index" (query-params category="") class="NavItemRecipes-title"}}All Recipes
 			{{/link-to}}
 			<div class="NavSub js-nav-recipes is-hidden">
 				{{!-- only nested in case there will be more content to be shown --}}
 				<div class="NavSub-content">
-					<div class="NavSub-wrap">
+					{{!-- <div class="NavSub-wrap">
 						{{#link-to "index" (query-params category="basics")}}<h3>Basics</h3>{{/link-to}}
 						{{#link-to "index" (query-params category="doughs")}}Doughs{{/link-to}}
-					</div>
+					</div> --}}
 					<div class="NavSub-wrap">
-						{{#link-to "index" (query-params category="smoothies")}}<h3>Smoothies / Beverages</h3>{{/link-to}}
+						{{#link-to "index" (query-params category="smoothies")}}<h3>Drinks</h3>{{/link-to}}
 						{{#link-to "index" (query-params category="smoothies")}}Smoothies{{/link-to}}
-						{{#link-to "index" (query-params category="smoothie-bowls")}}Smoothie Bowls{{/link-to}}
-						{{#link-to "index" (query-params category="cold-drinks")}}Cold Drinks{{/link-to}}
+						{{#link-to "index" (query-params category="cold-drinks")}}Warm{{/link-to}}
+						{{#link-to "index" (query-params category="cold-drinks")}}Cold{{/link-to}}
 					</div>
 					<div class="NavSub-wrap">
 						{{#link-to "index" (query-params category="lunch")}}<h3>Lunch</h3>{{/link-to}}
@@ -30,17 +31,19 @@
 						{{#link-to "index" (query-params category="snacks")}}<h3>Snacks</h3>{{/link-to}}
 					</div>
 					<div class="NavSub-wrap">
-						{{#link-to "index" (query-params category="baked")}}<h3>Baked goods</h3>{{/link-to}}
+						{{#link-to "index" (query-params category="baked")}}<h3>Sweet goods</h3>{{/link-to}}
+						{{#link-to "index" (query-params category="cake")}}Cake{{/link-to}}
 						{{#link-to "index" (query-params category="muffins")}}Muffins{{/link-to}}
 						{{#link-to "index" (query-params category="cookies")}}Cookies{{/link-to}}
-						{{#link-to "index" (query-params category="bread")}}Bread{{/link-to}}
 					</div>
 					<div class="NavSub-wrap">
 						{{#link-to "index" (query-params category="cuisine")}}<h3>Cuisine</h3>{{/link-to}}
+						{{#link-to "index" (query-params category="african")}}African{{/link-to}}
+						{{#link-to "index" (query-params category="mexican")}}Mexican{{/link-to}}
+						{{#link-to "index" (query-params category="middle-eastern")}}Middle Eastern{{/link-to}}
+						{{#link-to "index" (query-params category="syrian")}}Syrian{{/link-to}}
 						{{#link-to "index" (query-params category="thai")}}Thai{{/link-to}}
 						{{#link-to "index" (query-params category="vietnamese")}}Vietnamese{{/link-to}}
-						{{#link-to "index" (query-params category="middle-eastern")}}Middle Eastern{{/link-to}}
-						{{#link-to "index" (query-params category="mexican")}}Mexican{{/link-to}}
 					</div>
 				</div>
 			</div>
@@ -53,7 +56,7 @@
 		{{#link-to "index" (query-params category="cake")}}Cake{{/link-to}}
 		<span>/</span>
 
-		<div class="NavItemTravel js-navToggleTravelOverview">
+		<div class="NavItem NavItemTravel js-navToggleTravelOverview">
 			{{#link-to "travel" class="NavItemTravel-title"}}Travel
 			{{/link-to}}
 			<div class="NavSub js-nav-travel is-hidden">
@@ -62,10 +65,10 @@
 					<div class="NavSub-wrap">
 						<h3>Europe</h3>
 						{{#link-to "travel.single" 'amsterdam'}}Amsterdam{{/link-to}}
-						{{#link-to "travel.single" 'bamberg'}}Bamberg{{/link-to}}
-						{{#link-to "travel.single" 'berlin-germany' (query-params parent=101) }}Berlin{{/link-to}}
-						{{#link-to "travel.single" 'florence'}}Florence{{/link-to}}
-						{{#link-to "travel.single" 'rome'}}Rome{{/link-to}}
+						{{!-- {{#link-to "travel.single" 'bamberg'}}Bamberg{{/link-to}} --}}
+						{{#link-to "travel.single" 'berlin' (query-params parent=101) }}Berlin{{/link-to}}
+						{{!-- {{#link-to "travel.single" 'florence'}}Florence{{/link-to}} --}}
+						{{!-- {{#link-to "travel.single" 'rome'}}Rome{{/link-to}} --}}
 					</div>
 					<div class="NavSub-wrap">
 						<h3>Asia</h3>

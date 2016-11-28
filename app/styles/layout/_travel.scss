@@ -20,7 +20,122 @@
 /* Travel Single  */
 
 .SectionTravel {
-	.DetailItem {
-		max-width: 50%;
+	.DetailHead {
+		padding-bottom: rem(15);
+	}
+
+	.DetailHead-body {
+		padding: 0;
+	}
+}
+
+/**
+ * Detail
+ */
+
+.Detail	{
+	background: $white;
+
+	@media (min-width: 656px) {
+		@include flexRow;
+		flex-wrap: wrap;
+	}
+}
+
+
+.TravelCopy {
+	max-width: rem(660);
+
+	text-align: center;
+}
+
+.TravelCopy-title {
+	@extend %font-light;
+	letter-spacing: 0.1em;
+	font-size: $font-20;
+	margin-bottom: 0.5em;
+
+	@media (min-width: $layout-s) {
+		font-size: rem(30);
+	}
+	@media (min-width: $layout-ml) {
+		font-size: $font-40;
+	}
+}
+
+.TravelCopy-description {
+	margin-bottom: rem(30);
+}
+
+.TravelCopy-address {
+	min-width: rem(250);
+}
+
+
+/* Intro */
+
+.TravelDetail {
+	@include flexRowWrap;
+	padding-bottom: rem(10);
+
+	&--reverse {
+		flex-direction: row-reverse;
+	}
+}
+
+.TravelDetail-body {
+	padding: rem($space);
+	margin: auto;
+
+	@media (min-width: $layout-s) {
+		padding: rem(10) 0;
+	}
+
+	p {
+		@extend %font-light;
+	}
+}
+
+.TravelDetail-cover {
+
+	img {
+		margin: 0 auto;
+		width: 100%;
+		object-fit: cover;
+		height: 100%;
+	}
+
+	&.is-reversed {
+		padding: rem($space*2);
+	}
+
+}
+
+/* Items */
+
+.TravelDetailContent {
+	margin: 0 auto;
+	min-width: rem(300);
+}
+
+.TravelDetailContent--full {
+	padding: rem(15) 0;
+
+	p:last-of-type {
+		margin-bottom: 0;
+	}
+}
+
+.TravelDetailContent--half {
+	padding: rem(15);
+	padding-left: rem(30);
+
+	&:last-of-type {
+		padding-right: rem(30);
+		padding-left: rem(15);
+	}
+
+	p:last-of-type {
+		margin-bottom: 0;
 	}
 }
