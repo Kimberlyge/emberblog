@@ -17,7 +17,7 @@ export default Component.extend({
 		var subNav = document.querySelector('.js-nav-recipes');
 
 		target.classList.add('is-active');
-		subNav.classList.remove('is-hidden');
+		subNav.classList.add('is-active');
 
 		$(target).on('mouseleave', event => this._hideNav(event));
 
@@ -30,7 +30,7 @@ export default Component.extend({
 		var subNav = document.querySelector('.js-nav-travel');
 
 		target.classList.add('is-active');
-		subNav.classList.remove('is-hidden');
+		subNav.classList.add('is-active');
 
 		$(target).on('mouseleave', event => this._hideNav(event));
 
@@ -42,16 +42,16 @@ export default Component.extend({
 		event.preventDefault();
 
 		var target = event.currentTarget;
-		var subNav = document.querySelector('.NavSub');
+		var subNav = document.querySelector('.NavSub.is-active');
 
-		subNav.classList.add('is-hidden');
+		subNav.classList.remove('is-active');
 		target.classList.remove('is-active');
 
 	},
 
 	// hide menu overlay on nav-item click
 	_linkHandler() {
-		console.log('link handler');
+		// console.log('link handler');
 	},
 
 	_mobileNav() {

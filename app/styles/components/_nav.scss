@@ -95,6 +95,7 @@
 /* Sub Navigation */
 
 .NavSub {
+	display: none;
 	position: absolute;
 	z-index: 10;
 	width: 100%;
@@ -104,8 +105,8 @@
 
 	padding-top: rem(62);
 
-	&.is-hidden {
-		display: none;
+	&.is-active {
+		display: block;
 	}
 
 	@media (max-width: 656px) {

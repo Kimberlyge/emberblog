@@ -10,7 +10,7 @@
 		<div class="NavItem NavItemRecipes js-navToggleRecipes">
 			{{#link-to "index" (query-params category="") class="NavItemRecipes-title"}}All Recipes
 			{{/link-to}}
-			<div class="NavSub js-nav-recipes is-hidden">
+			<div class="NavSub js-nav-recipes">
 				{{!-- only nested in case there will be more content to be shown --}}
 				<div class="NavSub-content">
 					{{!-- <div class="NavSub-wrap">
@@ -59,7 +59,7 @@
 		<div class="NavItem NavItemTravel js-navToggleTravelOverview">
 			{{#link-to "travel" class="NavItemTravel-title"}}Travel
 			{{/link-to}}
-			<div class="NavSub js-nav-travel is-hidden">
+			<div class="NavSub js-nav-travel">
 				{{!-- only nested in case there will be more content to be shown --}}
 				<div class="NavSub-content">
 					<div class="NavSub-wrap">
