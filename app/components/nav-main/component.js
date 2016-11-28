@@ -42,9 +42,9 @@ export default Component.extend({
 		event.preventDefault();
 
 		var target = event.currentTarget;
-		var subNav = document.querySelector('.NavSub.is-active');
+		var subNav = $('.NavSub.is-active');
 
-		subNav.classList.remove('is-active');
+		$(subNav).removeClass('is-active');
 		target.classList.remove('is-active');
 
 	},

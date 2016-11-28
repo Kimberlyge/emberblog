@@ -11,47 +11,6 @@
 		padding-top: 0;
 	}
 
-	a {
-		display: block;
-		font-size: $font-14;
-		letter-spacing: 0.05em;
-		text-transform: uppercase;
-		text-decoration: none;
-		cursor: pointer;
-		letter-spacing: 0.1em;
-
-		padding: 0.5em 0;
-		margin: 0.5em 0;
-
-		&:hover,
-		&:active,
-		&.is-active {
-			color: $yellow;
-		}
-
-		@media (min-width: 656px) {
-			display: inline-block;
-			margin: 0 rem(5);
-			padding: 0;
-
-		}
-
-		&:first-of-typev{
-			margin-top: 1.3em;
-		}
-
-		&.js-navToggleRecipes,
-		&.js-navToggleTravel {
-			@extend %font-bold;
-
-			a {
-				@extend %font-medium;
-			}
-		}
-	}
-	> a {
-		padding: $space 0;
-	}
 
 	span {
 		display: none;
@@ -63,7 +22,34 @@
 }
 
 .Nav-item {
-	display: inline-block;
+	display: block;
+	font-size: $font-14;
+	letter-spacing: 0.05em;
+	text-transform: uppercase;
+	text-decoration: none;
+	cursor: pointer;
+	letter-spacing: 0.1em;
+
+	padding: 0.5em 0;
+	margin: 0.5em 0;
+
+	&:hover,
+	&:active,
+	&.is-active {
+		color: $yellow;
+	}
+
+	@media (min-width: 656px) {
+		display: inline-block;
+		margin: 0 rem(5);
+		padding: 0;
+
+	}
+
+	&:first-of-typev{
+		margin-top: 1.3em;
+	}
+
 }
 
 
@@ -103,7 +89,7 @@
 	top: 0;
 	min-height: 2em; //needs a height to keep it open while moving the cursor
 
-	padding-top: rem(62);
+	padding-top: rem(40);
 
 	&.is-active {
 		display: block;
@@ -112,9 +98,17 @@
 	@media (max-width: 656px) {
 		display: none !important;
 	}
+}
 
-	a {
-		margin: rem(5) 0;
+.NavSub-item {
+	display: block;
+	cursor: pointer;
+	font-size: 12px;
+	margin: rem(5) 0;
+	text-transform: inherit;
+
+	&:hover {
+		color: $yellow;
 	}
 }
 
@@ -131,11 +125,6 @@
 	width: 100%;
 
 	h3 {
-		font-size: 12px;
-		margin: 2px 0;
-	}
-
-	a {
 		font-size: 12px;
 		margin: 2px 0;
 	}

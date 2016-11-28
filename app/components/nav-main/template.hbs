@@ -8,75 +8,71 @@
 	{{logo-main}}
 	<div class="Nav Nav--main">
 		<div class="NavItem NavItemRecipes js-navToggleRecipes">
-			{{#link-to "index" (query-params category="") class="NavItemRecipes-title"}}All Recipes
+			{{#link-to "index" (query-params category="") class="Nav-item NavItemRecipes-title"}}All Recipes
 			{{/link-to}}
 			<div class="NavSub js-nav-recipes">
 				{{!-- only nested in case there will be more content to be shown --}}
 				<div class="NavSub-content">
-					{{!-- <div class="NavSub-wrap">
-						{{#link-to "index" (query-params category="basics")}}<h3>Basics</h3>{{/link-to}}
-						{{#link-to "index" (query-params category="doughs")}}Doughs{{/link-to}}
-					</div> --}}
 					<div class="NavSub-wrap">
-						{{#link-to "index" (query-params category="smoothies")}}<h3>Drinks</h3>{{/link-to}}
-						{{#link-to "index" (query-params category="smoothies")}}Smoothies{{/link-to}}
-						{{#link-to "index" (query-params category="cold-drinks")}}Warm{{/link-to}}
-						{{#link-to "index" (query-params category="cold-drinks")}}Cold{{/link-to}}
+						{{!-- {{#link-to "index" (query-params category="smoothies")}}<h3>Course</h3>{{/link-to}} --}}
+						<h3>Course</h3>
+						{{#link-to "index" (query-params category="baked-goods-savory") class="NavSub-item"}}Baked Goods{{/link-to}}
+						{{#link-to "index" (query-params category="basics") class="NavSub-item"}}Basics{{/link-to}}
+						{{#link-to "index" (query-params category="dinner") class="NavSub-item"}}Dinner{{/link-to}}
+						{{#link-to "index" (query-params category="drinks") class="NavSub-item"}}Drinks{{/link-to}}
+						{{#link-to "index" (query-params category="lunch") class="NavSub-item"}}Lunch{{/link-to}}
+						{{#link-to "index" (query-params category="snacks") class="NavSub-item"}}Snacks{{/link-to}}
+						{{#link-to "index" (query-params category="sides") class="NavSub-item"}}Sides{{/link-to}}
+						{{#link-to "index" (query-params category="soup") class="NavSub-item"}}Soup{{/link-to}}
 					</div>
 					<div class="NavSub-wrap">
-						{{#link-to "index" (query-params category="lunch")}}<h3>Lunch</h3>{{/link-to}}
-						{{#link-to "index" (query-params category="sauce")}}<h3>Sauce / Dip</h3>{{/link-to}}
-						{{#link-to "index" (query-params category="spread")}}<h3>Spread</h3>{{/link-to}}
-						{{#link-to "index" (query-params category="sides")}}<h3>Sides</h3>{{/link-to}}
-						{{#link-to "index" (query-params category="snacks")}}<h3>Snacks</h3>{{/link-to}}
+						<h3>Sweet</h3>
+						{{!-- {{#link-to "index" (query-params category="baked") class="NavSub-item"}}<h3>Sweet</h3>{{/link-to}} --}}
+						{{#link-to "index" (query-params category="baked-goods-sweet") class="NavSub-item"}}Baked goods{{/link-to}}
+						{{#link-to "index" (query-params category="cake") class="NavSub-item"}}Cake{{/link-to}}
+						{{#link-to "index" (query-params category="muffins") class="NavSub-item"}}Muffins{{/link-to}}
+						{{#link-to "index" (query-params category="cookies") class="NavSub-item"}}Cookies{{/link-to}}
 					</div>
 					<div class="NavSub-wrap">
-						{{#link-to "index" (query-params category="baked")}}<h3>Sweet goods</h3>{{/link-to}}
-						{{#link-to "index" (query-params category="cake")}}Cake{{/link-to}}
-						{{#link-to "index" (query-params category="muffins")}}Muffins{{/link-to}}
-						{{#link-to "index" (query-params category="cookies")}}Cookies{{/link-to}}
-					</div>
-					<div class="NavSub-wrap">
-						{{#link-to "index" (query-params category="cuisine")}}<h3>Cuisine</h3>{{/link-to}}
-						{{#link-to "index" (query-params category="african")}}African{{/link-to}}
-						{{#link-to "index" (query-params category="mexican")}}Mexican{{/link-to}}
-						{{#link-to "index" (query-params category="middle-eastern")}}Middle Eastern{{/link-to}}
-						{{#link-to "index" (query-params category="syrian")}}Syrian{{/link-to}}
-						{{#link-to "index" (query-params category="thai")}}Thai{{/link-to}}
-						{{#link-to "index" (query-params category="vietnamese")}}Vietnamese{{/link-to}}
+						<h3>Cuisine</h3>
+						{{!-- {{#link-to "index" (query-params category="cuisine") class="NavSub-item"}}<h3>Cuisine</h3>{{/link-to}} --}}
+						{{#link-to "index" (query-params category="african") class="NavSub-item"}}African{{/link-to}}
+						{{#link-to "index" (query-params category="mexican") class="NavSub-item"}}Mexican{{/link-to}}
+						{{#link-to "index" (query-params category="middle-eastern") class="NavSub-item"}}Middle Eastern{{/link-to}}
+						{{#link-to "index" (query-params category="syrian") class="NavSub-item"}}Syrian{{/link-to}}
+						{{#link-to "index" (query-params category="thai") class="NavSub-item"}}Thai{{/link-to}}
+						{{#link-to "index" (query-params category="vietnamese") class="NavSub-item"}}Vietnamese{{/link-to}}
 					</div>
 				</div>
 			</div>
 		</div>
-		{{#link-to "index" (query-params category="breakfast")}}Breakfast{{/link-to}}
-		{{#link-to "index" (query-params category="salad")}}Salad{{/link-to}}
-		{{#link-to "index" (query-params category="soup")}}Soup{{/link-to}}
-		{{#link-to "index" (query-params category="dinner")}}Dinner{{/link-to}}
-		{{#link-to "index" (query-params category="dessert")}}Dessert{{/link-to}}
-		{{#link-to "index" (query-params category="cake")}}Cake{{/link-to}}
+		{{#link-to "index" (query-params category="breakfast") class="Nav-item"}}Breakfast{{/link-to}}
+		{{#link-to "index" (query-params category="salad") class="Nav-item"}}Salad{{/link-to}}
+		{{#link-to "index" (query-params category="dinner") class="Nav-item"}}Dinner{{/link-to}}
+		{{#link-to "index" (query-params category="dessert") class="Nav-item"}}Dessert{{/link-to}}
 		<span>/</span>
 
 		<div class="NavItem NavItemTravel js-navToggleTravelOverview">
-			{{#link-to "travel" class="NavItemTravel-title"}}Travel
+			{{#link-to "travel" class="Nav-item NavItemTravel-title"}}Travel
 			{{/link-to}}
 			<div class="NavSub js-nav-travel">
 				{{!-- only nested in case there will be more content to be shown --}}
 				<div class="NavSub-content">
 					<div class="NavSub-wrap">
 						<h3>Europe</h3>
-						{{#link-to "travel.single" 'amsterdam'}}Amsterdam{{/link-to}}
-						{{!-- {{#link-to "travel.single" 'bamberg'}}Bamberg{{/link-to}} --}}
-						{{#link-to "travel.single" 'berlin' (query-params parent=101) }}Berlin{{/link-to}}
-						{{!-- {{#link-to "travel.single" 'florence'}}Florence{{/link-to}} --}}
-						{{!-- {{#link-to "travel.single" 'rome'}}Rome{{/link-to}} --}}
+						{{#link-to "travel.single" 'amsterdam' class="NavSub-item"}}Amsterdam{{/link-to}}
+						{{!-- {{#link-to "travel.single" 'bamberg' class="NavSub-item"}}Bamberg{{/link-to}} --}}
+						{{#link-to "travel.single" 'berlin' class="NavSub-item"}}Berlin{{/link-to}}
+						{{!-- {{#link-to "travel.single" 'florence' class="NavSub-item"}}Florence{{/link-to}} --}}
+						{{!-- {{#link-to "travel.single" 'rome' class="NavSub-item"}}Rome{{/link-to}} --}}
 					</div>
 					<div class="NavSub-wrap">
 						<h3>Asia</h3>
-						{{#link-to "travel.single" 'ko-tao' }}Ko Tao{{/link-to}}
-						{{#link-to "travel.single" 'ko-phangan'}}Ko Phangan{{/link-to}}
-						{{#link-to "travel.single" 'bali'}}Bali{{/link-to}}
-						{{#link-to "travel.single" 'gili-meno'}}Gili Meno{{/link-to}}
-						{{#link-to "travel.single" 'gili-air'}}Gili Air{{/link-to}}
+						{{#link-to "travel.single" 'ko-tao' class="NavSub-item"}}Ko Tao{{/link-to}}
+						{{#link-to "travel.single" 'ko-phangan' class="NavSub-item"}}Ko Phangan{{/link-to}}
+						{{#link-to "travel.single" 'bali' class="NavSub-item"}}Bali{{/link-to}}
+						{{#link-to "travel.single" 'gili-meno' class="NavSub-item"}}Gili Meno{{/link-to}}
+						{{#link-to "travel.single" 'gili-air' class="NavSub-item"}}Gili Air{{/link-to}}
 					</div>
 				</div>
 			</div>
