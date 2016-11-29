@@ -92,6 +92,15 @@
 
 }
 
+.DetailBody {
+	width: 100%;
+	display: flex;
+
+	.DetailItem {
+		display: inline-block;
+		float: left;
+	}
+}
 
 /* Items */
 
@@ -142,6 +151,12 @@
 	padding-bottom: rem(10);
 	margin-bottom: rem(15);
 	border-bottom: 6px solid;
+}
+.DetailItem--image {
+	width: 100%;
+	img {
+		width: 100%;
+	}
 }
 
 /* Ingredients */
