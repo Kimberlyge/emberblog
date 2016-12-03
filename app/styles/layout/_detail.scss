@@ -96,9 +96,9 @@
 	width: 100%;
 	display: flex;
 
-	.DetailItem {
-		display: inline-block;
-		float: left;
+	@media (max-width: $layout-sm) {
+		display: block;
+		max-width: 100%;
 	}
 }
 
@@ -106,7 +106,7 @@
 
 .DetailItem {
 	margin: rem(15) auto;
-	min-width: rem(300);
+	// min-width: rem(300);
 }
 
 .DetailItem--text {
@@ -117,6 +117,13 @@
 
 	p:last-of-type {
 		margin-bottom: 0;
+	}
+}
+
+.DetailItem--media {
+	// max-width: 50%;
+	@media (min-width: $layout-m) {
+		width: 50%;
 	}
 }
 
@@ -143,7 +150,16 @@
 }
 
 .DetailItem--small {
-	max-width: rem(380);
+	width: 50%;
+	float: left;
+
+	&:nth-of-type(3) {
+		clear: both;
+	}
+
+	@media (min-width: $layout-m) {
+		max-width: rem(380);
+	}
 }
 
 .DetailText-title {
@@ -154,6 +170,7 @@
 }
 .DetailItem--image {
 	width: 100%;
+
 	img {
 		width: 100%;
 	}
@@ -162,12 +179,17 @@
 /* Ingredients */
 
 .DetailInfo {
+	max-width: rem(300);
 	border: 3px solid;
 	padding-bottom: 0;
 
 	h3,
 	ul {
 		margin: 30px;
+		@media (max-width: $layout-s) {
+			margin: 10px;
+			font-size: 11px;
+		}
 
 		p {
 			margin: 0;

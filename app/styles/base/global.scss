@@ -13,7 +13,7 @@ html {
 	// Enable kerning and ligatures everywhere
 	// to use open-type features, bower install normalize-opentype
 	text-rendering: optimizeLegibility;
-	font-size: 15px;
+	font-size: 14px;
 
 	@media (min-width: $layout-m) {
 		font-size: $base-font-size;

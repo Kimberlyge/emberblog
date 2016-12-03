@@ -65,14 +65,15 @@
 			</div>
 		{{/if}}
 		{{#if model.acf.directions.[2].directions-image}}
-			<div class="DetailItem">
+			<div class="DetailItem DetailItem--media">
 				<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{model.acf.directions.[2].directions-image.title}}" data-sizes="auto" data-srcset="
-					{{model.acf.directions.[2].directions-image.sizes.post-thumbnail}} 320w,
-					{{model.acf.directions.[2].directions-image.sizes.post-thumbnail}} 640w"/>
+					{{model.acf.directions.[2].directions-image.sizes.medium_large}} 320w,
+					{{model.acf.directions.[2].directions-image.sizes.medium_large}} 640w"/>
 			</div>
 		{{/if}}
 	</div>
 
+	{{!-- this needs to either make it fullwidth or create a grid --}}
 	{{#if model.acf.images.[0].image}}
 		{{#each model.acf.images as |item|}}
 			{{#if item.fullwidth}}
