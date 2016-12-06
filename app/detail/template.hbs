@@ -15,8 +15,8 @@
 		</div>
 	</div>
 
-	<div class="DetailBody">
-		<div class="DetailItem DetailItem--text DetailItem--small">
+	<div class="DetailBody DetailBody--inline">
+		<div class="DetailItem DetailItem--text">
 			<div class="DetailInfo">
 				<h3 class="DetailText-title">Ingredients</h3>
 				<ul>
@@ -30,78 +30,78 @@
 				</div>
 			</div>
 		</div>
-
-		{{#if model.acf.directions.[0].directions-image}}
-			<div class="DetailItem DetailItem--text DetailItem--small">
-				<h3 class="DetailText-title">Directions</h3>
-				{{{model.acf.directions.[0].directions-content}}}
-			</div>
-			<div class="DetailItem">
-				<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{model.acf.directions.[0].directions-image.title}}" data-sizes="auto" data-srcset="
-					{{model.acf.directions.[0].directions-image.sizes.medium}} 320w,
-					{{model.acf.directions.[0].directions-image.sizes.large}} 640w"/>
-			</div>
-		{{else if model.acf.directions.[1].directions-image}}
-			<div class="DetailItem DetailItem--text">
-				<h3 class="DetailText-title">Directions</h3>
-				{{{model.acf.directions.[0].directions-content}}}
-			</div>
-		{{else}}
-			<div class="DetailItem DetailItem--text DetailItem--small">
-				<h3 class="DetailText-title">Directions</h3>
-				{{{model.acf.directions.[0].directions-content}}}
-			</div>
-			<div class="DetailItem DetailItem--text DetailItem--small">
-				{{{model.acf.directions.[1].directions-content}}}
-			</div>
-		{{/if}}
-
 	</div>
 
-	<div class="DetailBody">
-		{{#if model.acf.directions.[2].directions-content}}
-			<div class="DetailItem DetailItem--text DetailItem--small">
-				{{{model.acf.directions.[2].directions-content}}}
-			</div>
-		{{/if}}
-		{{#if model.acf.directions.[2].directions-image}}
-			<div class="DetailItem DetailItem--media">
-				<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{model.acf.directions.[2].directions-image.title}}" data-sizes="auto" data-srcset="
-					{{model.acf.directions.[2].directions-image.sizes.medium_large}} 320w,
-					{{model.acf.directions.[2].directions-image.sizes.medium_large}} 640w"/>
-			</div>
-		{{/if}}
-	</div>
+	{{#each model.acf.grids as |grid|}}
 
-	{{!-- this needs to either make it fullwidth or create a grid --}}
-	{{#if model.acf.images.[0].image}}
-		{{#each model.acf.images as |item|}}
-			{{#if item.fullwidth}}
-				<div class="DetailItem DetailItem--image">
-					{{!-- <img class="lazyload" alt="" src="{{item.image.url}}"> --}}
-					<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{item.image.alt}}" data-sizes="auto" data-srcset="
-						{{item.image.sizes.medium}} 320w,
-						{{item.image.sizes.large}} 1024w"/>
+		{{#if grid.first_grid}}
+			<div class="DetailBody {{if grid.is_first 'is-first'}}">
+				<div class="Grid Grid--row">
+					<div class="Grid-cell DetailItem DetailItem--text">
+						{{#if grid.title}}
+							<h3 class="DetailText-title">{{grid.title}}:</h3>
+						{{/if}}
+						{{{grid.text}}}
+					</div>
+					<div class="Grid-cell DetailItem">
+						<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image.title}}" data-sizes="auto" data-srcset="
+							{{grid.image.sizes.medium}} 320w,
+							{{grid.image.sizes.large}} 640w"/>
+					</div>
 				</div>
-			{{/if}}
-
-			<div class="DetailItem DetailItem--image Grid-cell Grid-cell--2">
-				{{!-- <img class="lazyload" alt="" src="{{item.image.url}}"> --}}
-				<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{item.image.alt}}" data-sizes="auto" data-srcset="
-					{{item.image.sizes.medium}} 320w,
-					{{item.image.sizes.large}} 1024w"/>
 			</div>
-		{{/each}}
-	{{/if}}
+		{{/if}}
 
-{{!--
-	{{#if model.acf.notes}}
-		<div class="DetailItem DetailItem--text DetailItem--small Grid-cell Grid-cell--3">
-			<h3 class="DetailText-title">Notes</h3>
-			{{{model.acf.notes}}}
-		</div>
-	{{/if}}
- --}}
+		{{#if grid.second_grid}}
+			<div class="DetailBody {{if grid.is_first 'is-first'}}">
+				<div class="Grid Grid--row">
+					<div class="Grid-cell DetailItem DetailItem--text">
+						{{#if grid.title}}
+							<h3 class="DetailText-title">{{grid.title}}:</h3>
+						{{/if}}
+						{{{grid.text}}}
+					</div>
+					<div class="Grid-cell DetailItem DetailItem--text">
+						{{#if grid.title_2}}
+							<h3 class="DetailText-title">{{grid.title_2}}:</h3>
+						{{/if}}
+						{{{grid.text}}}
+					</div>
+					<div class="Grid-cell DetailItem">
+						<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image.title}}" data-sizes="auto" data-srcset="
+							{{grid.image.sizes.medium}} 320w,
+							{{grid.image.sizes.large}} 640w"/>
+					</div>
+				</div>
+			</div>
+		{{/if}}
+
+		{{#if grid.third_grid}}
+			<div class="DetailBody {{if grid.is_first 'is-first'}}">
+				<div class="Grid Grid--row">
+					<div class="Grid-cell DetailItem DetailItem--text">
+						{{#if grid.title}}
+							<h3 class="DetailText-title">{{grid.title}}:</h3>
+						{{/if}}
+						{{{grid.text}}}
+					</div>
+					<div class="Grid-cell DetailItem">
+						<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image.title}}" data-sizes="auto" data-srcset="
+						{{grid.image.sizes.medium}} 320w,
+						{{grid.image.sizes.large}} 640w"/>
+					</div>
+					<div class="Grid-cell DetailItem">
+						<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image_2.title}}" data-sizes="auto" data-srcset="
+						{{grid.image_2.sizes.medium}} 320w,
+						{{grid.image_2.sizes.large}} 640w"/>
+					</div>
+				</div>
+			</div>
+		{{/if}}
+
+
+	{{/each}}
+
 
 	{{outlet}}
 </div>
