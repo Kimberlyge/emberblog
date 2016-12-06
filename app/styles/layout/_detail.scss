@@ -11,35 +11,6 @@
 	}
 }
 
-
-.TravelCopy {
-	max-width: rem(660);
-
-	text-align: center;
-}
-
-.TravelCopy-title {
-	@extend %font-light;
-	letter-spacing: 0.1em;
-	font-size: $font-20;
-
-	@media (min-width: $layout-s) {
-		font-size: rem(30);
-	}
-	@media (min-width: $layout-ml) {
-		font-size: $font-40;
-	}
-}
-
-.TravelCopy-description {
-	margin-bottom: rem(30);
-}
-
-.TravelCopy-address {
-	min-width: rem(250);
-}
-
-
 /* Intro */
 
 .DetailHead {
@@ -90,103 +61,6 @@
 		padding: rem($space*2);
 	}
 
-}
-
-.DetailBody {
-	width: 100%;
-	display: flex;
-
-	@media (max-width: $layout-sm) {
-		display: block;
-		max-width: 100%;
-	}
-
-	&--inline {
-		display: inline-block;
-		width: 25%;
-	}
-
-	&.is-first {
-		display: inline-block;
-		width: 75%;
-	}
-}
-
-/* Items */
-
-.DetailItem {
-	margin: rem(15) auto;
-
-	img {
-		width: 100%;
-	}
-}
-
-.DetailItem--text {
-	@extend %font-light;
-	letter-spacing: 0.05em;
-
-	padding: rem(10);
-
-	p:last-of-type {
-		margin-bottom: 0;
-	}
-}
-
-.DetailItem--media {
-	@media (min-width: $layout-m) {
-		width: 50%;
-	}
-}
-
-.DetailItem--full {
-	padding: rem(15) 0;
-
-	p:last-of-type {
-		margin-bottom: 0;
-	}
-}
-
-.DetailItem--half {
-	padding: rem(15);
-	padding-left: rem(30);
-
-	&:last-of-type {
-		padding-right: rem(30);
-		padding-left: rem(15);
-	}
-
-	p:last-of-type {
-		margin-bottom: 0;
-	}
-}
-
-.DetailItem--small {
-	width: 50%;
-	float: left;
-
-	&:nth-of-type(3) {
-		clear: both;
-	}
-
-	@media (min-width: $layout-m) {
-		max-width: rem(380);
-	}
-}
-
-.DetailText-title {
-	width: rem(70);
-	padding-bottom: rem(10);
-	margin-bottom: rem(15);
-	border-bottom: 6px solid;
-}
-
-.DetailItem--image {
-	width: 100%;
-
-	img {
-		width: 100%;
-	}
 }
 
 /* Ingredients */

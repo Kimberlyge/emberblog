@@ -3,6 +3,7 @@
  */
 
 /* Travel Overview */
+
 .TravelOverview {
 	a:hover {
 		.Cover::after {
@@ -17,6 +18,7 @@
 	}
 }
 
+
 /* Travel Single  */
 
 .SectionTravel {
@@ -28,20 +30,6 @@
 		padding: 0;
 	}
 }
-
-/**
- * Detail
- */
-
-.Detail	{
-	background: $white;
-
-	@media (min-width: 656px) {
-		@include flexRow;
-		flex-wrap: wrap;
-	}
-}
-
 
 .TravelCopy {
 	max-width: rem(660);
@@ -71,6 +59,10 @@
 	min-width: rem(250);
 }
 
+.TravelCopy-url {
+	display: inline-block;
+	margin-top: rem(20);
+}
 
 /* Intro */
 
@@ -109,33 +101,4 @@
 		padding: rem($space*2);
 	}
 
-}
-
-/* Items */
-
-.TravelDetailContent {
-	margin: 0 auto;
-	min-width: rem(300);
-}
-
-.TravelDetailContent--full {
-	padding: rem(15) 0;
-
-	p:last-of-type {
-		margin-bottom: 0;
-	}
-}
-
-.TravelDetailContent--half {
-	padding: rem(15);
-	padding-left: rem(30);
-
-	&:last-of-type {
-		padding-right: rem(30);
-		padding-left: rem(15);
-	}
-
-	p:last-of-type {
-		margin-bottom: 0;
-	}
 }

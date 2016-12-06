@@ -4,49 +4,105 @@
 		<p>{{{model.acf.country}}}</p>
 	</div>
 	<div class="Cover-media">
-		<img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" class="lazyload" alt="" data-srcset="{{model.acf.image.sizes.medium}} 320w, {{model.acf.image.sizes.large}} 1000w">
+		<img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" class="lazyload" alt="" data-srcset="{{model.acf.travel_cover.sizes.medium}} 320w, {{model.acf.travel_cover.sizes.post-thumbnail}} 1000w">
 	</div>
 </div>
 
 <ul class="list list--centered listLink">
 	{{#scroll-to}}
-		{{#each model.acf.restaurant as |item|}}
+		{{#each model.acf.grids as |grid|}}
+		{{#if grid.head}}
 			<li class="list-item">
-				<a href="#{{{item.slug}}}" class="listLink-item js-listLink-item">{{{item.name}}}</a>
+				<a href="#{{{grid.slug}}}" class="listLink-item js-listLink-item">{{{grid.name}}}</a>
 			</li>
+		{{/if}}
 		{{/each}}
 	{{/scroll-to}}
 </ul>
 
-<div class="Section SectionTravel Grid">
-	{{#each model.acf.restaurant as |item|}}
-		<div class="TravelDetail {{if item.reverse 'TravelDetail--reverse'}} Grid-cell Grid-cell--full" id="{{{item.slug}}}">
+
+{{#each model.acf.grids as |grid|}}
+
+	{{#if grid.head}}
+		<div class="TravelDetail {{if grid.reverse 'TravelDetail--reverse'}} Grid" id="{{{grid.slug}}}">
 			<div class="TravelDetail-body Grid-cell Grid-cell--2">
 				<div class="TravelCopy Box">
-					<h2 class="TravelCopy-title">{{{item.name}}}</h2>
+					<h2 class="TravelCopy-title">{{{grid.name}}}</h2>
 					<div class="TravelCopy-description">
-						{{{item.description}}}
+						{{{grid.description}}}
 					</div>
-					{{#if item.contact}}
-						<div class="TravelCopy-address Box Box--white Box--border Box--small centered">
-							{{{item.contact}}}
-						</div>
-					{{/if}}
+					<div class="TravelCopy-address Box Box--white Box--border Box--small centered">
+						{{{grid.contact_description}}}
+						<a class="TravelCopy-url" href="{{{grid.contact_url}}}" target="_blank">{{{grid.contact_url}}}</a>
+					</div>
 				</div>
 			</div>
-			<div class="TravelDetail-cover {{if item.reverse 'is-reversed'}} Grid-cell Grid-cell--2">
-				<img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" class="lazyload" alt="" data-srcset="{{item.media.sizes.medium}} 320w, {{item.media.sizes.medium_large}} 1000w">
+			<div class="TravelDetail-cover {{if grid.reverse 'is-reversed'}} Grid-cell Grid-cell--2">
+				<img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" class="lazyload" alt="" data-srcset="{{grid.cover.sizes.medium}} 320w, {{grid.cover.sizes.medium_large}} 1000w">
 			</div>
 		</div>
-		{{#each item.description_full as |content|}}
-			<div class="TravelDetailContent TravelDetailContent--full Grid-cell Grid-cell--full">
-				{{{content.description-content}}}
+	{{/if}}
+
+	{{#if grid.has_text}}
+		<div class="Grid Grid--row DetailGrid DetailGrid--travel DetailGrid--first {{if grid.is_first 'is-first'}} {{if grid.reverse 'is-reverse'}} {{if grid.is_portrait 'is-portrait'}} {{if grid.is_landscape 'is-landscape'}}">
+			<div class="Grid-cell DetailGrid-item DetailGrid-item--text">
+				{{#if grid.title}}
+					<h3 class="DetailText-title">{{grid.title}}:</h3>
+				{{/if}}
+				{{{grid.text}}}
 			</div>
-		{{/each}}
-		{{#each item.description_half as |content|}}
-			<div class="TravelDetailContent TravelDetailContent--half Grid-cell Grid-cell--2">
-				{{{content.description-content}}}
+			<div class="Grid-cell DetailGrid-item DetailGrid-item--media">
+				<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image.title}}" data-sizes="auto" data-srcset="
+					{{grid.image.sizes.medium}} 320w,
+					{{grid.image.sizes.large}} 640w"/>
 			</div>
-		{{/each}}
-	{{/each}}
-</div>
+		</div>
+	{{/if}}
+
+	{{#if grid.first_grid}}
+		<div class="Grid Grid--row ImageGrid ImageGrid--first">
+			<div class="Grid-cell ImageGrid-item">
+				<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image.title}}" data-sizes="auto" data-srcset="
+					{{grid.image.sizes.large}} 320w,
+					{{grid.image.sizes.post-thumbnail}} 640w"/>
+			</div>
+		</div>
+	{{/if}}
+
+	{{#if grid.second_grid}}
+		<div class="Grid Grid--row ImageGrid ImageGrid--second {{if grid.reverse 'is-reverse'}} {{if grid.is_portrait 'has-portrait'}}">
+			<div class="Grid-cell ImageGrid-item">
+				<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image.title}}" data-sizes="auto" data-srcset="
+					{{grid.image.sizes.medium}} 320w,
+					{{grid.image.sizes.large}} 640w"/>
+			</div>
+			<div class="Grid-cell ImageGrid-item">
+				<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image_2.title}}" data-sizes="auto" data-srcset="
+					{{grid.image_2.sizes.medium}} 320w,
+					{{grid.image_2.sizes.large}} 640w"/>
+			</div>
+		</div>
+	{{/if}}
+
+	{{#if grid.third_grid}}
+		<div class="Grid Grid--row ImageGrid ImageGrid--third">
+			<div class="Grid-cell ImageGrid-item">
+				<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image.title}}" data-sizes="auto" data-srcset="
+					{{grid.image.sizes.medium}} 320w,
+					{{grid.image.sizes.large}} 640w"/>
+			</div>
+
+			<div class="Grid-cell ImageGrid-item">
+				<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image_2.title}}" data-sizes="auto" data-srcset="
+					{{grid.image_2.sizes.medium}} 320w,
+					{{grid.image_2.sizes.large}} 640w"/>
+			</div>
+
+			<div class="Grid-cell ImageGrid-item">
+				<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image_3.title}}" data-sizes="auto" data-srcset="
+					{{grid.image_3.sizes.medium}} 320w,
+					{{grid.image_3.sizes.large}} 640w"/>
+			</div>
+		</div>
+	{{/if}}
+{{/each}}

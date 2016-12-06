@@ -11,10 +11,8 @@
 			{{#link-to "index" (query-params category="") class="Nav-item NavItemRecipes-title"}}All Recipes
 			{{/link-to}}
 			<div class="NavSub js-nav-recipes">
-				{{!-- only nested in case there will be more content to be shown --}}
 				<div class="NavSub-content">
 					<div class="NavSub-wrap">
-						{{!-- {{#link-to "index" (query-params category="smoothies")}}<h3>Course</h3>{{/link-to}} --}}
 						<h3>Course</h3>
 						{{#link-to "index" (query-params category="baked-goods-savory") class="NavSub-item"}}Baked Goods{{/link-to}}
 						{{#link-to "index" (query-params category="basics") class="NavSub-item"}}Basics{{/link-to}}
@@ -27,19 +25,24 @@
 					</div>
 					<div class="NavSub-wrap">
 						<h3>Sweet</h3>
-						{{!-- {{#link-to "index" (query-params category="baked") class="NavSub-item"}}<h3>Sweet</h3>{{/link-to}} --}}
 						{{#link-to "index" (query-params category="baked-goods-sweet") class="NavSub-item"}}Baked goods{{/link-to}}
 						{{#link-to "index" (query-params category="cake") class="NavSub-item"}}Cake{{/link-to}}
 						{{#link-to "index" (query-params category="muffins") class="NavSub-item"}}Muffins{{/link-to}}
 						{{#link-to "index" (query-params category="cookies") class="NavSub-item"}}Cookies{{/link-to}}
 					</div>
 					<div class="NavSub-wrap">
+						<h3>Season</h3>
+						{{#link-to "index" (query-params category="spring") class="NavSub-item"}}Spring{{/link-to}}
+						{{#link-to "index" (query-params category="summer") class="NavSub-item"}}Summer{{/link-to}}
+						{{#link-to "index" (query-params category="fall") class="NavSub-item"}}Fall{{/link-to}}
+						{{#link-to "index" (query-params category="Winter") class="NavSub-item"}}Winter{{/link-to}}
+					</div>
+					<div class="NavSub-wrap">
 						<h3>Cuisine</h3>
-						{{!-- {{#link-to "index" (query-params category="cuisine") class="NavSub-item"}}<h3>Cuisine</h3>{{/link-to}} --}}
-						{{#link-to "index" (query-params category="african") class="NavSub-item"}}African{{/link-to}}
+						{{!-- {{#link-to "index" (query-params category="african") class="NavSub-item"}}African{{/link-to}} --}}
 						{{#link-to "index" (query-params category="mexican") class="NavSub-item"}}Mexican{{/link-to}}
 						{{#link-to "index" (query-params category="middle-eastern") class="NavSub-item"}}Middle Eastern{{/link-to}}
-						{{#link-to "index" (query-params category="syrian") class="NavSub-item"}}Syrian{{/link-to}}
+						{{!-- {{#link-to "index" (query-params category="syrian") class="NavSub-item"}}Syrian{{/link-to}} --}}
 						{{#link-to "index" (query-params category="thai") class="NavSub-item"}}Thai{{/link-to}}
 						{{#link-to "index" (query-params category="vietnamese") class="NavSub-item"}}Vietnamese{{/link-to}}
 					</div>

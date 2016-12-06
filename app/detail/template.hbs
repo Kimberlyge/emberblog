@@ -15,8 +15,8 @@
 		</div>
 	</div>
 
-	<div class="DetailBody DetailBody--inline">
-		<div class="DetailItem DetailItem--text">
+	<div class="DetailGrid DetailGrid--inline">
+		<div class="DetailGrid-item DetailGrid-item--text">
 			<div class="DetailInfo">
 				<h3 class="DetailText-title">Ingredients</h3>
 				<ul>
@@ -35,66 +35,60 @@
 	{{#each model.acf.grids as |grid|}}
 
 		{{#if grid.first_grid}}
-			<div class="DetailBody {{if grid.is_first 'is-first'}}">
-				<div class="Grid Grid--row">
-					<div class="Grid-cell DetailItem DetailItem--text">
-						{{#if grid.title}}
-							<h3 class="DetailText-title">{{grid.title}}:</h3>
-						{{/if}}
-						{{{grid.text}}}
-					</div>
-					<div class="Grid-cell DetailItem">
-						<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image.title}}" data-sizes="auto" data-srcset="
-							{{grid.image.sizes.medium}} 320w,
-							{{grid.image.sizes.large}} 640w"/>
-					</div>
+			<div class="Grid Grid--row DetailGrid DetailGrid--first {{if grid.is_first 'is-first'}} {{if grid.reverse 'is-reverse'}} {{if grid.is_portrait 'is-portrait'}} {{if grid.is_landscape 'is-landscape'}}">
+				<div class="Grid-cell DetailGrid-item DetailGrid-item--text">
+					{{#if grid.title}}
+						<h3 class="DetailText-title">{{grid.title}}:</h3>
+					{{/if}}
+					{{{grid.text}}}
+				</div>
+				<div class="Grid-cell DetailGrid-item DetailGrid-item--media">
+					<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image.title}}" data-sizes="auto" data-srcset="
+						{{grid.image.sizes.medium}} 320w,
+						{{grid.image.sizes.large}} 640w"/>
 				</div>
 			</div>
 		{{/if}}
 
 		{{#if grid.second_grid}}
-			<div class="DetailBody {{if grid.is_first 'is-first'}}">
-				<div class="Grid Grid--row">
-					<div class="Grid-cell DetailItem DetailItem--text">
-						{{#if grid.title}}
-							<h3 class="DetailText-title">{{grid.title}}:</h3>
-						{{/if}}
-						{{{grid.text}}}
-					</div>
-					<div class="Grid-cell DetailItem DetailItem--text">
-						{{#if grid.title_2}}
-							<h3 class="DetailText-title">{{grid.title_2}}:</h3>
-						{{/if}}
-						{{{grid.text}}}
-					</div>
-					<div class="Grid-cell DetailItem">
-						<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image.title}}" data-sizes="auto" data-srcset="
-							{{grid.image.sizes.medium}} 320w,
-							{{grid.image.sizes.large}} 640w"/>
-					</div>
+			<div class="Grid Grid--row DetailGrid DetailGrid--second {{if grid.is_first 'is-first'}} {{if grid.reverse 'is-reverse'}} {{if grid.is_center 'is-center'}} {{if grid.is_bigger 'is-bigger'}}">
+				<div class="Grid-cell DetailGrid-item DetailGrid-item--text">
+					{{#if grid.title}}
+						<h3 class="DetailText-title">{{grid.title}}:</h3>
+					{{/if}}
+					{{{grid.text}}}
+				</div>
+				<div class="Grid-cell DetailGrid-item DetailGrid-item--text">
+					{{#if grid.title_2}}
+						<h3 class="DetailText-title">{{grid.title_2}}:</h3>
+					{{/if}}
+					{{{grid.text}}}
+				</div>
+				<div class="Grid-cell DetailGrid-item DetailGrid-item--media">
+					<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image.title}}" data-sizes="auto" data-srcset="
+						{{grid.image.sizes.medium}} 320w,
+						{{grid.image.sizes.large}} 640w"/>
 				</div>
 			</div>
 		{{/if}}
 
 		{{#if grid.third_grid}}
-			<div class="DetailBody {{if grid.is_first 'is-first'}}">
-				<div class="Grid Grid--row">
-					<div class="Grid-cell DetailItem DetailItem--text">
-						{{#if grid.title}}
-							<h3 class="DetailText-title">{{grid.title}}:</h3>
-						{{/if}}
-						{{{grid.text}}}
-					</div>
-					<div class="Grid-cell DetailItem">
-						<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image.title}}" data-sizes="auto" data-srcset="
-						{{grid.image.sizes.medium}} 320w,
-						{{grid.image.sizes.large}} 640w"/>
-					</div>
-					<div class="Grid-cell DetailItem">
-						<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image_2.title}}" data-sizes="auto" data-srcset="
-						{{grid.image_2.sizes.medium}} 320w,
-						{{grid.image_2.sizes.large}} 640w"/>
-					</div>
+			<div class="Grid Grid--row DetailGrid DetailGrid--third {{if grid.is_first 'is-first'}} {{if grid.reverse 'is-reverse'}} {{if grid.is_center 'is-center'}} {{if grid.is_bigger 'is-bigger'}}">
+				<div class="Grid-cell DetailGrid-item DetailGrid-item--text">
+					{{#if grid.title}}
+						<h3 class="DetailText-title">{{grid.title}}:</h3>
+					{{/if}}
+					{{{grid.text}}}
+				</div>
+				<div class="Grid-cell DetailGrid-item DetailGrid-item--media">
+					<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image.title}}" data-sizes="auto" data-srcset="
+					{{grid.image.sizes.medium}} 320w,
+					{{grid.image.sizes.large}} 640w"/>
+				</div>
+				<div class="Grid-cell DetailGrid-item DetailGrid-item--media">
+					<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image_2.title}}" data-sizes="auto" data-srcset="
+					{{grid.image_2.sizes.medium}} 320w,
+					{{grid.image_2.sizes.large}} 640w"/>
 				</div>
 			</div>
 		{{/if}}
