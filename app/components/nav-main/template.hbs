@@ -7,7 +7,7 @@
 <div class="Header-inner">
 	{{logo-main}}
 	<div class="Nav Nav--main">
-		<div class="NavItem NavItemRecipes js-navToggleRecipes">
+		<div class="NavItemRecipes js-navToggleRecipes">
 			{{#link-to "index" (query-params category="") class="Nav-item NavItemRecipes-title"}}All Recipes
 			{{/link-to}}
 			<div class="NavSub js-nav-recipes">
@@ -47,32 +47,31 @@
 			</div>
 		</div>
 		{{#link-to "index" (query-params category="breakfast") class="Nav-item"}}Breakfast{{/link-to}}
-		{{#link-to "index" (query-params category="salad") class="Nav-item"}}Salad{{/link-to}}
+		{{#link-to "index" (query-params category="lunch") class="Nav-item"}}Lunch{{/link-to}}
 		{{#link-to "index" (query-params category="dinner") class="Nav-item"}}Dinner{{/link-to}}
 		{{#link-to "index" (query-params category="dessert") class="Nav-item"}}Dessert{{/link-to}}
-		<span>/</span>
+		{{!-- <span>/</span> --}}
 
-		<div class="NavItem NavItemTravel js-navToggleTravelOverview">
+		<div class="NavItemTravel js-navToggleTravelOverview">
 			{{#link-to "travel" class="Nav-item NavItemTravel-title"}}Travel
 			{{/link-to}}
 			<div class="NavSub js-nav-travel">
-				{{!-- only nested in case there will be more content to be shown --}}
 				<div class="NavSub-content">
 					<div class="NavSub-wrap">
 						<h3>Europe</h3>
-						{{#link-to "travel.single" 'amsterdam' class="NavSub-item"}}Amsterdam{{/link-to}}
-						{{!-- {{#link-to "travel.single" 'bamberg' class="NavSub-item"}}Bamberg{{/link-to}} --}}
-						{{#link-to "travel.single" 'berlin' class="NavSub-item"}}Berlin{{/link-to}}
-						{{!-- {{#link-to "travel.single" 'florence' class="NavSub-item"}}Florence{{/link-to}} --}}
-						{{!-- {{#link-to "travel.single" 'rome' class="NavSub-item"}}Rome{{/link-to}} --}}
+						{{#link-to "city" 'amsterdam' class="NavSub-item"}}Amsterdam{{/link-to}}
+						{{!-- {{#link-to "city" 'bamberg' class="NavSub-item"}}Bamberg{{/link-to}} --}}
+						{{#link-to "city" 'berlin' class="NavSub-item"}}Berlin{{/link-to}}
+						{{!-- {{#link-to "city" 'florence' class="NavSub-item"}}Florence{{/link-to}} --}}
+						{{!-- {{#link-to "city" 'rome' class="NavSub-item"}}Rome{{/link-to}} --}}
 					</div>
 					<div class="NavSub-wrap">
 						<h3>Asia</h3>
-						{{#link-to "travel.single" 'ko-tao' class="NavSub-item"}}Ko Tao{{/link-to}}
-						{{#link-to "travel.single" 'ko-phangan' class="NavSub-item"}}Ko Phangan{{/link-to}}
-						{{#link-to "travel.single" 'bali' class="NavSub-item"}}Bali{{/link-to}}
-						{{#link-to "travel.single" 'gili-meno' class="NavSub-item"}}Gili Meno{{/link-to}}
-						{{#link-to "travel.single" 'gili-air' class="NavSub-item"}}Gili Air{{/link-to}}
+						{{#link-to "city" 'ko-tao' class="NavSub-item"}}Ko Tao{{/link-to}}
+						{{#link-to "city" 'ko-phangan' class="NavSub-item"}}Ko Phangan{{/link-to}}
+						{{#link-to "city" 'bali' class="NavSub-item"}}Bali{{/link-to}}
+						{{#link-to "city" 'gili-meno' class="NavSub-item"}}Gili Meno{{/link-to}}
+						{{#link-to "city" 'gili-air' class="NavSub-item"}}Gili Air{{/link-to}}
 					</div>
 				</div>
 			</div>

@@ -76,6 +76,7 @@
 .NavItemRecipes-title {
 	position: relative;
 	z-index: 12;
+	@extend %font-bold;
 }
 
 /* Sub Navigation */
