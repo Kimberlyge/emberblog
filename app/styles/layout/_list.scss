@@ -15,7 +15,7 @@
 }
 
 .listLink {
-	margin: 20px auto;
+	margin: 30px auto 26px;
 
 	> div {
 		overflow: hidden;
@@ -24,6 +24,10 @@
 	    display: inline-block;
 	    padding: 10px 20px;
 	    margin: 0 rem(20);
+	}
+
+	@media (min-width: 640px) {
+		margin: 20px auto;
 	}
 }
 

@@ -13,7 +13,7 @@ Router.map(function () {
   	// this.route('single', {path: '/:slug'}, function () {
   	// });
   });
-  this.route('city', {path: '/travel/:slug'})
+  this.route('city', {path: '/travel/:slug'});
 
   this.route('404', {path: '/*wildcard'});
 });

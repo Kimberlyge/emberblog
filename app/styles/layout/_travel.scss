@@ -41,7 +41,7 @@
 	@extend %font-light;
 	letter-spacing: 0.1em;
 	font-size: $font-20;
-	margin-bottom: 0.5em;
+	margin-bottom: 20px;
 
 	@media (min-width: $layout-s) {
 		font-size: rem(30);
@@ -52,7 +52,7 @@
 }
 
 .TravelCopy-description {
-	margin-bottom: rem(30);
+	margin-bottom: 23px;
 }
 
 .TravelCopy-address {
@@ -68,7 +68,12 @@
 
 .TravelDetail {
 	@include flexRowWrap;
-	padding-bottom: rem(10);
+	padding-bottom: rem(3);
+	margin-top: 3px;
+
+	@media (min-width: 640px) {
+		margin-top: 0;
+	}
 
 	&--reverse {
 		flex-direction: row-reverse;
@@ -76,15 +81,22 @@
 }
 
 .TravelDetail-body {
-	padding: rem($space);
+	padding: 0;
 	margin: auto;
 
-	@media (min-width: $layout-s) {
-		padding: rem(10) 0;
+	order: 1;
+
+	@media (min-width: 640px) {
+		padding: rem(20) rem(0);
+		order: initial;
 	}
 
 	p {
 		@extend %font-light;
+	}
+
+	> .Box {
+		padding: 0px 20px;
 	}
 }
 
@@ -95,10 +107,15 @@
 		width: 100%;
 		object-fit: cover;
 		height: 100%;
+		padding: 0 1.25rem 30px;
 	}
 
 	&.is-reversed {
-		padding: rem($space*2);
+		padding: 0;// needed? rem($space*2);
+
+		@media (min-width: 640px) {
+			padding: rem($space*2);
+		}
 	}
 
 }
