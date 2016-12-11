@@ -31,3 +31,42 @@ html {
 		display: none !important;
 	}
 }
+
+.Imprint {
+	text-align: center;
+	margin: 100px auto;
+
+	a {
+		border-bottom: 2px solid;
+		display: block;
+		width: 135px;
+		margin: 20px auto 0;
+		font-size: 13px;
+			font-style: italic;
+
+		&:hover {
+			color: $yellow;
+		}
+	}
+}
+
+.Footer {
+	padding: 10px 20px 20px;
+
+	span {
+		font-size: 10px;
+		margin-right: 10px;
+
+		a {
+			border-bottom: 2px solid;
+			display: inline-block;
+			width: 32px;
+			font-style: italic;
+			margin: 20px auto 0;
+
+			&:hover {
+				color: $yellow;
+			}
+		}
+	}
+}

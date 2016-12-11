@@ -99,17 +99,25 @@
 	@include flexRow;
 	align-self: baseline;
 	flex: 1;
-	padding-top: rem(2);
-	justify-content: flex-end;
+	margin-top: 10px;
+	justify-content: flex-start;
 	margin-bottom: 0;
+
+	@media (min-width: 640px) {
+		justify-content: flex-end;
+		margin-top: rem(2);
+
+	}
 
 	li {
 		margin: 0 rem(2);
 		height: 30px;
 	}
+
 	i {
 		position: relative;
 	}
+
 	span {
 		font-size: rem(10);
 		position: absolute;
@@ -120,6 +128,7 @@
 		opacity: 0;
 		transition: opacity 0.2s $easing;
 	}
+
 	i:hover {
 
 		span {
