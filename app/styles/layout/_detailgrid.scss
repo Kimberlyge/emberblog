@@ -165,6 +165,10 @@
 		padding: rem(20);
 	}
 
+	> * {
+		margin-bottom: rem(20);
+	}
+
 	p:last-of-type {
 		margin-bottom: 0;
 	}

@@ -82,3 +82,13 @@ $font-70: rem(60);
 		font-size: $base-font-size;
 	}
 }
+
+blockquote {
+	em {
+		border-bottom: 4px solid;
+	}
+
+	p + p {
+		margin-top: rem(8);
+	}
+}
