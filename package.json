@@ -60,6 +60,7 @@
     "lazysizes": "^1.4.0",
     "liquid-fire": "0.23.0",
     "scrollmagic": "^2.0.5",
-    "suitcss-base": "^2.0.0"
+    "suitcss-base": "^2.0.0",
+    "ember-cli-reset-scroll": "0.0.1"
   }
 }

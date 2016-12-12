@@ -11,7 +11,10 @@ module.exports = function(environment) {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build
         // e.g. 'with-controller': true
-      }
+      },
+      // EXTEND_PROTOTYPES: {
+      //   Date: false,
+      // }
     },
     pace: {
       theme: 'minimal',
@@ -44,6 +47,11 @@ module.exports = function(environment) {
     ENV.APP.rootElement = '#ember-testing';
   }
 
+  if (environment === 'production') {
+    ENV.googleAnalytics = {
+      // webPropertyId: '' @todo: add GA code
+    };
+  }
 
   return ENV;
 };

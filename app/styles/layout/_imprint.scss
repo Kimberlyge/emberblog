@@ -1,0 +1,21 @@
+/**
+ * Imprint
+ */
+
+.Imprint {
+	text-align: center;
+	margin: 100px auto;
+
+	a {
+		border-bottom: 2px solid;
+		display: block;
+		width: 135px;
+		margin: 20px auto 0;
+		font-size: 13px;
+			font-style: italic;
+
+		&:hover {
+			color: $yellow;
+		}
+	}
+}
