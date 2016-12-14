@@ -73,9 +73,11 @@
 	h3,
 	ul {
 		margin: 30px;
+		line-height: 30px;
 		@media (max-width: $layout-s) {
 			margin: 10px;
 			font-size: 11px;
+			line-height: 15px;
 		}
 
 		p {
