@@ -13,17 +13,6 @@ html {
 	// Enable kerning and ligatures everywhere
 	// to use open-type features, bower install normalize-opentype
 	text-rendering: optimizeLegibility;
-	// font-size: 14px;
-	// line-height: 16px;
-
-	// @media (min-width: $layout-m) {
-	// 	font-size: $base-font-size;
-	// 	line-height: 22px;
-	// }
-	// @media (min-width: $layout-xl) {
-	// 	font-size: $base-font-size + 2;
-	// 	line-height: 22px;
-	// }
 }
 
 body,
@@ -89,7 +78,10 @@ h3 {
 
 p {
 	@include text;
-	line-height: 27px;
+	line-height: 22px;
+	@media (min-width: 980px) {
+		line-height: 26px;
+	}
 }
 
 strong,

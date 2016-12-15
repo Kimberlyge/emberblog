@@ -49,7 +49,7 @@ module.exports = function(environment) {
 
   if (environment === 'production') {
     ENV.googleAnalytics = {
-      // webPropertyId: '' @todo: add GA code
+      webPropertyId: 'UA-89035202-1'
     };
   }
 

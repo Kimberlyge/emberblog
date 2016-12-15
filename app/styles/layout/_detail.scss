@@ -74,10 +74,11 @@
 	ul {
 		margin: 30px;
 		line-height: 30px;
-		@media (max-width: $layout-s) {
+
+		@media (max-width: 980px) {
 			margin: 10px;
 			font-size: 11px;
-			line-height: 15px;
+			line-height: 18px;
 		}
 
 		p {
@@ -98,17 +99,20 @@
 	border-top: 3px solid $black;
 	padding: rem(10) rem(30);
 	background: $black;
-	p {
+
+	a {
 		display: inline-block;
 		margin: 0 10px 0 0;
+		margin-bottom: 0;
+		padding-bottom: rem(3);
 		text-transform: lowercase;
 		font-style: italic;
 		color: $white;
-		margin-bottom: 0;
-	}
-	a {
-		color: $white;
-		padding-bottom: rem(3);
 		border-bottom: 2px solid $white;
+
+		@media (max-width: 980px) {
+			font-size: 11px;
+			padding-bottom: 0;
+		}
 	}
 }

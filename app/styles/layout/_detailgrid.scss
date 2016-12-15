@@ -10,11 +10,7 @@
 
 	&--inline {
 		display: inline-block;
-		width: 40%;
-
-		@media (min-width: 980px) {
-			width: 30%;
-		}
+		width: 30%;
 	}
 
 	&--travel {
@@ -22,7 +18,7 @@
 	}
 
 	&.is-first {
-		width: 60%;
+		width: 70%;
 
 		.DetailGrid-item--text {
 			@media (min-width: 640px) {
@@ -55,8 +51,6 @@
 	@media (max-width: 640px) {
 		display: block;
 		width: 100% !important;
-		//padding-left: rem(15);
-		//padding-right: rem(15);
 		margin: 0;
 	}
 }
@@ -85,6 +79,15 @@
 		.DetailGrid-item--media {
 			flex: 65%;
 		}
+
+		@media (min-width: 640px) and (max-width: 980px) {
+			.DetailGrid-item--text {
+				flex: 50%;
+			}
+			.DetailGrid-item--media {
+				flex: 50%;
+			}
+		}
 	}
 
 }
@@ -105,7 +108,6 @@
 				padding-left: rem(20);
 			}
 		}
-
 	}
 
 	&.is-bigger {
@@ -120,6 +122,11 @@
 
 	.DetailGrid-item--media + .DetailGrid-item--media {
 		margin-top: rem(15);
+
+		@media (min-width: 640px) and (max-width: 980px) {
+			margin-top: 0;
+		}
+
 		@media (min-width: 640px) {
 			margin-left: rem(20);
 		}
@@ -161,7 +168,18 @@
 .DetailGrid-item--text {
 	padding: 0 rem(20) 30px;
 
-	@media (min-width: 640px) {
+	@media (max-width: 980px) {
+		p {
+			font-size: 13px;
+			line-height: 18px;
+		}
+	}
+
+	@media (min-width: 640px) and (max-width: 980px) {
+		padding: 0 rem(20);
+	}
+
+	@media (min-width: 980px) {
 		padding: rem(20);
 	}
 
@@ -181,7 +199,11 @@
 }
 
 .DetailGrid-item--media {
-	margin: 0 auto 1.875rem;
+	margin: 0 auto rem(20);
+
+	@media (min-width: 640px) and (max-width: 980px) {
+		margin: 0 auto;
+	}
 
 	img {
 		width: 100%;
