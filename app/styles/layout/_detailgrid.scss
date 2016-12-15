@@ -123,12 +123,9 @@
 	.DetailGrid-item--media + .DetailGrid-item--media {
 		margin-top: rem(15);
 
-		@media (min-width: 640px) and (max-width: 980px) {
-			margin-top: 0;
-		}
-
 		@media (min-width: 640px) {
 			margin-left: rem(20);
+			margin-top: 0;
 		}
 	}
 
@@ -201,7 +198,7 @@
 .DetailGrid-item--media {
 	margin: 0 auto rem(20);
 
-	@media (min-width: 640px) and (max-width: 980px) {
+	@media (min-width: 640px) {
 		margin: 0 auto;
 	}
 

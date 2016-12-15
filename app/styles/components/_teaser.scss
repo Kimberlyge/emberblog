@@ -37,11 +37,8 @@
 	overflow: hidden;
 
 	img {
-		// -webkit-transition: -webkit-filter 1600ms $easing;
-		transition: opacity 150ms $easing;
 		@include ratio-inner;
-
-		// filter: brightness(1);
+		transition: opacity 150ms $easing;
 		backface-visibility: hidden;
 		object-fit: cover;
 	}
@@ -49,17 +46,9 @@
 
 .Teaser-body {
 	overflow: hidden;
-	padding: 15px;
+	padding: 23px 15px 15px;
 	margin: 0;
 	background-color: $white;
-
-	@media (min-width: 656px) {
-		@include flexCol;
-		flex-wrap: wrap;
-	}
-	@media (min-width: $layout-m) {
-		@include flexRow;
-	}
 
 	img {
 		width: 14px;
@@ -84,32 +73,27 @@
 }
 
 .Teaser-categories {
-	@include flexRow;
-	flex-wrap: wrap;
-	flex: 4;
-	padding-top: rem(3);
+	display: block;
+	line-height: 13px;
 
-	span {
-		margin-right: rem(6);
-		font-size: $font-12;
+	li {
+		display: inline-block;
+		font-size: 9px;
+
+		@media (min-width: 980px) {
+			font-size: $font-12;
+			margin-right: rem(6);
+		}
 	}
 }
 
 .Teaser-tags {
-	@include flexRow;
-	align-self: baseline;
-	flex: 1;
+	display: block;
 	margin-top: 10px;
-	justify-content: flex-start;
-	margin-bottom: 0;
-
-	@media (min-width: 640px) {
-		justify-content: flex-end;
-		margin-top: rem(2);
-
-	}
+	width: 100%;
 
 	li {
+		display: inline-block;
 		margin: 0 rem(2);
 		height: 30px;
 	}
@@ -121,7 +105,7 @@
 	span {
 		font-size: rem(10);
 		position: absolute;
-		bottom: -1.5em;
+		bottom: rem(-20);
 		left: -1em;
 		right: -1em;
 		text-align: center;
