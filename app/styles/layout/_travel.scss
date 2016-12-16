@@ -111,11 +111,7 @@
 	}
 
 	&.is-reversed {
-		padding: 0;// needed? rem($space*2);
-
-		@media (min-width: 640px) {
-			padding: rem($space*2);
-		}
+		order: -1;
 	}
 
 }

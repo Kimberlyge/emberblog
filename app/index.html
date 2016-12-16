@@ -23,10 +23,13 @@
   <body>
     {{content-for "body"}}
 
-    <div id="App" class="App"></div>
+    <div id="App" class="App">
+    </div>
 
     <script src="assets/vendor.js"></script>
     <script src="assets/vunchies.js"></script>
+    <script async defer src="https://raw.githubusercontent.com/pinterest/widgets/master/pinit_main.js"></script>
+
 
     {{content-for "body-footer"}}
   </body>

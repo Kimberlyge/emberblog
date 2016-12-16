@@ -6,8 +6,7 @@
 	background: $white;
 
 	@media (min-width: 656px) {
-		@include flexRow;
-		flex-wrap: wrap;
+		@include flexRowWrap;
 	}
 }
 
@@ -59,6 +58,13 @@
 
 	&.is-reversed {
 		padding: rem($space*2);
+	}
+
+	&:hover {
+		.pinterest-anchor {
+			opacity: 1;
+			transition: opacity 200ms $easing;
+		}
 	}
 
 }

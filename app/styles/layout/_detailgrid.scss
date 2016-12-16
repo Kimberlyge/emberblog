@@ -151,6 +151,16 @@
 		.DetailGrid-item--media:last-of-type {
 			flex: 50%;
 		}
+
+		@media (min-width: 640px) {
+			.DetailGrid-item--media:first-of-type {
+				flex: 90%;
+			}
+
+			.DetailGrid-item--text {
+				flex: 60%;
+			}
+		}
 	}
 }
 

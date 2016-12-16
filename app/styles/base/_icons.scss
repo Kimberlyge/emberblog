@@ -32,9 +32,11 @@ $icon-size: 20px;
 	margin-left: rem(13);
 	margin-bottom: rem(25);
 }
+
 .icon--arrow {
 	max-width: rem(15);
 }
+
 .icon-arrow-left,
 .icon-arrow-right {
 	display: inline-block;
@@ -68,6 +70,11 @@ $icon-size: 20px;
 		path {
 			color: $yellow;
 		}
+	}
+
+	&--big {
+		height: 1.2em;
+		width: 1.2em;
 	}
 }
 
