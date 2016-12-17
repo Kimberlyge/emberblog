@@ -7,9 +7,11 @@
 			</div>
 		</div>
 		<div class="DetailHead-media Grid-cell Grid-cell--2">
-			<img class="lazyload js-pin-it" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{model.acf.cover.alt}}" title="{{model.acf.cover.alt}}" data-sizes="auto" data-srcset="
+			{{#pin-it}}
+				<img class="lazyload js-pin-it" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{model.acf.cover.alt}}" title="{{model.acf.cover.alt}}" data-sizes="auto" data-srcset="
 				{{model.acf.cover.sizes.medium_large}} 320w,
 				{{model.acf.cover.sizes.large}} 1024w"/>
+			{{/pin-it}}
 		</div>
 	</div>
 
@@ -39,9 +41,11 @@
 					{{{grid.text}}}
 				</div>
 				<div class="Grid-cell DetailGrid-item DetailGrid-item--media">
-					<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image.title}}" data-sizes="auto" data-srcset="
+					{{#pin-it}}
+					<img class="lazyload js-pin-it" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image.title}}" data-sizes="auto" data-srcset="
 						{{grid.image.sizes.medium}} 320w,
 						{{grid.image.sizes.large}} 640w"/>
+					{{/pin-it}}
 				</div>
 			</div>
 		{{/if}}
@@ -61,9 +65,11 @@
 					{{{grid.text_2}}}
 				</div>
 				<div class="Grid-cell DetailGrid-item DetailGrid-item--media">
-					<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image.title}}" data-sizes="auto" data-srcset="
+					{{#pin-it}}
+					<img class="lazyload js-pin-it" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image.title}}" data-sizes="auto" data-srcset="
 						{{grid.image.sizes.medium}} 320w,
 						{{grid.image.sizes.large}} 640w"/>
+					{{/pin-it}}
 				</div>
 			</div>
 		{{/if}}
@@ -77,14 +83,18 @@
 					{{{grid.text}}}
 				</div>
 				<div class="Grid-cell DetailGrid-item DetailGrid-item--media">
-					<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image.title}}" data-sizes="auto" data-srcset="
+					{{#pin-it}}
+					<img class="lazyload js-pin-it" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image.title}}" data-sizes="auto" data-srcset="
 					{{grid.image.sizes.medium}} 320w,
 					{{grid.image.sizes.large}} 640w"/>
+					{{/pin-it}}
 				</div>
 				<div class="Grid-cell DetailGrid-item DetailGrid-item--media">
-					<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image_2.title}}" data-sizes="auto" data-srcset="
+					{{#pin-it}}
+					<img class="lazyload js-pin-it" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image_2.title}}" data-sizes="auto" data-srcset="
 					{{grid.image_2.sizes.medium}} 320w,
 					{{grid.image_2.sizes.large}} 640w"/>
+					{{/pin-it}}
 				</div>
 			</div>
 		{{/if}}

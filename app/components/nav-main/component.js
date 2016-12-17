@@ -8,26 +8,6 @@ export default Component.extend({
 
 	detail: on('didInsertElement', function() {
 		this.actions();
-
-		//@todo: create a component out of it
-		var pinImg = document.querySelector('.js-pin-it');
-
-	    pinImg.addEventListener('mouseenter', function(e) {
-
-	    	// Return if the link has already been generated and added
-			var pinImgActive = document.querySelector('.js-pin-it-active');
-
-	    	if(pinImgActive) {
-
-	    		return;
-	    	}
-
-
-	    	this.classList.add('js-pin-it-active');
-
-	    	e.target.insertAdjacentHTML('beforebegin', '<a href="http://www.pinterest.com/pin/create/button/?url=' + encodeURIComponent(window.location.href) + '&media=' + encodeURIComponent(e.target.currentSrc) + '&description=' + encodeURIComponent(e.target.title) + '" target="_blank" class="pinterest-anchor js-pin-icon"><div class="icon icon-pinterest icon-pinterest--big"> </div></a>');
-	    });
-
 	}),
 
 	// open subNav + add active state on the target

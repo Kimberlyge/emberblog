@@ -2,9 +2,11 @@
 	<div class="Teaser Container">
 		{{#each model as |item|}}
 			{{#link-to 'detail' item class="Teaser-wrap"}}
+				{{#img-to-bg}}
 				<figure class="Teaser-media">
-					<img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" class="lazyload" alt="" data-srcset="{{item.acf.cover.sizes.medium}} 320w, {{item.acf.cover.sizes.medium_large}} 1000w">
+					<img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" class="lazyload" alt="{{item.title}}" data-srcset="{{item.acf.cover.sizes.medium}} 320w, {{item.acf.cover.sizes.medium_large}} 1000w">
 				</figure>
+				{{/img-to-bg}}
 				<div class="Teaser-body">
 					<h2 class="Teaser-title">{{item.title}}</h2>
 					<ul class="Teaser-categories">

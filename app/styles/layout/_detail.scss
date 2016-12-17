@@ -48,6 +48,7 @@
 }
 
 .DetailHead-media {
+	position: relative;
 
 	img {
 		margin: 0 auto;
@@ -63,7 +64,6 @@
 	&:hover {
 		.pinterest-anchor {
 			opacity: 1;
-			transition: opacity 200ms $easing;
 		}
 	}
 
@@ -107,6 +107,11 @@
 	padding: rem(10) rem(30);
 	background: $black;
 
+	p {
+		display: inline-block;
+		color: $white;
+	}
+
 	a {
 		display: inline-block;
 		margin: 0 10px 0 0;
@@ -114,6 +119,8 @@
 		padding-bottom: rem(3);
 		text-transform: lowercase;
 		font-style: italic;
+		line-height: 17px;
+
 		color: $white;
 		border-bottom: 2px solid $white;
 

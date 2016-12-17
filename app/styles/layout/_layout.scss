@@ -36,16 +36,3 @@ html {
 		display: none !important;
 	}
 }
-
-// @todo: refactor!
-.pinterest-anchor {
-    margin-left:10px;
-    margin-top:10px;
-    position:absolute;
-    z-index:42;
-    width:40px;
-    height:40px;
-
-    opacity: 0;
-    transition: opacity 200ms $easing;
-}
