@@ -102,19 +102,21 @@
 	}
 }
 
-.DetailInfo-bottom {
+.DetailInfoFooter {
+	display: flex;
+	justify-content: space-between;
 	border-top: 3px solid $black;
-	padding: rem(10) rem(30);
+	padding: rem(10);
 	background: $black;
 
 	p {
 		display: inline-block;
+		margin-left: 2px;
 		color: $white;
 	}
 
 	a {
 		display: inline-block;
-		margin: 0 10px 0 0;
 		margin-bottom: 0;
 		padding-bottom: rem(3);
 		text-transform: lowercase;
@@ -128,5 +130,17 @@
 			font-size: 11px;
 			padding-bottom: 0;
 		}
+	}
+	@media (min-width: 980px) {
+		padding: rem(10) rem(30);
+	}
+}
+
+.DetailInfoFooter-time {
+	display: block;
+
+	> * {
+		display: inline-block;
+		float: left;
 	}
 }

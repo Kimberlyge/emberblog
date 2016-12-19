@@ -47,12 +47,19 @@ $icon-size: 20px;
 .icon-marker {
 	background-image: url('../images/icons/marker-blue.svg');
 }
+
+.icon-clock-arrow,
+.icon-clock-dashed {
+	background-size: contain;
+}
+
 .icon-overview {
 	background-size: contain;
 	margin-top: rem(5);
 	width: 24px;
 	height: 24px;
 }
+
 .icon-camping {
 	background-image: url('../assets/images/icons/camping.svg');
 	background-size: contain;
