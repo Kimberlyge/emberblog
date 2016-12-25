@@ -11,8 +11,16 @@
 	transition: opacity 1s $easing;
 	opacity: 0;
 
+	.pinterest-icon {
+		opacity: 0;
+	}
+
 	&.lazyloaded {
 		transition: opacity 1s $easing;
 		opacity: 1;
+
+		.pinterest-icon {
+			opacity: 1;
+		}
 	}
 }

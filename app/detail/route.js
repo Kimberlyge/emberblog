@@ -10,13 +10,9 @@ export default Ember.Route.extend(ResetScrollMixin, {
 export default Ember.Route.extend({
 
 	model(params) {
-
-		console.log('detail route', params, params.slug, params.id, params.post);
-
 		return this.store.query('post', {
 			filter: {name: params.slug, id: params.post}
 		}).then(models => models.get('firstObject'));
-
 	}
 
 });
