@@ -1,109 +1,112 @@
-<div class="Detail">
-	<div class="DetailHead Grid-cell Grid-cell--full">
-		<div class="DetailHead-body centered Grid-cell Grid-cell--2">
-			<div class="DetailHead-copy">
-				<h2 class="DetailHead-title">{{{model.title}}}</h2>
-				<p>{{{model.content}}}</p>
+{{#page-item}}
+	<div class="Detail">
+		<div class="DetailHead Grid-cell Grid-cell--full">
+			<div class="DetailHead-body centered Grid-cell Grid-cell--2">
+				<div class="DetailHead-copy">
+					<h2 class="DetailHead-title">{{{model.title}}}</h2>
+					<p>{{{model.content}}}</p>
+				</div>
+			</div>
+			<div class="DetailHead-media Grid-cell Grid-cell--2">
+				{{#pin-it}}
+					<img class="lazyload js-pin-it" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{model.acf.cover.alt}}" title="{{model.acf.cover.alt}}" data-sizes="auto" data-srcset="
+					{{model.acf.cover.sizes.medium}} 320w,
+					{{model.acf.cover.sizes.medium_large}} 640w,
+					{{model.acf.cover.sizes.large}} 1024w"/>
+				{{/pin-it}}
 			</div>
 		</div>
-		<div class="DetailHead-media Grid-cell Grid-cell--2">
-			{{#pin-it}}
-				<img class="lazyload js-pin-it" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{model.acf.cover.alt}}" title="{{model.acf.cover.alt}}" data-sizes="auto" data-srcset="
-				{{model.acf.cover.sizes.medium_large}} 320w,
-				{{model.acf.cover.sizes.large}} 1024w"/>
-			{{/pin-it}}
-		</div>
-	</div>
 
-	<div class="DetailGrid DetailGrid--inline">
-		<div class="DetailGrid-item DetailGrid-item--text">
-			<div class="DetailInfo">
-				<h3 class="DetailText-title">Ingredients</h3>
-				<ul>
-					{{{model.acf.ingredients}}}
-				</ul>
-				<div class="DetailInfoFooter">
-					<div class="DetailInfoFooter-time">
-						<div class="icon icon-clock-arrow"></div>
-						{{!-- <div class="icon icon-clock-dashed"></div> --}}
-						{{{model.acf.info}}}
+		<div class="DetailGrid DetailGrid--inline">
+			<div class="DetailGrid-item DetailGrid-item--text">
+				<div class="DetailInfo">
+					<h3 class="DetailText-title">Ingredients</h3>
+					<ul>
+						{{{model.acf.ingredients}}}
+					</ul>
+					<div class="DetailInfoFooter">
+						<div class="DetailInfoFooter-time">
+							<div class="icon icon-clock-arrow"></div>
+							{{!-- <div class="icon icon-clock-dashed"></div> --}}
+							{{{model.acf.info}}}
+						</div>
+						<a href="javascript:window.print()">Print</a>
 					</div>
-					<a href="javascript:window.print()">Print</a>
 				</div>
 			</div>
 		</div>
+
+		{{#each model.acf.grids as |grid|}}
+
+			{{#if grid.first_grid}}
+				<div class="Grid Grid--row DetailGrid DetailGrid--first {{if grid.is_first 'is-first'}} {{if grid.reverse 'is-reverse'}} {{if grid.is_portrait 'is-portrait'}} {{if grid.is_landscape 'is-landscape'}}">
+					<div class="Grid-cell DetailGrid-item DetailGrid-item--text">
+						{{#if grid.title}}
+							<h3 class="DetailText-title">{{grid.title}}:</h3>
+						{{/if}}
+						{{{grid.text}}}
+					</div>
+					<div class="Grid-cell DetailGrid-item DetailGrid-item--media">
+						{{#pin-it}}
+						<img class="lazyload js-pin-it" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image.title}}" data-sizes="auto" data-srcset="
+							{{grid.image.sizes.medium}} 320w,
+							{{grid.image.sizes.large}} 640w"/>
+						{{/pin-it}}
+					</div>
+				</div>
+			{{/if}}
+
+			{{#if grid.second_grid}}
+				<div class="Grid Grid--row DetailGrid DetailGrid--second {{if grid.is_first 'is-first'}} {{if grid.reverse 'is-reverse'}} {{if grid.is_center 'is-center'}} {{if grid.is_bigger 'is-bigger'}}">
+					<div class="Grid-cell DetailGrid-item DetailGrid-item--text">
+						{{#if grid.title}}
+							<h3 class="DetailText-title">{{grid.title}}:</h3>
+						{{/if}}
+						{{{grid.text}}}
+					</div>
+					<div class="Grid-cell DetailGrid-item DetailGrid-item--text">
+						{{#if grid.title_2}}
+							<h3 class="DetailText-title">{{grid.title_2}}:</h3>
+						{{/if}}
+						{{{grid.text_2}}}
+					</div>
+					<div class="Grid-cell DetailGrid-item DetailGrid-item--media">
+						{{#pin-it}}
+						<img class="lazyload js-pin-it" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image.title}}" data-sizes="auto" data-srcset="
+							{{grid.image.sizes.medium}} 320w,
+							{{grid.image.sizes.large}} 640w"/>
+						{{/pin-it}}
+					</div>
+				</div>
+			{{/if}}
+
+			{{#if grid.third_grid}}
+				<div class="Grid Grid--row DetailGrid DetailGrid--third {{if grid.is_first 'is-first'}} {{if grid.reverse 'is-reverse'}} {{if grid.is_center 'is-center'}} {{if grid.is_bigger 'is-bigger'}}">
+					<div class="Grid-cell DetailGrid-item DetailGrid-item--text">
+						{{#if grid.title}}
+							<h3 class="DetailText-title">{{grid.title}}:</h3>
+						{{/if}}
+						{{{grid.text}}}
+					</div>
+					<div class="Grid-cell DetailGrid-item DetailGrid-item--media">
+						{{#pin-it}}
+						<img class="lazyload js-pin-it" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image.title}}" data-sizes="auto" data-srcset="
+						{{grid.image.sizes.medium}} 320w,
+						{{grid.image.sizes.large}} 640w"/>
+						{{/pin-it}}
+					</div>
+					<div class="Grid-cell DetailGrid-item DetailGrid-item--media">
+						{{#pin-it}}
+						<img class="lazyload js-pin-it" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image_2.title}}" data-sizes="auto" data-srcset="
+						{{grid.image_2.sizes.medium}} 320w,
+						{{grid.image_2.sizes.large}} 640w"/>
+						{{/pin-it}}
+					</div>
+				</div>
+			{{/if}}
+
+		{{/each}}
+
+		{{outlet}}
 	</div>
-
-	{{#each model.acf.grids as |grid|}}
-
-		{{#if grid.first_grid}}
-			<div class="Grid Grid--row DetailGrid DetailGrid--first {{if grid.is_first 'is-first'}} {{if grid.reverse 'is-reverse'}} {{if grid.is_portrait 'is-portrait'}} {{if grid.is_landscape 'is-landscape'}}">
-				<div class="Grid-cell DetailGrid-item DetailGrid-item--text">
-					{{#if grid.title}}
-						<h3 class="DetailText-title">{{grid.title}}:</h3>
-					{{/if}}
-					{{{grid.text}}}
-				</div>
-				<div class="Grid-cell DetailGrid-item DetailGrid-item--media">
-					{{#pin-it}}
-					<img class="lazyload js-pin-it" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image.title}}" data-sizes="auto" data-srcset="
-						{{grid.image.sizes.medium}} 320w,
-						{{grid.image.sizes.large}} 640w"/>
-					{{/pin-it}}
-				</div>
-			</div>
-		{{/if}}
-
-		{{#if grid.second_grid}}
-			<div class="Grid Grid--row DetailGrid DetailGrid--second {{if grid.is_first 'is-first'}} {{if grid.reverse 'is-reverse'}} {{if grid.is_center 'is-center'}} {{if grid.is_bigger 'is-bigger'}}">
-				<div class="Grid-cell DetailGrid-item DetailGrid-item--text">
-					{{#if grid.title}}
-						<h3 class="DetailText-title">{{grid.title}}:</h3>
-					{{/if}}
-					{{{grid.text}}}
-				</div>
-				<div class="Grid-cell DetailGrid-item DetailGrid-item--text">
-					{{#if grid.title_2}}
-						<h3 class="DetailText-title">{{grid.title_2}}:</h3>
-					{{/if}}
-					{{{grid.text_2}}}
-				</div>
-				<div class="Grid-cell DetailGrid-item DetailGrid-item--media">
-					{{#pin-it}}
-					<img class="lazyload js-pin-it" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image.title}}" data-sizes="auto" data-srcset="
-						{{grid.image.sizes.medium}} 320w,
-						{{grid.image.sizes.large}} 640w"/>
-					{{/pin-it}}
-				</div>
-			</div>
-		{{/if}}
-
-		{{#if grid.third_grid}}
-			<div class="Grid Grid--row DetailGrid DetailGrid--third {{if grid.is_first 'is-first'}} {{if grid.reverse 'is-reverse'}} {{if grid.is_center 'is-center'}} {{if grid.is_bigger 'is-bigger'}}">
-				<div class="Grid-cell DetailGrid-item DetailGrid-item--text">
-					{{#if grid.title}}
-						<h3 class="DetailText-title">{{grid.title}}:</h3>
-					{{/if}}
-					{{{grid.text}}}
-				</div>
-				<div class="Grid-cell DetailGrid-item DetailGrid-item--media">
-					{{#pin-it}}
-					<img class="lazyload js-pin-it" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image.title}}" data-sizes="auto" data-srcset="
-					{{grid.image.sizes.medium}} 320w,
-					{{grid.image.sizes.large}} 640w"/>
-					{{/pin-it}}
-				</div>
-				<div class="Grid-cell DetailGrid-item DetailGrid-item--media">
-					{{#pin-it}}
-					<img class="lazyload js-pin-it" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image_2.title}}" data-sizes="auto" data-srcset="
-					{{grid.image_2.sizes.medium}} 320w,
-					{{grid.image_2.sizes.large}} 640w"/>
-					{{/pin-it}}
-				</div>
-			</div>
-		{{/if}}
-
-	{{/each}}
-
-	{{outlet}}
-</div>
+{{/page-item}}

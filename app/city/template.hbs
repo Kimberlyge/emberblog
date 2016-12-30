@@ -1,108 +1,110 @@
-<div class="Cover Cover--big">
-	<div class="Cover-body">
-		<h2>{{{model.title}}}</h2>
-		<p>{{{model.acf.country}}}</p>
+{{#page-item}}
+	<div class="Cover Cover--big">
+		<div class="Cover-body">
+			<h2>{{{model.title}}}</h2>
+			<p>{{{model.acf.country}}}</p>
+		</div>
+		<div class="Cover-media">
+			<img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" class="lazyload" alt="" data-srcset="{{model.acf.travel_cover.sizes.medium}} 320w, {{model.acf.travel_cover.sizes.post-thumbnail}} 1000w">
+		</div>
 	</div>
-	<div class="Cover-media">
-		<img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" class="lazyload" alt="" data-srcset="{{model.acf.travel_cover.sizes.medium}} 320w, {{model.acf.travel_cover.sizes.post-thumbnail}} 1000w">
-	</div>
-</div>
 
-<ul class="list list--centered listLink">
-	{{#scroll-to}}
-		{{#each model.acf.grids as |grid|}}
+	<ul class="list list--centered listLink">
+		{{#scroll-to}}
+			{{#each model.acf.grids as |grid|}}
+			{{#if grid.head}}
+				<li class="list-item">
+					<a href="#{{{grid.slug}}}" class="listLink-item js-listLink-item">{{{grid.name}}}</a>
+				</li>
+			{{/if}}
+			{{/each}}
+		{{/scroll-to}}
+	</ul>
+
+
+	{{#each model.acf.grids as |grid|}}
+
 		{{#if grid.head}}
-			<li class="list-item">
-				<a href="#{{{grid.slug}}}" class="listLink-item js-listLink-item">{{{grid.name}}}</a>
-			</li>
-		{{/if}}
-		{{/each}}
-	{{/scroll-to}}
-</ul>
-
-
-{{#each model.acf.grids as |grid|}}
-
-	{{#if grid.head}}
-		<div class="TravelDetail {{if grid.reverse 'TravelDetail--reverse'}} Grid" id="{{{grid.slug}}}">
-			<div class="TravelDetail-body Grid-cell Grid-cell--2">
-				<div class="TravelCopy Box">
-					<h2 class="TravelCopy-title">{{{grid.name}}}</h2>
-					<div class="TravelCopy-description">
-						{{{grid.description}}}
-					</div>
-					<div class="TravelCopy-address Box Box--white Box--border Box--small centered">
-						{{{grid.contact_description}}}
-						<a class="TravelCopy-url" href="{{{grid.contact_url}}}" target="_blank">{{{grid.contact_url}}}</a>
+			<div class="TravelDetail {{if grid.reverse 'TravelDetail--reverse'}} Grid" id="{{{grid.slug}}}">
+				<div class="TravelDetail-body Grid-cell Grid-cell--2">
+					<div class="TravelCopy Box">
+						<h2 class="TravelCopy-title">{{{grid.name}}}</h2>
+						<div class="TravelCopy-description">
+							{{{grid.description}}}
+						</div>
+						<div class="TravelCopy-address Box Box--white Box--border Box--small centered">
+							{{{grid.contact_description}}}
+							<a class="TravelCopy-url" href="{{{grid.contact_url}}}" target="_blank">{{{grid.contact_url}}}</a>
+						</div>
 					</div>
 				</div>
+				<div class="TravelDetail-cover {{if grid.reverse 'is-reversed'}} Grid-cell Grid-cell--2">
+					<img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" class="lazyload" alt="" data-srcset="{{grid.cover.sizes.medium}} 320w, {{grid.cover.sizes.medium_large}} 1000w">
+				</div>
 			</div>
-			<div class="TravelDetail-cover {{if grid.reverse 'is-reversed'}} Grid-cell Grid-cell--2">
-				<img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" class="lazyload" alt="" data-srcset="{{grid.cover.sizes.medium}} 320w, {{grid.cover.sizes.medium_large}} 1000w">
-			</div>
-		</div>
-	{{/if}}
+		{{/if}}
 
-	{{#if grid.has_text}}
-		<div class="Grid Grid--row DetailGrid DetailGrid--travel DetailGrid--first {{if grid.is_first 'is-first'}} {{if grid.reverse 'is-reverse'}} {{if grid.is_portrait 'is-portrait'}} {{if grid.is_landscape 'is-landscape'}}">
-			<div class="Grid-cell DetailGrid-item DetailGrid-item--text">
-				{{#if grid.title}}
-					<h3 class="DetailText-title">{{grid.title}}:</h3>
-				{{/if}}
-				{{{grid.text}}}
+		{{#if grid.has_text}}
+			<div class="Grid Grid--row DetailGrid DetailGrid--travel DetailGrid--first {{if grid.is_first 'is-first'}} {{if grid.reverse 'is-reverse'}} {{if grid.is_portrait 'is-portrait'}} {{if grid.is_landscape 'is-landscape'}}">
+				<div class="Grid-cell DetailGrid-item DetailGrid-item--text">
+					{{#if grid.title}}
+						<h3 class="DetailText-title">{{grid.title}}:</h3>
+					{{/if}}
+					{{{grid.text}}}
+				</div>
+				<div class="Grid-cell DetailGrid-item DetailGrid-item--media">
+					<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image.title}}" data-sizes="auto" data-srcset="
+						{{grid.image.sizes.medium}} 320w,
+						{{grid.image.sizes.large}} 640w"/>
+				</div>
 			</div>
-			<div class="Grid-cell DetailGrid-item DetailGrid-item--media">
-				<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image.title}}" data-sizes="auto" data-srcset="
-					{{grid.image.sizes.medium}} 320w,
-					{{grid.image.sizes.large}} 640w"/>
-			</div>
-		</div>
-	{{/if}}
+		{{/if}}
 
-	{{#if grid.first_grid}}
-		<div class="Grid Grid--row ImageGrid ImageGrid--first">
-			<div class="Grid-cell ImageGrid-item">
-				<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image.title}}" data-sizes="auto" data-srcset="
-					{{grid.image.sizes.large}} 320w,
-					{{grid.image.sizes.post-thumbnail}} 640w"/>
+		{{#if grid.first_grid}}
+			<div class="Grid Grid--row ImageGrid ImageGrid--first">
+				<div class="Grid-cell ImageGrid-item">
+					<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image.title}}" data-sizes="auto" data-srcset="
+						{{grid.image.sizes.post-thumbnail}} 320w,
+						{{grid.image.url}} 640w"/>
+				</div>
 			</div>
-		</div>
-	{{/if}}
+		{{/if}}
 
-	{{#if grid.second_grid}}
-		<div class="Grid Grid--row ImageGrid ImageGrid--second {{if grid.reverse 'is-reverse'}} {{if grid.is_portrait 'has-portrait'}}">
-			<div class="Grid-cell ImageGrid-item">
-				<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image.title}}" data-sizes="auto" data-srcset="
-					{{grid.image.sizes.medium}} 320w,
-					{{grid.image.sizes.medium_large}} 640w"/>
+		{{#if grid.second_grid}}
+			<div class="Grid Grid--row ImageGrid ImageGrid--second {{if grid.reverse 'is-reverse'}} {{if grid.is_portrait 'has-portrait'}}">
+				<div class="Grid-cell ImageGrid-item">
+					<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image.title}}" data-sizes="auto" data-srcset="
+						{{grid.image.sizes.medium}} 320w,
+						{{grid.image.sizes.medium_large}} 640w"/>
+				</div>
+				<div class="Grid-cell ImageGrid-item">
+					<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image_2.title}}" data-sizes="auto" data-srcset="
+						{{grid.image_2.sizes.medium}} 320w,
+						{{grid.image_2.sizes.medium_large}} 640w"/>
+				</div>
 			</div>
-			<div class="Grid-cell ImageGrid-item">
-				<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image_2.title}}" data-sizes="auto" data-srcset="
-					{{grid.image_2.sizes.medium}} 320w,
-					{{grid.image_2.sizes.medium_large}} 640w"/>
-			</div>
-		</div>
-	{{/if}}
+		{{/if}}
 
-	{{#if grid.third_grid}}
-		<div class="Grid Grid--row ImageGrid ImageGrid--third">
-			<div class="Grid-cell ImageGrid-item">
-				<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image.title}}" data-sizes="auto" data-srcset="
-					{{grid.image.sizes.medium}} 320w,
-					{{grid.image.sizes.medium_large}} 640w"/>
-			</div>
+		{{#if grid.third_grid}}
+			<div class="Grid Grid--row ImageGrid ImageGrid--third">
+				<div class="Grid-cell ImageGrid-item">
+					<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image.title}}" data-sizes="auto" data-srcset="
+						{{grid.image.sizes.medium}} 320w,
+						{{grid.image.sizes.medium_large}} 640w"/>
+				</div>
 
-			<div class="Grid-cell ImageGrid-item">
-				<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image_2.title}}" data-sizes="auto" data-srcset="
-					{{grid.image_2.sizes.medium}} 320w,
-					{{grid.image_2.sizes.medium_large}} 640w"/>
-			</div>
+				<div class="Grid-cell ImageGrid-item">
+					<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image_2.title}}" data-sizes="auto" data-srcset="
+						{{grid.image_2.sizes.medium}} 320w,
+						{{grid.image_2.sizes.medium_large}} 640w"/>
+				</div>
 
-			<div class="Grid-cell ImageGrid-item">
-				<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image_3.title}}" data-sizes="auto" data-srcset="
-					{{grid.image_3.sizes.medium}} 320w,
-					{{grid.image_3.sizes.medium_large}} 640w"/>
+				<div class="Grid-cell ImageGrid-item">
+					<img class="lazyload" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="{{grid.image_3.title}}" data-sizes="auto" data-srcset="
+						{{grid.image_3.sizes.medium}} 320w,
+						{{grid.image_3.sizes.medium_large}} 640w"/>
+				</div>
 			</div>
-		</div>
-	{{/if}}
-{{/each}}
+		{{/if}}
+	{{/each}}
+{{/page-item}}

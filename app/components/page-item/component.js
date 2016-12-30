@@ -6,21 +6,21 @@ export default Ember.Component.extend({
 	classNames: ['PageItem'],
 
 	detail: on('didInsertElement', function() {
+		console.log('page item');
 		this._scrollPosition();
 	}),
 
-    _scrollPosition(event) {
+	_scrollPosition() {
 
-    	var scrollPosition = $(window).scrollTop();
+		var scrollPosition = $(window).scrollTop();
 
-    	console.log(scrollPosition);
+		console.log(scrollPosition);
 
-    	if (scrollPosition > 0) {
-    		$("html, body").animate({ scrollTop: "0px" });
-    	}
+		if (scrollPosition > 0) {
+			setTimeout( function () {
+				$("html, body").animate({ scrollTop: "0px" }, 350);
+			}, 500);
+		}
 
-	},
-
-	actions() {
 	}
 });
