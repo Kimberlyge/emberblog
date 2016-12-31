@@ -6,7 +6,6 @@ export default Ember.Component.extend({
 	classNames: ['PageItem'],
 
 	detail: on('didInsertElement', function() {
-		console.log('page item');
 		this._scrollPosition();
 	}),
 

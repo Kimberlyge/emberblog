@@ -3,6 +3,7 @@
 		<div class="DetailHead Grid-cell Grid-cell--full">
 			<div class="DetailHead-body centered Grid-cell Grid-cell--2">
 				<div class="DetailHead-copy">
+					<h1>{{model.id}}</h1>
 					<h2 class="DetailHead-title">{{{model.title}}}</h2>
 					<p>{{{model.content}}}</p>
 				</div>
@@ -104,8 +105,9 @@
 					</div>
 				</div>
 			{{/if}}
-
 		{{/each}}
+
+		{{post-comments id=model.id}}
 
 		{{outlet}}
 	</div>
