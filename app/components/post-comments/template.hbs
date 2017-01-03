@@ -1,35 +1,26 @@
 <div class="js-post-id">{{id}}</div>
-{{!-- <div id="respond" class="comment-respond">
-	<h2 id="reply-title" class="comment-reply-title">HI COMMENTS</h2>
-	<form action="http://vunchies.com/wp-comments-post.php" method="post" id="commentform" class="comment-form" novalidate>
-		<p class="comment-form-comment">
-			<label for="comment">Comment</label>
-			<textarea name="comment" id="comment" cols="45" rows="8" maxlength="65525" aria-required="true" required="required"></textarea>
-		</p>
-		<p class="form-submit">
-			<input type="submit" name="submit" id="submit">
-		</p>
-	</form>
-</div> --}}
 
 <div id="respond" class="comment-respond">
 	<h3 id="reply-title" class="comment-reply-title">Leave a Reply <small><a rel="nofollow" id="cancel-comment-reply-link" href="/{{slug}}/#respond" style="display:none;">Cancel reply</a></small></h3>
 
 	<form action="http://vunchies.com/wp-comments-post.php" method="post" id="commentform" class="comment-form" novalidate>
 
-		<p class="logged-in-as"><a href="http://vunchies.com/wp-admin/profile.php" aria-label="Logged in as kimberly. Edit your profile.">Logged in as kimberly</a>. <a href="http://vunchies.com/wp-login.php?action=logout&amp;redirect_to=http%3A%2F%2Fvunchies.com%2Fshiitake-noodle-soup%2F&amp;_wpnonce=c160ea3e71">Log out?</a></p><p class="comment-form-comment">
+		{{!-- <p class="logged-in-as">
+			<a href="http://vunchies.com/wp-admin/profile.php" aria-label="Logged in as kimberly. Edit your profile.">Logged in as kimberly</a>
+			<a href="http://vunchies.com/wp-login.php?action=logout&amp;redirect_to=http%3A%2F%2Fvunchies.com%2Fshiitake-noodle-soup%2F&amp;_wpnonce=c160ea3e71">Log out?</a>
+		</p> --}}
 
-		<label for="comment">Comment</label>
-		<textarea id="comment" name="comment" cols="45" rows="8" maxlength="65525" aria-required="true" required="required"></textarea></p>
+		<p class="comment-form-comment">
+			<label for="comment">Comment</label>
+			<textarea id="comment" name="comment" cols="45" rows="8" maxlength="65525" aria-required="true" required="required"></textarea>
+		</p>
 
 		<p class="form-submit">
-
 			<input name="submit" type="submit" id="submit" class="submit" value="Post Comment" />
 
 			<input type='hidden' name='comment_post_ID' value='{{id}}' id='comment_post_ID' />
 
 			<input type='hidden' name='comment_parent' id='comment_parent' value='0' />
-
 		</p>
 
 		<input type="hidden" id="_wp_unfiltered_html_comment_disabled" name="_wp_unfiltered_html_comment_disabled" value="6fe7bd7ae6" />

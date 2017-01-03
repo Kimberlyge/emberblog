@@ -27,7 +27,10 @@ export default Ember.Component.extend({
 					console.log(id, obj);
 					var content = obj.content.rendered.replace(/(<([^>]+)>)/ig,"");
 
-					 $('.comment-list').append('<li class="comment"><article class="comment-body"><div class="comment-author">'+obj.author_name+'</div><div class="comment-content">'+content+'</div><div class="reply"></div><footer class="comment-meta"></footer></article></li>')
+					var date = obj.date.replace('T', ' at ');
+					var dateTrimmed = date.substring(0, 19);
+
+					$('.comment-list').append('<li class="comment"><article class="comment-body"><div class="comment-author">'+obj.author_name+'</div><footer class="comment-meta"><div class="comment-date">'+dateTrimmed+'</div><time datetime="'+obj.date+'"></time></footer><div class="comment-content">'+content+'</div><div class="reply"></article></li>')
 				});
 
 			},
@@ -80,7 +83,7 @@ export default Ember.Component.extend({
 
 	actions() {
 
-		$('.comment-form').on('submit', event => this._submitForm(event));
+		// $('.comment-form').on('submit', event => this._submitForm(event));
 
 	}
 
